@@ -25,6 +25,7 @@ import com.joeun.midproject.mapper.FileMapper;
 import com.joeun.midproject.mapper.TeamMapper;
 import com.joeun.midproject.service.CommentService;
 import com.joeun.midproject.service.LiveBoardService;
+import com.joeun.midproject.service.TempTicketService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 public class LiveBoardApiController {
     @Autowired
     LiveBoardService liveBoardService;
+
+    @Autowired
+    TempTicketService tempTicketService;
 
     @Autowired
     FileMapper fileMapper;
@@ -81,8 +85,7 @@ public class LiveBoardApiController {
             // 데이터 요청
             LiveBoard liveBoard = liveBoardService.select(boardNo);     // 게시글 정보
             int totalTicketCount = liveBoard.getMaxTickets();
-            List<Ticket> ticketList = liveBoardService.listByBoardNo(boardNo);
-            int soldTicketCount = ticketList.size();
+            int soldTicketCount = tempTicketService.listByBoardNo(boardNo);
             int nowTicketCount = totalTicketCount - soldTicketCount;
             liveBoard.setTicketLeft(nowTicketCount);
             return new ResponseEntity<>(liveBoard, HttpStatus.OK);
@@ -128,47 +131,42 @@ public class LiveBoardApiController {
         }
     }
     
-    // 티켓 수량 비동기 조회
+    // 티켓 수량 비동기 조회 & 구매 가능시 임시 티켓 생성
     @PostMapping("/ticketNum")
     public ResponseEntity<?> ticketNum(@RequestBody Ticket ticket) {
         Integer count = ticket.getCount();
         try {
             int boardNo = ticket.getBoardNo();
             int totalTicketCount = liveBoardService.select(boardNo).getMaxTickets();
-            List<Ticket> ticketList = liveBoardService.listByBoardNo(boardNo);
-            int purchaseTicketCount = ticketList.size();
+            int purchaseTicketCount = tempTicketService.listByBoardNo(boardNo);
             int ticketLeft = totalTicketCount - purchaseTicketCount;
             // 티켓 수량이 0개 일때 응답
-            if( count == 0) return new ResponseEntity<>("TICKETZERO", HttpStatus.OK);
+            if( (Integer)count == 0) return new ResponseEntity<>("TICKETZERO", HttpStatus.OK);
             // 잔여티켓보다 구매티켓이 많은경우의 응답
             if( ticketLeft < count) return new ResponseEntity<>("OVERCOUNT", HttpStatus.OK);
 
             // 잔여티켓의 수가 0 일때 매진 응답
             if( (Integer)ticketLeft == 0 ) return new ResponseEntity<>("ZERO", HttpStatus.OK);
 
+            // 임시 티켓 발행
+            int result = tempTicketService.insertTempTicket(ticket);
+            if( result == 0){
+                log.info("임시 티켓 발행 실패");
+                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+            }
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
-    // 티켓 구매 처리
+    // 티켓 구매 처리 & 임시 티켓 삭제
     @PostMapping("/purchase")
     public ResponseEntity<?> ticket(@RequestBody Ticket ticket) {
         Integer count = ticket.getCount();
         try {
             int boardNo = ticket.getBoardNo();
             int totalTicketCount = liveBoardService.select(boardNo).getMaxTickets();
-            List<Ticket> ticketList = liveBoardService.listByBoardNo(boardNo);
-            int purchaseTicketCount = ticketList.size();
-            int ticketLeft = totalTicketCount - purchaseTicketCount;
-            if( count == 0) return  new ResponseEntity<>("TICKETZERO", HttpStatus.OK);
-            // 잔여티켓보다 구매티켓이 많은경우의 응답
-            if( ticketLeft < count) return new ResponseEntity<>("OVERCOUNT", HttpStatus.OK);
-
-            // 잔여티켓의 수가 0 일때 매진 응답
-            if( (Integer)ticketLeft == 0 ) return new ResponseEntity<>("ZERO", HttpStatus.OK);
-
 
             // 티켓 테이블에 등록
             int result = 0;
@@ -176,12 +174,17 @@ public class LiveBoardApiController {
                 result += liveBoardService.purchase(ticket);
             }
 
+            // 임시 티켓 삭제
+            int res = tempTicketService.delete(ticket);
+            if( res == 0){
+                log.info("결제 완료시 임시 티켓 삭제 실패");
+                if( res == 0 ) return new ResponseEntity<>(" FAIL", HttpStatus.OK);
+            }
             // 티켓 구매 실패 응답
             if( result == 0 ) return new ResponseEntity<>(" FAIL", HttpStatus.OK);
 
             //잔여티켓수 0 일시 매진으로 변환
-            ticketList = liveBoardService.listByBoardNo(boardNo);
-            int afterTicketCount = ticketList.size();
+            int afterTicketCount = tempTicketService.listByBoardNo(boardNo);
             int afterCount = totalTicketCount - afterTicketCount;
             if((Integer)afterCount == 0 ){
                 int update = liveBoardService.soldOut(boardNo);

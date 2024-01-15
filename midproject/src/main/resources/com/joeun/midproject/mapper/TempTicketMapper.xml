@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.joeun.midproject.mapper.TempTicketMapper">
+
+    <!-- 게시글 번호로 임시 티켓 + 판매 티켓 매수 조회하기 -->
+    <select id="listByBoardNo" resultType="TempTicket">
+        SELECT
+    (SELECT COUNT(*) FROM ticket_temp WHERE board_no = #{boardNo}) +
+    (SELECT COUNT(*) FROM ticket_purchases WHERE board_no = #{boardNo}) AS ticket_count;
+    </select>
+
+    <!-- 티켓 구매 화면 진입 시 임시 티켓 테이블에 등록 -->
+    <insert id="insertTempTicket">
+        INSERT INTO ticket_temp( board_no, phone )
+        VALUES ( #{boardNo}, #{phone} )
+    </insert>
+
+    <!-- 결제 성공 시 전화번호로 임시 티켓 삭제 -->
+    <delete id="delete">
+        DELETE FROM `ticket_temp`
+        WHERE phone = #{phone} AND board_no = #{boardNo}
+    </delete>
+
+    <!-- 스케줄러로 임시티켓 생성된지 5분 지났을 시 삭제 -->
+    <delete id="deleteTempTicket">
+        DELETE FROM ticket_temp
+        WHERE reg_date &lt;= #{thresholdTime}
+    </delete>
+</mapper>

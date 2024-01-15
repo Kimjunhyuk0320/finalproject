@@ -39,11 +39,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY upd_date DESC, ticket_no DESC
     </select>
 
+    <!-- 티켓 번호로 티켓 조회하기 -->
+    <select id="ticketNoSearch" resultType="Ticket">
+        SELECT *
+        FROM ticket_purchases
+        WHERE ticket_no = #{ticketNo}
+    </select>
+
     <!-- 티켓 구매시 티켓 테이블에 등록 -->
     <insert id="insert">
         INSERT INTO ticket_purchases( ticket_no, board_no, reservation_no, name,  phone, refund )
         VALUES ( #{ticketNo}, #{boardNo}, #{reservationNo}, #{name}, #{phone}, 0 )
     </insert>
 
-    
+    <!-- 티켓 pk 최댓값 찾기 -->
+    <select id="maxPk" resultType="int">
+        SELECT MAX(ticket_no)
+        FROM ticket_purchases
+    </select>
+    <!-- 티켓에 qrNo 업데이트하기 -->
+    <update id="updateTicket">
+        UPDATE ticket_purchases
+        SET qr_no = #{qrNo}
+        WHERE ticket_no = #{ticketNo};
+    </update>
 </mapper>

@@ -15,11 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.joeun.midproject.dto.Files;
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.QR;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.dto.Ticket;
 import com.joeun.midproject.mapper.FileMapper;
 import com.joeun.midproject.mapper.LiveBoardMapper;
-import com.joeun.midproject.mapper.TeamMapper;
 import com.joeun.midproject.mapper.TicketMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +37,10 @@ public class LiveBoardServiceImpl implements LiveBoardService{
     private FileMapper fileMapper;
 
     @Autowired
-    private TeamMapper teamMapper;
-
-    @Autowired
     private SMSService smsService;
 
+    @Autowired
+    private QRService qrService;
 
     @Value("${upload.path}")            // application.properties 에 설정한 업로드 경로 속성명
     private String uploadPath;          // 업로드 경로
@@ -208,8 +207,22 @@ public class LiveBoardServiceImpl implements LiveBoardService{
         String reservationNo = "T" + reservationUuid;
         ticket.setReservationNo(reservationNo);
         int result = ticketMapper.insert(ticket);
+        int parentNo = ticketMapper.maxPk();
+        // qr코드 스캔했을 때 주소
+        String url = "http://localhost:3000/qr/check?ticketNo="+parentNo;
+        String parentTable = "ticket_purchases";
 
-
+        // QR 코드 생성
+        QR qr = new QR();
+        qr.setUrl(url);
+        qr.setParentTable(parentTable);
+        qr.setParentNo(parentNo);
+        qr.setName(ticket.getReservationNo());
+        int maxPk = qrService.makeQR(qr);
+        ticket.setQrNo(maxPk);
+        ticket.setTicketNo(parentNo);
+        log.info(ticket + "");
+        ticketMapper.updateTicket(ticket);
 
         String phone = ticket.getPhone();
         int boardNo = ticket.getBoardNo();
@@ -246,7 +259,7 @@ public class LiveBoardServiceImpl implements LiveBoardService{
             log.info("문자 발송 성공 : " + message);
         if( result_code == -1 )
             log.info("문자 발송 실패 : " + message);
-
+        
 
 
         return result;
@@ -281,6 +294,16 @@ public class LiveBoardServiceImpl implements LiveBoardService{
 
         int result = liveBoardMapper.delete(liveBoard);
 
+        return result;
+    }
+
+    @Override
+    public int ticketAvailable(int ticketNo) throws Exception {
+        int result = 0;
+        Ticket ticket = ticketMapper.ticketNoSearch(ticketNo);
+        if(ticket != null){
+            result = 1;
+        }
         return result;
     }
 
