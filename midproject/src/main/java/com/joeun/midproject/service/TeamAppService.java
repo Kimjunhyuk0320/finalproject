@@ -2,16 +2,16 @@ package com.joeun.midproject.service;
 
 import java.util.List;
 
-
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.TeamApp;
 
 public interface TeamAppService {
   
   public int insert(TeamApp teamApp) throws Exception;
   
-  public List<TeamApp> listByLeader(TeamApp teamApp);
+  public List<TeamApp> listByLeader(Page page);
 
-  public List<TeamApp> listByMember(TeamApp teamApp);
+  public List<TeamApp> listByMember(Page page);
 
   public int delete(TeamApp teamApp);
 

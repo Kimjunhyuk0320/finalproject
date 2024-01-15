@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.joeun.midproject.dto.Files;
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.QR;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.dto.Ticket;
@@ -272,11 +273,14 @@ public class LiveBoardServiceImpl implements LiveBoardService{
     }
 
     @Override
-    public List<LiveBoard> liveBoardPageList(Team team) throws Exception {
-        if(team.getPageNo()!=0){
-        team.setPageNo((team.getPageNo()-1)*team.getRows());
-        }
-        List<LiveBoard> liveBoardsPageList = liveBoardMapper.liveBoardPageList(team);
+    public List<LiveBoard> liveBoardPageList(Page page) throws Exception {
+
+        // if(team.getPageNo()!=0){
+        // team.setPageNo((team.getPageNo()-1)*team.getRows());
+        // }
+
+        page.setTotal(liveBoardMapper.liveBoardPageListTotalCount(page));
+        List<LiveBoard> liveBoardsPageList = liveBoardMapper.liveBoardPageList(page);
         for(int i = 0; i <liveBoardsPageList.size() ; i++){
             LiveBoard liveBoard = liveBoardsPageList.get(i);
              Files file = new Files();

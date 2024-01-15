@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.joeun.midproject.dto.Comment;
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.PageInfo;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.dto.Ticket;
@@ -50,10 +51,10 @@ public class LiveBoardApiController {
 
     // 페이지 네이션을 이용한 게시글 목록 불러오기
     @GetMapping("/liveBoardPageList")
-    public ResponseEntity<?> liveBoardPageList(Team team) {
+    public ResponseEntity<?> liveBoardPageList(Page page) {
         log.info("[GET] - /liveBoard/liveBoardPageList");
         try {
-            List<LiveBoard> pageListResult = liveBoardService.liveBoardPageList(team);
+            List<LiveBoard> pageListResult = liveBoardService.liveBoardPageList(page);
             return new ResponseEntity<>(pageListResult, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joeun.midproject.dto.BookingRequests;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.mapper.TeamMapper;
 import com.joeun.midproject.service.CommentService;
 import com.joeun.midproject.service.FacilityRentalService;
@@ -35,9 +36,9 @@ public class BookingApiController {
     
     
     @GetMapping("/rreq")
-    public ResponseEntity<List<BookingRequests>> rreqList(String username) {
+    public ResponseEntity<List<BookingRequests>> rreqList(Page page) {
         try {
-            List<BookingRequests> rreqList = facilityRentalService.rreqList(username);
+            List<BookingRequests> rreqList = facilityRentalService.rreqList(page);
             return new ResponseEntity<>(rreqList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -45,10 +46,10 @@ public class BookingApiController {
     }
 
     @GetMapping("/rr")
-    public ResponseEntity<List<BookingRequests>> rrList(String username) {
+    public ResponseEntity<List<BookingRequests>> rrList(Page page) {
 
         try {
-            List<BookingRequests> rrList = facilityRentalService.rrList(username);
+            List<BookingRequests> rrList = facilityRentalService.rrList(page);
             return new ResponseEntity<>(rrList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

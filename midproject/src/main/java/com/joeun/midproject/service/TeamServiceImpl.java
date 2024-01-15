@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.PageInfo;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.mapper.TeamMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TeamServiceImpl implements TeamService{
 
@@ -91,26 +95,30 @@ public class TeamServiceImpl implements TeamService{
   }
 
   @Override
-  public List<Team> pageList(Team team) {
+  public List<Team> pageList(Page page) {
+    PageInfo pageInfo = new PageInfo();
+    pageInfo.setKeyword(page.getKeyword() == null ? "" : page.getKeyword());
+    pageInfo.setSearchType(page.getSearchType());
+    pageInfo.setTable("team_recruitments");
+    page.setTotal(teamMapper.totalCount(pageInfo));
 
-    if(team.getPageNo()!=0){
-    team.setPageNo((team.getPageNo()-1)*team.getRows());
-    }
-    List<Team> teamList = teamMapper.pageList(team);
+    List<Team> teamList = teamMapper.pageList(page);
+
+    log.info(page.toString());
 
     return teamList;
 
   }
 
   @Override
-  public List<Team> listByConfirmedLive2(Team team) {
+  public List<Team> listByConfirmedLive2(Page page) {
 
-    team.setPageNo((team.getPageNo()-1)*team.getRows());
+    page.setTotal(teamMapper.listByConfirmedLive2TotalCount(page));
+    List<Team> teamList = teamMapper.listByConfirmedLive2(page);
 
-    List<Team> teamList = teamMapper.listByConfirmedLive2(team);
+    log.info(page.toString());
 
     return teamList;
-
 
   }
 

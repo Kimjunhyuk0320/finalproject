@@ -1,5 +1,6 @@
 package com.joeun.midproject.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.dto.TeamApp;
 import com.joeun.midproject.dto.Users;
@@ -76,17 +78,24 @@ public class TeamAppServiceImpl implements TeamAppService {
   }
 
   @Override
-  public List<TeamApp> listByLeader(TeamApp teamApp) {
-    System.out.println(teamApp.getUsername());
-    List<TeamApp> listByLider = teamAppMapper.listByLeader(teamApp);
+  public List<TeamApp> listByLeader(Page page) {
+    List<TeamApp> listByLider = new ArrayList<>();
+    try {
+      log.info("페이지 확인"+page.toString());
+      page.setTotal(teamAppMapper.listByLeaderTotalCount(page));
+      listByLider = teamAppMapper.listByLeader(page);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    log.info(page.toString());
     return listByLider;
 
   }
 
   @Override
-  public List<TeamApp> listByMember(TeamApp teamApp) {
-
-    List<TeamApp> listByMember = teamAppMapper.listByMember(teamApp);
+  public List<TeamApp> listByMember(Page page) {
+    page.setTotal(teamAppMapper.listByMemberTotalCount(page));
+    List<TeamApp> listByMember = teamAppMapper.listByMember(page);
 
     return listByMember;
 

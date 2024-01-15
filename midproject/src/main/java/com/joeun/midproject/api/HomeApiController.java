@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.joeun.midproject.dto.FacilityRental;
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.service.FacilityRentalService;
 import com.joeun.midproject.service.LiveBoardService;
@@ -48,25 +49,13 @@ public class HomeApiController {
     // }
 
     @GetMapping("/totalSearch")
-    public ResponseEntity<Map<String, List<?>>> searchPro(Team team) {
+    public ResponseEntity<Map<String, List<?>>> searchPro(Page page) {
         try {
-            team.setSearchType(0);
-            team.setOrder(0);
-            team.setPageNo(0);
-            team.setRows(4);
-            List<LiveBoard> liveBoardList = liveBoardService.liveBoardPageList(team);
+            page.setRows(4);
+            List<LiveBoard> liveBoardList = liveBoardService.liveBoardPageList(page);
+            List<FacilityRental> frList = facilityRentalService.pageFrList(page);
+            List<Team> teamList = teamService.pageList(page);
 
-            team.setSearchType(0);
-            team.setOrder(0);
-            team.setPageNo(0);
-            team.setRows(4);            
-            List<FacilityRental> frList = facilityRentalService.pageFrList(team);
-            List<Team> teamList = teamService.pageList(team);
-
-            team.setSearchType(0);
-            team.setOrder(0);
-            team.setPageNo(0);
-            team.setRows(7);
             Map<String, List<?>> responseMap = new HashMap<>();
             responseMap.put("liveBoardList", liveBoardList);
             responseMap.put("frList", frList);

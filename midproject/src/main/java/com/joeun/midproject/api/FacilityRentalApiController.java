@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.joeun.midproject.dto.BookingRequests;
 import com.joeun.midproject.dto.FacilityRental;
 import com.joeun.midproject.dto.Files;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.PageInfo;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.mapper.TeamMapper;
@@ -63,11 +64,12 @@ public class FacilityRentalApiController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<FacilityRental>> getAll( Team team) {
+    public ResponseEntity<List<FacilityRental>> getAll(Page page) {
         try {
-            List<FacilityRental> pageListResult = facilityRentalService.pageFrList(team);
+            List<FacilityRental> pageListResult = facilityRentalService.pageFrList(page);
             return new ResponseEntity<>(pageListResult, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

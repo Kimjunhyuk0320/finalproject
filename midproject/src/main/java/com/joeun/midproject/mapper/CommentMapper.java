@@ -5,15 +5,16 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.joeun.midproject.dto.Comment;
+import com.joeun.midproject.dto.Page;
 
 @Mapper
 public interface CommentMapper {
 
-  public List<Comment> commentList(Comment comment);
+  public List<Comment> commentList(Page page);
 
   public Comment select(Integer commentNo);
 
-  public int totalCount(Comment comment);
+  public int totalCount(Page page);
 
   public int commentInsert(Comment comment);
 

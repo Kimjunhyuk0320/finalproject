@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.PageInfo;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.mapper.TeamMapper;
@@ -48,10 +49,10 @@ public class TeamApiController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Team>> getAll( Team team) {
+    public ResponseEntity<List<Team>> getAll(Page page) {
         log.info("this is /api/team");
         try {
-            List<Team> teamList = teamService.pageList(team);
+            List<Team> teamList = teamService.pageList(page);
             log.info(teamList.toString());
             return new ResponseEntity<>(teamList, HttpStatus.OK);
         } catch (Exception e) {

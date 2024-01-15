@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.joeun.midproject.dto.BookingRequests;
 import com.joeun.midproject.dto.FacilityRental;
 import com.joeun.midproject.dto.Files;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.mapper.BookingRequestsMapper;
 import com.joeun.midproject.mapper.FacilityRentalMapper;
@@ -246,10 +247,12 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
     }
 
     @Override
-    public List<BookingRequests> rrList(String username) throws Exception {
+    public List<BookingRequests> rrList(Page page) throws Exception {
 
-        List<BookingRequests> rrList = bookingRequestsMapper.rentalList(username);
 
+        page.setTotal(bookingRequestsMapper.rentalListTotalCount(page));
+        List<BookingRequests> rrList = bookingRequestsMapper.rentalList(page);
+        log.info(page.toString());
         return rrList;
 
     }
@@ -266,9 +269,10 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
     }
 
     @Override
-    public List<BookingRequests> rreqList(String username) throws Exception {
+    public List<BookingRequests> rreqList(Page page) throws Exception {
 
-        List<BookingRequests> rreqList = bookingRequestsMapper.rreqList(username);
+        page.setTotal(bookingRequestsMapper.rreqListTotalCount(page));
+        List<BookingRequests> rreqList = bookingRequestsMapper.rreqList(page);
 
         return rreqList;
     }
@@ -449,12 +453,10 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
     }
 
     @Override
-    public List<FacilityRental> pageFrList(Team team) throws Exception {
-        if(team.getPageNo()!=0){
-        team.setPageNo((team.getPageNo()-1)*team.getRows());
-        }
+    public List<FacilityRental> pageFrList(Page page) throws Exception {
+        page.setTotal(facilityRentalMapper.pageFrListTotalCount(page));
         List<FacilityRental> pageFrList = facilityRentalMapper.pageFrList
-        (team);
+        (page);
 
         for (FacilityRental facilityRental : pageFrList) {
             Files files = new Files();

@@ -3,6 +3,7 @@ package com.joeun.midproject.service;
 import java.util.List;
 
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 import com.joeun.midproject.dto.Ticket;
 
@@ -23,7 +24,7 @@ public interface LiveBoardService {
     // 게시글 목록 조회
     public List<LiveBoard> list() throws Exception;
 
-    public List<LiveBoard> liveBoardPageList(Team team) throws Exception;
+    public List<LiveBoard> liveBoardPageList(Page page) throws Exception;
     
     // 매진으로 변경
     public int soldOut(int boardNo) throws Exception;

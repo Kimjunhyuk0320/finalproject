@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.joeun.midproject.dto.Comment;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.mapper.CommentMapper;
 
 @Service
@@ -16,11 +17,12 @@ public class CommentServiceImpl implements CommentService{
   private CommentMapper commentMapper;
 
   @Override
-  public List<Comment> commentList(Comment comment) {
+  public List<Comment> commentList(Page page) {
 
-    List<Comment> commentList = commentMapper.commentList(comment);
+    page.setTotal(commentMapper.totalCount(page));
+    List<Comment> commentList = commentMapper.commentList(page);
     if(!commentList.isEmpty()){
-      commentList.get(0).setTotalCount(commentMapper.totalCount(comment));
+      commentList.get(0).setTotalCount(commentMapper.totalCount(page));
     }
 
     return commentList;

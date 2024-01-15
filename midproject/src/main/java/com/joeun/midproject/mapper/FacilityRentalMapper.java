@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.joeun.midproject.dto.FacilityRental;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 
 @Mapper
@@ -13,8 +14,12 @@ public interface FacilityRentalMapper {
     // 게시글 목록
     public List<FacilityRental> list() throws Exception;
 
+    //페이지네이션 게시글 조회 카운트
+    public int pageFrListTotalCount(Page page) throws Exception;
+
     //페이지네이션 게시글 조회
-    public List<FacilityRental> pageFrList(Team team) throws Exception;
+    public List<FacilityRental> pageFrList(Page page) throws Exception;
+    
     // 게시글 조회
     public FacilityRental select(int frNo) throws Exception;
 

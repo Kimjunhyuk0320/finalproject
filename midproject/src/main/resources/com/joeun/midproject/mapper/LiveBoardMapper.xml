@@ -6,14 +6,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!-- namespace="매퍼 인터페이스 경로" -->
 <mapper namespace="com.joeun.midproject.mapper.LiveBoardMapper">
 
-     <!-- 게시글 목록 -->
+    <!-- 게시글 목록 -->
     <select id="list" resultType="LiveBoard">
         SELECT *
         FROM live_board
         ORDER BY upd_date DESC, board_no DESC
     </select>
 
-     <!-- 게시글 목록(페이징) -->
+    <select id="liveBoardPageListTotalCount">
+    SELECT COUNT(*)
+    FROM live_board
+    </select>
+
+    <!-- 게시글 목록(페이징) -->
     <select id="liveBoardPageList" resultType="LiveBoard">
         SELECT *
         FROM live_board
@@ -31,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="order == 1">upd_date ASC</when>
             <when test="order == 2">price DESC</when>
         </choose>
-    LIMIT #{pageNo}, #{rows};
+    LIMIT #{index}, #{rows};
     </select>
 
     <!-- 게시글 등록 -->
@@ -50,9 +55,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM live_board
         WHERE board_no = #{boardNo}
     </select>
-    
+
     <!-- 게시글 수정 -->
-	<update id="update">
+    <update id="update">
         UPDATE live_board
         SET 
            title =  #{title},
@@ -87,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE board_no = #{boardNo}
     </update>
 
-   <!-- 게시글 번호 최댓값 -->
+    <!-- 게시글 번호 최댓값 -->
     <select id="maxPk" resultType="int">
         SELECT MAX(board_no)
         FROM live_board

@@ -17,6 +17,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 클럽 대관 목록 -->
     
+    <select id="rentalListTotalCount">
+        SELECT COUNT(*)
+        FROM booking_requests AS b
+        JOIN facility_rental AS f ON(b.fr_no = f.fr_no)
+        JOIN `user` AS u ON(b.username = u.username)
+        WHERE f.username = #{username}
+        ORDER BY b.upd_date DESC
+    </select>
     <select id="rentalList" resultType="BookingRequests">
         SELECT b.br_no AS brNo,
         b.phone AS phone,
@@ -31,9 +39,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN `user` AS u ON(b.username = u.username)
         WHERE f.username = #{username}
         ORDER BY b.upd_date DESC
+        LIMIT #{index}, #{rows}
     </select>
 
 
+
+    <!-- 유저 예약 목록 -->
+    <select id="rreqListTotalCount">
+    SELECT COUNT(*)
+    FROM booking_requests AS b
+    JOIN facility_rental AS f ON (b.fr_no = f.fr_no)
+    JOIN user AS u ON (f.username = u.username)
+    WHERE b.username = #{username}
+    </select>
 
     <!-- 유저 예약 목록 -->
     <select id="rreqList" resultType="BookingRequests">
@@ -51,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN user AS u ON (f.username = u.username)
         WHERE b.username = #{username}
         ORDER BY b.upd_date DESC
-        
+        LIMIT #{index}, #{rows}
     </select>
 
     <!-- 예약신청 -->

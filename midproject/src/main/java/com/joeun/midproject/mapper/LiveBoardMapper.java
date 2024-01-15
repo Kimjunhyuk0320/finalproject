@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.joeun.midproject.dto.LiveBoard;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 
 @Mapper
@@ -25,8 +26,11 @@ public interface LiveBoardMapper {
     // 게시글 목록 조회
     public List<LiveBoard> list() throws Exception;
 
+    // 게시글 목록 조회(paging) 카운트
+    public int liveBoardPageListTotalCount(Page page) throws Exception;
+
     // 게시글 목록 조회(paging)
-    public List<LiveBoard> liveBoardPageList(Team team) throws Exception;
+    public List<LiveBoard> liveBoardPageList(Page page) throws Exception;
     
     // 매진으로 변경
     public int soldOut(int boardNo);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.joeun.midproject.dto.BookingRequests;
 import com.joeun.midproject.dto.FacilityRental;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
 
 
@@ -11,14 +12,14 @@ public interface FacilityRentalService {
     // 게시글 목록
     public List<FacilityRental> list() throws Exception;
 
-    //페이지네이션 게시글 조회
-    public List<FacilityRental> pageFrList(Team team) throws Exception;
+        //페이지네이션 게시글 조회
+    public List<FacilityRental> pageFrList(Page page) throws Exception;
 
     // 받은 대관 신청 조회
-    public List<BookingRequests> rrList(String username) throws Exception;
+    public List<BookingRequests> rrList(Page page) throws Exception;
 
     // 내가 신청한 예약 조회
-    public List<BookingRequests> rreqList(String username) throws Exception;
+    public List<BookingRequests> rreqList(Page page) throws Exception;
 
     // 게시글 조회
     public FacilityRental select(int FacilityRental) throws Exception;

@@ -7,15 +7,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.joeun.midproject.mapper.TeamAppMapper">
 
 
+  <select id="listByLeaderTotalCount">
+    SELECT COUNT(*)
+    FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no)
+    WHERE
+    t.username = #{username}
+  </select>
+
+  <select id="listByMemberTotalCount">
+   SELECT COUNT(*)
+    FROM `team_applications` AS a JOIN `team_recruitments` AS t ON (a.team_no = t.team_no) 
+    WHERE a.username = #{username} 
+  </select>
+
   <select id="listByLeader" resultType="TeamApp">
 
-    SELECT a.* FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no) WHERE t.username = #{username} ORDER BY upd_date DESC
+    <!-- SELECT a.* FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no) WHERE t.username = #{username} ORDER BY upd_date DESC -->
 
+    SELECT a.*
+   FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no)
+   WHERE
+   t.username = #{username}
+    ORDER BY DATE(a.upd_date) DESC, a.deposit_status DESC, 
+         CASE 
+           WHEN a.approval_status = 1 THEN 1 
+           WHEN a.approval_status = 0 THEN 2 
+           WHEN a.approval_status = 2 THEN 3 
+         END
+    LIMIT #{index}, #{rows};
   </select>
 
   <select id="listByMember" resultType="TeamApp">
     
-    SELECT a.*,t.title AS teamTitle FROM `team_applications` AS a JOIN `team_recruitments` AS t ON (a.team_no = t.team_no) WHERE a.username = #{username} ORDER BY upd_date DESC
+    SELECT a.*,t.title AS teamTitle 
+    FROM `team_applications` AS a JOIN `team_recruitments` AS t ON (a.team_no = t.team_no) 
+    WHERE a.username = #{username} 
+    ORDER BY upd_date DESC
+    LIMIT #{index}, #{rows}
 
   </select>
 
@@ -79,11 +107,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   UPDATE `team_applications` SET deposit_status = 1 WHERE app_no = #{appNo}
   
   </update>
-  
+
   <update id="deniedAll">
 
   UPDATE `team_applications` SET approval_status = 2 WHERE deposit_status
-   <![CDATA[ <> ]]> 1 AND team_no = #{teamNo}
+       <![CDATA[ <> ]]> 1 AND team_no = #{teamNo}
   
   
   </update>

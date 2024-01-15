@@ -13,13 +13,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY upd_date DESC
     </select>
 
-<parameterMap type="Team" id="teamMap">
-    <parameter property="pageNo" jdbcType="INTEGER" javaType="java.lang.Integer" mode="IN"/>
-    <parameter property="rows" jdbcType="INTEGER" javaType="java.lang.Integer" mode="IN"/>
-</parameterMap>
+   
+    <select id="pageFrListTotalCount">
+    SELECT COUNT(*)
+    FROM facility_rental
+    </select>
 
-
-    <select id="pageFrList" resultType="FacilityRental" parameterMap="teamMap">
+    <select id="pageFrList" resultType="FacilityRental">
   
   SELECT *
   FROM facility_rental
@@ -37,8 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="order == 1">title DESC</when>
             <when test="order == 2">views DESC</when>
         </choose>
-    LIMIT #{pageNo}, #{rows};
-  </select>
+    LIMIT #{index}, #{rows};
+    </select>
 
     <!-- 게시글 조회 -->
     <select id="select" resultType="FacilityRental">

@@ -91,10 +91,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE team_no = #{teamNo}
     </if>
     <if test="recStatus != 0">
-    WHERE 1<![CDATA[ <> ]]>1
+    WHERE 1      <![CDATA[ <> ]]>1
     </if>
 
-    </delete>
+  </delete>
 
   <select id="listByConfirmedLive" resultType="Team">
   
@@ -107,39 +107,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
   </select>
 
-<select id="totalCount">
+  <select id="totalCount">
 
-<choose>
-<when test="table == 'confirmed_live'">
+    <choose>
+      <when test="table == 'confirmed_live'">
 SELECT
 COUNT(t.team_no)
 FROM confirmed_live AS l
 JOIN team_recruitments t
 ON (l.team_no = t.team_no AND t.username = #{username})
-</when>
+      </when>
 
-<otherwise>
+      <otherwise>
 SELECT
 COUNT(*)
 FROM ${table}
-WHERE
-        <choose>
-            <when test="searchType == 0">(title LIKE "%${keyword}%" OR content LIKE "%${keyword}%" OR writer LIKE "%${keyword}%") </when>
-            <when test="searchType == 1">title LIKE "%${keyword}%"</when>
-            <when test="searchType == 2">content LIKE "%${keyword}%"</when>
-            <when test="searchType == 3">(title LIKE "%${keyword}%" OR content LIKE "%${keyword}%")</when>
-            <when test="searchType == 4">writer LIKE "%${keyword}%"</when>
-        </choose>
+
+      </otherwise>
+    </choose>
+  </select>
 
 
-</otherwise>
-</choose>
-</select>
-
-
-<!-- Get page information and paged items -->
-<select id="pageInfo" resultType="PageInfo">
-<![CDATA[
+  <!-- Get page information and paged items -->
+  <select id="pageInfo" resultType="PageInfo">
+    <![CDATA[
   SELECT
 
             IF(CEIL(#{pageNo} / #{pageCount}) = 1, 1, (CEIL(#{pageNo} / #{pageCount}) - 1) * #{pageCount} + 1) AS startPage,
@@ -163,12 +154,8 @@ WHERE
             #{totalCount} AS totalCount
   
   ]]>
-</select>
+  </select>
 
-<parameterMap type="Team" id="teamMap">
-    <parameter property="pageNo" jdbcType="INTEGER" javaType="java.lang.Integer" mode="IN"/>
-    <parameter property="rows" jdbcType="INTEGER" javaType="java.lang.Integer" mode="IN"/>
-</parameterMap>
 
 
   <select id="pageList" resultType="Team" parameterMap="teamMap">
@@ -177,24 +164,39 @@ WHERE
    FROM team_recruitments AS t LEFT JOIN team_applications AS a
     ON (t.team_no = a.team_no AND a.deposit_status = 1)
    WHERE
-        <choose>
-            <when test="searchType == 0">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%" OR t.writer LIKE "%${keyword}%") </when>
-            <when test="searchType == 1">t.title LIKE "%${keyword}%"</when>
-            <when test="searchType == 2">t.content LIKE "%${keyword}%"</when>
-            <when test="searchType == 3">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%")</when>
-            <when test="searchType == 4">t.writer LIKE "%${keyword}%"</when>
-        </choose>
+    <choose>
+      <when test="searchType == 0">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%" OR t.writer LIKE "%${keyword}%") </when>
+      <when test="searchType == 1">t.title LIKE "%${keyword}%"</when>
+      <when test="searchType == 2">t.content LIKE "%${keyword}%"</when>
+      <when test="searchType == 3">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%")</when>
+      <when test="searchType == 4">t.writer LIKE "%${keyword}%"</when>
+    </choose>
          GROUP BY t.team_no
     ORDER BY 
-        <choose>
-            <when test="order == 0">t.upd_date DESC</when>
-            <when test="order == 1">t.title DESC</when>
-            <when test="order == 2">t.views DESC</when>
-        </choose>
-    LIMIT #{pageNo}, #{rows};
+    <choose>
+      <when test="order == 0">t.upd_date DESC</when>
+      <when test="order == 1">t.title DESC</when>
+      <when test="order == 2">t.views DESC</when>
+    </choose>
+    LIMIT #{index}, #{rows};
   </select>
 
-   <select id="listByConfirmedLive2" resultType="Team" parameterMap="teamMap">
+  <select id="listByConfirmedLive2TotalCount">
+    SELECT COUNT(*)
+    FROM `team_recruitments` AS t
+    JOIN `confirmed_live` AS c
+    ON (t.team_no = c.team_no)
+    WHERE (t.username = #{username} 
+    OR 
+    #{username} IN 
+    (SELECT a.username 
+    FROM team_recruitments AS t 
+    JOIN team_applications AS a 
+    ON (t.team_no = a.team_no)))
+  
+  </select>
+
+  <select id="listByConfirmedLive2" resultType="Team">
   
   SELECT t.*, c.crew AS crew, c.upd_date AS confirmedDate
    FROM `team_recruitments` AS t
@@ -204,25 +206,11 @@ WHERE
    OR 
    #{username} IN 
    (SELECT a.username 
-   FROM team_recruitments AS t 
-   JOIN team_applications AS a 
+   FROM team_recruitments AS t
+   JOIN team_applications AS a
    ON (t.team_no = a.team_no)))
-   
-   AND
-        <choose>
-            <when test="searchType == 0">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%" OR t.writer LIKE "%${keyword}%") </when>
-            <when test="searchType == 1">t.title LIKE "%${keyword}%"</when>
-            <when test="searchType == 2">t.content LIKE "%${keyword}%"</when>
-            <when test="searchType == 3">(t.title LIKE "%${keyword}%" OR t.content LIKE "%${keyword}%")</when>
-            <when test="searchType == 4">t.writer LIKE "%${keyword}%"</when>
-        </choose>
-    ORDER BY 
-        <choose>
-            <when test="order == 0">t.upd_date DESC</when>
-            <when test="order == 1">t.title DESC</when>
-            <when test="order == 2">t.views DESC</when>
-        </choose>
-    LIMIT #{pageNo}, #{rows};
+   ORDER BY c.upd_date DESC
+   LIMIT #{index}, #{rows};
   </select>
 
 

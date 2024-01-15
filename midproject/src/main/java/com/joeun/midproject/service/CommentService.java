@@ -3,11 +3,12 @@ package com.joeun.midproject.service;
 import java.util.List;
 
 import com.joeun.midproject.dto.Comment;
+import com.joeun.midproject.dto.Page;
 
 
 public interface CommentService {
   
-  public List<Comment> commentList(Comment comment);
+  public List<Comment> commentList(Page page);
 
   public int commentInsert(Comment comment);
 

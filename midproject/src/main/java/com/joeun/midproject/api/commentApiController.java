@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joeun.midproject.dto.Comment;
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.mapper.CommentMapper;
 import com.joeun.midproject.service.CommentService;
 
@@ -35,10 +36,10 @@ public class commentApiController {
     private CommentMapper commentMapper;
 
     @GetMapping()
-    public ResponseEntity<?> getAll(Comment comment) {
+    public ResponseEntity<?> getAll(Page page) {
         
         try {
-            List<Comment>commentList = commentService.commentList(comment);
+            List<Comment>commentList = commentService.commentList(page);
             return new ResponseEntity<List<Comment>>(commentList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

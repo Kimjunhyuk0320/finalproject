@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.TeamApp;
 
 @Mapper
@@ -12,9 +13,13 @@ public interface TeamAppMapper {
   
   public int insert(TeamApp teamApp);
   
-  public List<TeamApp> listByLeader(TeamApp teamApp);
+  public int listByLeaderTotalCount(Page page);
+  
+  public List<TeamApp> listByLeader(Page page);
 
-  public List<TeamApp> listByMember(TeamApp teamApp);
+  public int listByMemberTotalCount(Page page);
+
+  public List<TeamApp> listByMember(Page page);
 
   public int delete(TeamApp teamApp);
 
