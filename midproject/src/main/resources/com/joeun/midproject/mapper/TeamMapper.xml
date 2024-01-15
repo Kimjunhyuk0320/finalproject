@@ -158,7 +158,7 @@ FROM ${table}
 
 
 
-  <select id="pageList" resultType="Team" parameterMap="teamMap">
+  <select id="pageList" resultType="Team">
   
   SELECT t.*,count(a.team_no) AS recStatus
    FROM team_recruitments AS t LEFT JOIN team_applications AS a
