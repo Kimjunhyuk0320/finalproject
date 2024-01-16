@@ -21,6 +21,9 @@ class _TeamListScreenState extends State<TeamListScreen> {
   int _rows = 4;
   //스크롤 컨트롤러
   final ScrollController _infContoller = ScrollController();
+  //키워드 컨트롤러
+  final TextEditingController _keywordController =
+      TextEditingController(text: '');
 
   @override
   void initState() {
@@ -35,7 +38,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
 
   Future getTeamList() async {
     var teamListURL =
-        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}';
+        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}&keyword=${_keywordController.text}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -94,6 +97,73 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 ),
               ),
               Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '공연장소와 찾는 밴드를 검색해보세요',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(18.0)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 0.0),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 0.0),
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            child: Align(
+                              alignment: Alignment.center, // 아이콘을 아래로 정렬
+                              child: Icon(Icons.search),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 0.0),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 0.0),
+                            width: MediaQuery.of(context).size.width * 0.65,
+                            child: TextField(
+                              controller: _keywordController,
+                              decoration: InputDecoration(
+                                hintText: '소란',
+                                contentPadding: EdgeInsets.only(
+                                  bottom: 0.0,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              onSubmitted: (value) {
+                                setState(() {
+                                  _page = 1;
+                                  _teamList = [];
+                                  getTeamList();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -102,9 +172,43 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     if (index < _teamList.length) {
                       final item = _teamList[index];
                       return Container(
-                        height: 400.0,
+                        margin: EdgeInsets.only(bottom: 20.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1.0,
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(18.0)),
+                        height: 130.0,
                         child: ListTile(
-                          title: Text(item['title']),
+                          title: Row(
+                            children: [
+                              Text(
+                                '(${item['location']})',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              Text(
+                                '  ${item['title']}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
+                              Text('장소 : ${item['address']}'),
+                              Text(
+                                  '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                            ],
+                          ),
                         ),
                       );
                     } else if (_pageObject['last'] != null &&
