@@ -1,7 +1,9 @@
 package com.joeun.midproject.api;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,21 +38,27 @@ public class BookingApiController {
     
     
     @GetMapping("/rreq")
-    public ResponseEntity<List<BookingRequests>> rreqList(Page page) {
+    public ResponseEntity<Map<String,Object>> rreqList(Page page) {
         try {
             List<BookingRequests> rreqList = facilityRentalService.rreqList(page);
-            return new ResponseEntity<>(rreqList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", rreqList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/rr")
-    public ResponseEntity<List<BookingRequests>> rrList(Page page) {
+    public ResponseEntity<Map<String,Object>> rrList(Page page) {
 
         try {
             List<BookingRequests> rrList = facilityRentalService.rrList(page);
-            return new ResponseEntity<>(rrList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", rrList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

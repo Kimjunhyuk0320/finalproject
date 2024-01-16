@@ -40,7 +40,10 @@ public class commentApiController {
         
         try {
             List<Comment>commentList = commentService.commentList(page);
-            return new ResponseEntity<List<Comment>>(commentList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", commentList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

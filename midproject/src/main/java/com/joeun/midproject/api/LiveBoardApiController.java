@@ -55,7 +55,10 @@ public class LiveBoardApiController {
         log.info("[GET] - /liveBoard/liveBoardPageList");
         try {
             List<LiveBoard> pageListResult = liveBoardService.liveBoardPageList(page);
-            return new ResponseEntity<>(pageListResult, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", pageListResult);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

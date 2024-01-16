@@ -1,6 +1,8 @@
 package com.joeun.midproject.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,12 +51,15 @@ public class TeamApiController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Team>> getAll(Page page) {
+    public ResponseEntity<Map<String,Object>> getAll(Page page) {
         log.info("this is /api/team");
         try {
             List<Team> teamList = teamService.pageList(page);
             log.info(teamList.toString());
-            return new ResponseEntity<>(teamList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", teamList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

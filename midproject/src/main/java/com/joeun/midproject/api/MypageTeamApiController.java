@@ -1,7 +1,9 @@
 package com.joeun.midproject.api;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,23 +45,29 @@ public class MypageTeamApiController {
 
 
     @GetMapping("/listByLeader")
-    public ResponseEntity<List<TeamApp>> listByLeader( Page page, Principal principal) {
+    public ResponseEntity<Map<String,Object>> listByLeader( Page page, Principal principal) {
 
         try {
             // teamApp.setUsername(principal.getName());
             List<TeamApp> teamAppList = teamAppService.listByLeader(page);
-            return new ResponseEntity<>(teamAppList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", teamAppList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/listByMember")
-    public ResponseEntity<List<TeamApp>> listByMember(Page page, Principal principal) {
+    public ResponseEntity<Map<String,Object>> listByMember(Page page, Principal principal) {
 
         try {
             List<TeamApp> teamAppList = teamAppService.listByMember(page);
-            return new ResponseEntity<>(teamAppList, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", teamAppList);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -82,11 +90,14 @@ public class MypageTeamApiController {
     }
 
     @GetMapping("/confirmedLiveList")
-    public ResponseEntity<List<Team>> confirmedLiveList(Page page) {
+    public ResponseEntity<Map<String,Object>> confirmedLiveList(Page page) {
         
         try {
             List<Team> pageListResult = teamService.listByConfirmedLive2(page);
-            return new ResponseEntity<>(pageListResult, HttpStatus.OK);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data", pageListResult);
+            map.put("page", page);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
