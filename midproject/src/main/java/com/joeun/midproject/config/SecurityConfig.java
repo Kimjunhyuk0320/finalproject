@@ -1,7 +1,5 @@
 package com.joeun.midproject.config;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.joeun.midproject.security.CustomUserDetailService;
 import com.joeun.midproject.security.jwt.filter.JwtAuthenticationFilter;
@@ -24,68 +25,76 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
+public class SecurityConfig {
 
-	@Autowired
-	private CustomUserDetailService customUserDetailService;
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
 
-    @Autowired 
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     private AuthenticationManager authenticationManager;
 
     @Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
-		return authenticationManager;
-	}
+        return authenticationManager;
+    }
 
     @Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://10.0.2.16:*"); // 모든 오리진 허용, 실제 운영환경에서는 '*' 대신 특정 도메인을 명시적으로 허용하는 것이 안전
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("securityFilterChain...");
         // // 폼 기반 로그인 비활성화
-        http.formLogin( login -> login.disable() );
+        http.formLogin(login -> login.disable());
 
         // // HTTP 기본 인증 비활성화
-        http.httpBasic( basic -> basic.disable() );
+        http.httpBasic(basic -> basic.disable());
 
         // CSRF(Cross-Site Request Forgery) 공격 방어 기능 비활성화
-        http.csrf( csrf -> csrf.disable() );
+        http.cors().and().csrf(csrf -> csrf.disable());
 
         // 필터 설정
-        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JwtRequestFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-            ;
+        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtRequestFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         // http.authorizeHttpRequests( authorizeRequests ->
-        //                                 authorizeRequests
-        //                                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-        //                                     .requestMatchers("/").permitAll()
-        //                                     .requestMatchers("/login").permitAll()
-        //                                     .requestMatchers("/users").permitAll()
-        //                                     .requestMatchers("/users/**").permitAll()
-        //                                     .requestMatchers("/admin/**").hasRole("ADMIN")
-        //                                     .anyRequest().authenticated() )
-        //                                     ;
-        http.authorizeHttpRequests( authorizeRequests -> authorizeRequests
-                                                            .antMatchers("/**").permitAll() 
-                                                            // .anyRequest().authenticated()
-                                                );
-										
+        // authorizeRequests
+        // .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+        // .requestMatchers("/").permitAll()
+        // .requestMatchers("/login").permitAll()
+        // .requestMatchers("/users").permitAll()
+        // .requestMatchers("/users/**").permitAll()
+        // .requestMatchers("/admin/**").hasRole("ADMIN")
+        // .anyRequest().authenticated() )
+        // ;
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .antMatchers("/**").permitAll()
+        // .anyRequest().authenticated()
+        );
+
         http.userDetailsService(customUserDetailService);
 
-		return http.build();
-	}
-
+        return http.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-	
-
-	
 
 }
