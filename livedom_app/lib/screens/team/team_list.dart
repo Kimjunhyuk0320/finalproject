@@ -14,7 +14,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
   //팀 리스트 state
   List _teamList = [];
 
-  List newData = [];
+  var _pageObject = {};
+
   //페이지 정보 state
   int _page = 1;
   int _rows = 4;
@@ -24,8 +25,9 @@ class _TeamListScreenState extends State<TeamListScreen> {
   @override
   void initState() {
     super.initState();
+    getTeamList();
     _infContoller.addListener(() async {
-      if (_infContoller.position.maxScrollExtent < _infContoller.offset + 100) {
+      if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
         getTeamList();
       }
     });
@@ -38,58 +40,93 @@ class _TeamListScreenState extends State<TeamListScreen> {
     //응답
     var teamListResponse = await http.get(parsedURI);
 
-    //UTF - 8 디코딩
-    var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
+    if (teamListResponse.statusCode == 200) {
+      //UTF - 8 디코딩
+      var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
 
-    //JSON 디코딩
-    var teamListJSON = jsonDecode(teamListDecoded);
+      //JSON 디코딩
+      var teamListJSON = jsonDecode(teamListDecoded);
 
-    final List tempTeamList = teamListJSON;
+      final List tempTeamList = teamListJSON['data'];
+      _pageObject = teamListJSON['page'];
+      if (_pageObject['page'] > _pageObject['last']) {
+        return;
+      }
 
-    setState(() {
-      _teamList.addAll(tempTeamList);
-    });
+      setState(() {
+        _page++;
+        _teamList.addAll(tempTeamList);
+      });
+    }
   }
+
+  //클릭 시 Navigator.push롣 데이터 넘겨주기 - 라우터버전
+  //Navigator.pushNamed(context, "/team", arguments: 'user');
+
+  // 데이터 가져오기
+  // String? data = ModalRoute.of(context)?.settings.arguments as String?;
+
+  //클릭 시 Navigator.push롣 데이터 넘겨주기 - 정적버전
+  // Navigator.push(context,MaterialPageRoute(builder: (context) => ReadScreen(board: _boardList[index])));
+  //데이터 가져오기
+  // final team;
+  // const ReadScreen({super.key, required this.team});
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('공연 팀 모집'),
-    //   ),
-    //   body: Column(
-    //     children: [
-    //       ElevatedButton(
-    //         child: Text("home"),
-    //         style: ElevatedButton.styleFrom(
-    //           backgroundColor: Colors.black,
-    //           foregroundColor: Colors.white,
-    //           shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.circular(10.0)
-    //           ),
-    //           elevation: 5
-    //         ),
-    //         onPressed: () async {
-    //           Navigator.pushReplacementNamed(context, '/');
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Infinity Scroll'),
-      ),
-      body: ListView.builder(
-        controller: _infContoller,
-        padding: EdgeInsets.all(8),
-        itemBuilder: (context, index) {
-          final item = _teamList[index];
-          return ListTile(
-            title: Text(item.title),
-          );
-        },
-        itemCount: _teamList.length,
+      body: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+          controller: _infContoller,
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('images/teamListBanner.png'),
+                    fit: BoxFit.cover,
+                    alignment: FractionalOffset(0.5, 0.8),
+                  ),
+                ),
+              ),
+              Container(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(8),
+                  itemBuilder: (context, index) {
+                    if (index < _teamList.length) {
+                      final item = _teamList[index];
+                      return Container(
+                        height: 400.0,
+                        child: ListTile(
+                          title: Text(item['title']),
+                        ),
+                      );
+                    } else if (_pageObject['last'] != null &&
+                        _page > 2 &&
+                        _pageObject['last'] > _page) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      // 기본적인 위젯 반환
+                      return Container();
+                    }
+                  },
+                  itemCount: _teamList.length + 1,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
