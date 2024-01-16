@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
+import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
 
         // liveboard
         '/liveboard': (context) => LiveBoardListScreen(),
+        '/liveboard/read': (context) => LiveBoardReadScreen(),
 
         // mypage
         '/mypage': (context) => MyPageScreen(),

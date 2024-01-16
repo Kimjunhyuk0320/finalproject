@@ -35,6 +35,9 @@ public class LiveBoardServiceImpl implements LiveBoardService{
     TicketMapper ticketMapper;
 
     @Autowired
+    TempTicketService tempTicketService;
+
+    @Autowired
     private FileMapper fileMapper;
 
     @Autowired
@@ -288,6 +291,11 @@ public class LiveBoardServiceImpl implements LiveBoardService{
             file.setParentNo(liveBoard.getBoardNo());
             file = fileMapper.selectThumbnail(file);
             liveBoard.setThumbnail(file);
+            int boardNo = liveBoard.getBoardNo();
+            int totalTicketCount = select(boardNo).getMaxTickets();
+            int purchaseTicketCount = tempTicketService.listByBoardNo(boardNo);
+            int ticketLeft = totalTicketCount - purchaseTicketCount;
+            liveBoard.setTicketLeft(ticketLeft);
         }
         return liveBoardsPageList;
 
