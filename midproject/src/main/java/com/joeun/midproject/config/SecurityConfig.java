@@ -43,7 +43,6 @@ public class SecurityConfig  {
     @Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("securityFilterChain...");
-
         // // 폼 기반 로그인 비활성화
         http.formLogin( login -> login.disable() );
 
