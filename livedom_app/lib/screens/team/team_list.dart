@@ -95,6 +95,17 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
+                child: Align(
+                  alignment: FractionalOffset(0.5, 0.1),
+                  child: Text(
+                    '팀 모집',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 34.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
               Container(
                 width: double.infinity,
@@ -171,43 +182,52 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   itemBuilder: (context, index) {
                     if (index < _teamList.length) {
                       final item = _teamList[index];
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 20.0),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1.0,
-                              color: Colors.black12,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/team/read',
+                            arguments: item,
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 20.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1.0,
+                                color: Colors.black12,
+                              ),
+                              borderRadius: BorderRadius.circular(18.0)),
+                          height: 130.0,
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Text(
+                                  '(${item['location']})',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                Text(
+                                  '  ${item['title']}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(18.0)),
-                        height: 130.0,
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Text(
-                                '(${item['location']})',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                              Text(
-                                '  ${item['title']}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
-                              Text('장소 : ${item['address']}'),
-                              Text(
-                                  '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
-                            ],
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
+                                Text('장소 : ${item['address']}'),
+                                Text(
+                                    '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                              ],
+                            ),
                           ),
                         ),
                       );
