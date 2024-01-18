@@ -6,27 +6,23 @@ import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-class TeamUpdateScreen extends StatefulWidget {
-  const TeamUpdateScreen({super.key});
+class TeamInsertScreen extends StatefulWidget {
+  const TeamInsertScreen({super.key});
 
   @override
-  State<TeamUpdateScreen> createState() => _TeamUpdateScreenState();
+  State<TeamInsertScreen> createState() => _TeamInsertScreenState();
 }
 
-class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
+class _TeamInsertScreenState extends State<TeamInsertScreen> {
   final TextEditingController _titleController =
       TextEditingController(text: '');
   String _capacity = '1';
   final TextEditingController _dateController = TextEditingController(
       text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
-
-  final TextEditingController _stTimeController = TextEditingController(
-      text:
-          '');
-  final TextEditingController _endTimeController = TextEditingController(
-      text:
-          '');
-
+  final TextEditingController _stTimeController =
+      TextEditingController(text: '00:00');
+  final TextEditingController _endTimeController =
+      TextEditingController(text: '00:00');
   String _location = '경기';
   final TextEditingController _addressController =
       TextEditingController(text: '');
@@ -38,11 +34,12 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   final TextEditingController _contentController =
       TextEditingController(text: '');
 
-  Future<String> submit(team, user) async {
+  Future<String> submit(user) async {
     print('submit함수 진입');
     final url = 'http://10.0.2.2:8080/api/team';
     final parsedUrl = Uri.parse(url);
     final body = json.encode({
+      'username': user.userInfo['username'],
       'title': _titleController.text,
       'writer': user.userInfo['nickname'],
       'content': _contentController.text,
@@ -55,13 +52,12 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
       'capacity': _capacity,
       'account1': _account,
       'account2': _accountController.text,
-      'teamNo': team['teamNo'],
     });
     final headers = {
       'Content-Type': 'application/json',
     };
     print('submit함수 요청 직전');
-    var result = await http.put(
+    var result = await http.post(
       parsedUrl,
       headers: headers,
       body: body,
@@ -76,31 +72,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    //초기 세팅을 해줍시다.
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      final Map team = ModalRoute.of(context)?.settings.arguments as Map;
-      // team 데이터를 처리합니다.
-      setState(() {
-        _titleController.text = team['title'];
-        _capacity = '${team['capacity']}';
-        _dateController.text = team['liveDate'];
-        _stTimeController.text = team['liveStTime'];
-        _endTimeController.text = team['liveEndTime'];
-        _location = team['location'];
-        _addressController.text = team['address'];
-        _account = team['account'].split('/')[0];
-        _accountController.text = team['account'].split('/')[1];
-        _priceController.text = '${team['price']}';
-        _contentController.text = team['content'];
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final Map team = ModalRoute.of(context)?.settings.arguments as Map;
     return Scaffold(
       body: Stack(
         children: [
@@ -112,7 +84,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width,
               child: Text(
-                '팀 모집글 수정',
+                '팀 모집글 작성',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -416,7 +388,13 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                   onTap: () async {
                                     TimeOfDay? result = await showTimePicker(
                                         context: context,
-                                        initialTime: TimeOfDay.now());
+                                        initialTime: TimeOfDay(
+                                          hour: int.parse(_endTimeController.text
+                                              .split(':')[0]),
+                                          minute: int.parse(_endTimeController
+                                              .text
+                                              .split(':')[1]),
+                                        ));
                                     if (result == null) {
                                       result = TimeOfDay.now();
                                       return;
@@ -779,29 +757,12 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                       //예 선택 시 실행 함수
                                       var user =
                                           context.read<TempUserProvider>();
-                                      var result = await submit(team, user);
+                                      var result = await submit(user);
                                       if (result == 'done') {
                                         print('등록완료');
-                                        team['title'] = _titleController.text;
-                                        team['capacity'] = _capacity;
-                                        team['liveDate'] = _dateController.text;
-                                        team['liveStTime'] =
-                                            _stTimeController.text;
-                                        team['liveEndTime'] =
-                                            _endTimeController.text;
-                                        team['location'] = _location;
-                                        team['address'] =
-                                            _addressController.text;
-                                        team['account'] = _account +
-                                            '/' +
-                                            _accountController.text;
-                                        team['price'] = _priceController.text;
-                                        team['content'] =
-                                            _contentController.text;
                                         Navigator.pushReplacementNamed(
                                           context,
-                                          '/team/read',
-                                          arguments: team,
+                                          '/team',
                                         );
                                       } else {
                                         print('등록실패');

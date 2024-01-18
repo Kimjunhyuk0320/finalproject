@@ -3,7 +3,9 @@ import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
+import 'package:livedom_app/screens/team/team_insert.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
 import 'package:livedom_app/screens/team/team_read.dart';
 import 'package:livedom_app/screens/team/team_read_app.dart';
@@ -41,7 +43,6 @@ void main() {
   //   ChangeNotifierProvider(
   //       create: (context) => UserProvider(), child: const MyApp(),),
   // );
-
 }
 
 class MyApp extends StatelessWidget {
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
 
         // mypage
         '/mypage': (context) => MyPageScreen(),
+        '/mypage/team/state': (context) => TeamStateScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),
@@ -77,6 +79,7 @@ class MyApp extends StatelessWidget {
         '/team': (context) => TeamListScreen(),
         '/team/read': (context) => TeamReadScreen(),
         '/team/read/app': (context) => TeamReadAppScreen(),
+        '/team/insert': (context) => TeamInsertScreen(),
         '/team/update': (context) => TeamUpdateScreen(),
       },
     );

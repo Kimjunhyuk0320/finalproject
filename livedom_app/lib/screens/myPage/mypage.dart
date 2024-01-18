@@ -164,7 +164,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/");
+                        Navigator.pushReplacementNamed(context, "/mypage/team/state");
                       },
                     ),
                   ],
