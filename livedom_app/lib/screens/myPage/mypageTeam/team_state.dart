@@ -12,7 +12,14 @@ class TeamStateScreen extends StatefulWidget {
 
 class _TeamStateScreenState extends State<TeamStateScreen> {
 //팀 리스트 state
-  List _teamList = [];
+  List _teamList = [
+    {'appNo': 1},
+    {'appNo': 2},
+    {'appNo': 3},
+    {'appNo': 4},
+    {'appNo': 5},
+    {'appNo': 6},
+  ];
 
   var _pageObject = {};
 
@@ -47,6 +54,127 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
         _teamList.addAll(tempTeamList);
       });
     }
+  }
+
+  Widget Confirmed() {
+    return Container(
+      width: 80.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(2.0),
+            decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                )),
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget UnDeposited() {
+    return Container(
+      width: 80.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(2.0),
+            decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                )),
+            child: Icon(
+              Icons.money_off_csred,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget UnChecked() {
+    return Container(
+      width: 60.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(3.0),
+            decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                )),
+            child: Icon(
+              Icons.help,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget Approval() {
+    return Container(
+      width: 60.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(6.0),
+            decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                )),
+            child: Icon(
+              Icons.upcoming,
+              color: Colors.white,
+              size: 18.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget Denied() {
+    return Container(
+      width: 60.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(3.0),
+            decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                )),
+            child: Icon(
+              Icons.do_not_disturb_outlined,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -116,7 +244,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                             decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(
-                                  100.0,
+                                  10.0,
                                 )),
                             child: Icon(
                               Icons.check,
@@ -129,6 +257,9 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                     ),
                     Container(
                       width: 80.0,
+                      margin: EdgeInsets.only(
+                        right: 13.0,
+                      ),
                       padding: EdgeInsets.symmetric(
                         horizontal: 10.0,
                       ),
@@ -141,7 +272,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                             decoration: BoxDecoration(
                                 color: Colors.redAccent,
                                 borderRadius: BorderRadius.circular(
-                                  100.0,
+                                  10.0,
                                 )),
                             child: Icon(
                               Icons.money_off_csred,
@@ -165,16 +296,19 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                     ),
                     Container(
                       width: 60.0,
+                      margin: EdgeInsets.only(
+                        left: 13.0,
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.all(2.0),
+                            padding: EdgeInsets.all(3.0),
                             decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Colors.grey,
                                 borderRadius: BorderRadius.circular(
-                                  100.0,
+                                  10.0,
                                 )),
                             child: Icon(
                               Icons.help,
@@ -195,11 +329,11 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.all(4.0),
+                            padding: EdgeInsets.all(6.0),
                             decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(
-                                  100.0,
+                                  10.0,
                                 )),
                             child: Icon(
                               Icons.upcoming,
@@ -221,12 +355,12 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.all(2.0),
+                            padding: EdgeInsets.all(3.0),
                             decoration: BoxDecoration(
-                              color: Colors.redAccent,
+                                color: Colors.redAccent,
                                 borderRadius: BorderRadius.circular(
-                              100.0,
-                            )),
+                                  10.0,
+                                )),
                             child: Icon(
                               Icons.do_not_disturb_outlined,
                               color: Colors.white,
@@ -239,7 +373,12 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 10.0,
+              ),
+              
               Container(
+                width: MediaQuery.of(context).size.width * 0.8,
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -247,7 +386,22 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                   itemBuilder: (context, index) {
                     if (index < _teamList.length) {
                       final item = _teamList[index];
+                      double initialPosition = 0;
                       return GestureDetector(
+                        onHorizontalDragStart: (DragStartDetails details) {
+                          initialPosition = details.globalPosition.dx;
+                        },
+                        onHorizontalDragEnd: (DragEndDetails details) {
+                          if (details.velocity.pixelsPerSecond.dx > 0) {
+                            print('오른쪽으로 드래그했습니다.');
+                          }
+                        },
+                        onHorizontalDragUpdate: (DragUpdateDetails details) {
+                          if (details.globalPosition.dx - initialPosition >
+                              100) {
+                            print('오른쪽으로 100px 이상 드래그했습니다.');
+                          }
+                        },
                         onTap: () {
                           Navigator.pushNamed(
                             context,
@@ -263,10 +417,88 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                                 color: Colors.black12,
                               ),
                               borderRadius: BorderRadius.circular(18.0)),
-                          height: 130.0,
-                          child: ListTile(
-                            title: Container(),
-                            subtitle: Container(),
+                          height: 100.0,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 12.0,
+                              ),
+                              Container(
+                                width: 30.0,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Confirmed(),
+                                    Approval(),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          '(지역) ',
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '제목',
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  subtitle: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          '연락처',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '닉네임',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '신청일자',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
