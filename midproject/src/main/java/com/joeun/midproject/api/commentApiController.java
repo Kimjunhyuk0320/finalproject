@@ -51,7 +51,7 @@ public class commentApiController {
     
     
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Comment comment) {
+    public ResponseEntity<?> create( Comment comment) {
         log.info("[POST] - /api/comment   ");
         try {
             int result = commentService.commentInsert(comment);
@@ -62,9 +62,31 @@ public class commentApiController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<?> createJson(@RequestBody Comment comment) {
+        log.info("[POST] json - /api/comment   ");
+        try {
+            int result = commentService.commentInsert(comment);
+            Comment comment2 = commentMapper.select(result);
+
+            return new ResponseEntity<Comment>(comment2, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     
+    @PutMapping(consumes = "application/json")
+    public ResponseEntity<?> updateJson(Comment comment) {
+        try {
+            int result = commentService.commentUpdate(comment);
+            return new ResponseEntity<Integer>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PutMapping()
-    public ResponseEntity<?> update(@RequestBody Comment comment) {
+    public ResponseEntity<?> update(Comment comment) {
         try {
             int result = commentService.commentUpdate(comment);
             return new ResponseEntity<Integer>(result, HttpStatus.OK);
