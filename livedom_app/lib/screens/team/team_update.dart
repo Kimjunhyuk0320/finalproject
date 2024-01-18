@@ -36,21 +36,35 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
     final url = 'http://10.0.2.2:8080/api/team';
     final parsedUrl = Uri.parse(url);
     final body = {
-      'title':_titleController.text,
-      'writer':_titleController.text,
-      'content':_titleController.text,
-      'location':_titleController.text,
-      'address':_titleController.text,
-      'liveDate':_titleController.text,
-      'liveStTime':_titleController.text,
-      'liveEndTime':_titleController.text,
-      'price':_titleController.text,
-      'capacity':_capacity,
-      'account1':_account,
-      'account2':_accountController,
+      'title': _titleController.text,
+      'writer': user.userInfo['nickname'],
+      'content': _contentController.text,
+      'location': _location,
+      'address': _addressController.text,
+      'liveDate': _dateController.text,
+      'liveStTime': _stTimeController.text,
+      'liveEndTime': _endTimeController.text,
+      'price': _priceController.text,
+      'capacity': _capacity,
+      'account1': _account,
+      'account2': _accountController,
       'teamNo': team['teamNo'],
     };
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+    var result = await http.put(
+      parsedUrl,
+      headers: headers,
+      body: body,
+    );
+
+    if(result.statusCode == 200){
+
     return 'done';
+    }else{
+      return 'dont';
+    }
   }
 
   @override
@@ -332,7 +346,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                     }
                                     setState(() {
                                       _stTimeController.text =
-                                          '${result!.hour.toString().length == 1 ? '0'+result!.hour.toString():result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0'+result!.minute.toString():result!.minute.toString()}';
+                                          '${result!.hour.toString().length == 1 ? '0' + result!.hour.toString() : result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0' + result!.minute.toString() : result!.minute.toString()}';
                                     });
                                   },
                                   child: Row(
@@ -401,7 +415,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                     }
                                     setState(() {
                                       _endTimeController.text =
-                                          '${result!.hour.toString().length == 1 ? '0'+result!.hour.toString():result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0'+result!.minute.toString():result!.minute.toString()}';
+                                          '${result!.hour.toString().length == 1 ? '0' + result!.hour.toString() : result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0' + result!.minute.toString() : result!.minute.toString()}';
                                     });
                                   },
                                   child: Row(
