@@ -60,6 +60,9 @@ dependencies:
   # Flutter 앱의 상태 관리, 네비게이션, 다이얼로그 및 다양한 편리한 기능들을 제공하는 강력한 상태 관리 라이브러리
   get: ^4.6.1
 
+  # flutter_svg
+  flutter_svg: ^2.0.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -74,7 +77,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - images/
+    - assets/images/
+    # - images/
 
 
 flutter_icons:

@@ -98,6 +98,10 @@ class DefaultImages {
   static const String t21 = 'assets/images/t21.svg';
   static const String t22 = 'assets/images/t22.png';
 
+  static const String lee = 'assets/images/lee.jpg';
+  static const String newJS = 'assets/images/newJS.png';
+
+
   static const String button = 'assets/images/button.png';
   static const String overlay = 'assets/images/overlay.png';
 }
