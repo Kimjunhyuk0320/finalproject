@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 
 class joinScreen extends StatefulWidget {
@@ -507,33 +508,34 @@ class _joinScreenState4 extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Padding(
-                  padding: EdgeInsets.only(left: 40),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '연락처는 (-)기호를 제외하고 설정해주세요.\n',
-                          style: TextStyle(
-                            color: Color(0xFF8D8D8D),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w200,
-                            height: 0,
-                          ),
+                padding: EdgeInsets.only(left: 40),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '연락처는 (-)기호를 제외하고 설정해주세요.\n',
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w200,
+                          height: 0,
                         ),
-                        TextSpan(
-                          text: '(*다른 연락처를 작성시 불이익을 받을 수 있습니다.)',
-                          style: TextStyle(
-                            color: Color(0xFF8D8D8D),
-                            fontSize: 13,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w200,
-                            height: 0,
-                          ),
+                      ),
+                      TextSpan(
+                        text: '(*다른 연락처를 작성시 불이익을 받을 수 있습니다.)',
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 13,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w200,
+                          height: 0,
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -736,7 +738,6 @@ class _joinScreenState6State extends State<_joinScreenState6> {
         ),
       ),
       body: SingleChildScrollView(
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -744,18 +745,18 @@ class _joinScreenState6State extends State<_joinScreenState6> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                padding: EdgeInsets.only(left: 40),
-                child: Text(
-                  '아래에 해당하는 \n권한을 설정해주세요.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                  padding: EdgeInsets.only(left: 40),
+                  child: Text(
+                    '아래에 해당하는 \n권한을 설정해주세요.',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 28.0,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Padding(
+                SizedBox(height: 10),
+                Padding(
                   padding: EdgeInsets.only(left: 40),
                   child: Text.rich(
                     TextSpan(
@@ -772,7 +773,8 @@ class _joinScreenState6State extends State<_joinScreenState6> {
                         ),
                       ],
                     ),
-                  )),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 30),
@@ -780,63 +782,63 @@ class _joinScreenState6State extends State<_joinScreenState6> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 PermissionButton(
-                permission: '유저권한',
-                isSelected: selectedPermission == '유저권한',
-                onSelect: () => selectPermission('유저권한'),
-              ),
-              PermissionButton(
-                permission: '밴드권한',
-                isSelected: selectedPermission == '밴드권한',
-                onSelect: () => selectPermission('밴드권한'),
-              ),
-              PermissionButton(
-                permission: '클럽권한',
-                isSelected: selectedPermission == '클럽권한',
-                onSelect: () => selectPermission('클럽권한'),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                selectedPermission.isEmpty
-                    ? '권한을 선택하지 않았습니다.'
-                    : '$selectedPermission을 선택하였습니다',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  permission: '유저권한',
+                  isSelected: selectedPermission == '유저권한',
+                  onSelect: () => selectPermission('유저권한'),
                 ),
-              ),
-              const SizedBox(height: 80),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState6()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
+                PermissionButton(
+                  permission: '밴드권한',
+                  isSelected: selectedPermission == '밴드권한',
+                  onSelect: () => selectPermission('밴드권한'),
+                ),
+                PermissionButton(
+                  permission: '클럽권한',
+                  isSelected: selectedPermission == '클럽권한',
+                  onSelect: () => selectPermission('클럽권한'),
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  selectedPermission.isEmpty
+                      ? '권한을 선택하지 않았습니다.'
+                      : '"$selectedPermission"을 선택하였습니다',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '회원가입 완료',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
+                ),
+                const SizedBox(height: 70),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserInfo()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                    child: Container(
+                      width: 320.0,
+                      height: 60.0,
+                      child: const Center(
+                        child: Text(
+                          '회원가입 완료',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
-                  )
-                )
-              )
+                  ),
+                ),
               ],
             ),
           ],
@@ -876,7 +878,8 @@ class PermissionButton extends StatelessWidget {
         child: Text(
           permission,
           style: const TextStyle(
-            fontSize: 16,
+            // color: Color.fromRGBO(0, 0, 0, 1),
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -917,23 +920,24 @@ class _joinScreenState7 extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Padding(
-                  padding: EdgeInsets.only(left: 40),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '하나의 권한을 선택해주세요.',
-                          style: TextStyle(
-                            color: Color(0xFF8D8D8D),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w200,
-                            height: 0,
-                          ),
+                padding: EdgeInsets.only(left: 40),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '하나의 권한을 선택해주세요.',
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w200,
+                          height: 0,
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -959,7 +963,7 @@ class _joinScreenState7 extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => _joinScreenState6()),
+                          builder: (context) => UserInfo()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

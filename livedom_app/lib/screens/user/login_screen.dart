@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/user/home_view.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
@@ -153,10 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 130),
                     GestureDetector(
                       onTap: () {
-                        // Get.to(
-                        //   const ForgotPasswordScreen(),
-                        //   transition: Transition.rightToLeft,
-                        // );
+                        // Container를 눌렀을 때 수행할 동작을 여기에 작성
+                        // 예: 다른 페이지로 이동하는 코드
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeView(),
+                          ),
+                        );
                       },
                       child: const Center(
                         child: Text(
