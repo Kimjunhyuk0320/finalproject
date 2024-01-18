@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class TeamUpdateScreen extends StatefulWidget {
   const TeamUpdateScreen({super.key});
@@ -15,7 +16,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
       TextEditingController(text: '');
   String _capacity = '1';
   final TextEditingController _dateController = TextEditingController(
-      text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+      text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
   final TextEditingController _stTimeController =
       TextEditingController(text: '');
   final TextEditingController _endTimeController =
@@ -32,6 +33,23 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
       TextEditingController(text: '');
 
   Future<String> submit(team, user) async {
+    final url = 'http://10.0.2.2:8080/api/team';
+    final parsedUrl = Uri.parse(url);
+    final body = {
+      'title':_titleController.text,
+      'writer':_titleController.text,
+      'content':_titleController.text,
+      'location':_titleController.text,
+      'address':_titleController.text,
+      'liveDate':_titleController.text,
+      'liveStTime':_titleController.text,
+      'liveEndTime':_titleController.text,
+      'price':_titleController.text,
+      'capacity':_capacity,
+      'account1':_account,
+      'account2':_accountController,
+      'teamNo': team['teamNo'],
+    };
     return 'done';
   }
 
@@ -39,6 +57,23 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   void initState() {
     super.initState();
     //초기 세팅을 해줍시다.
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final Map team = ModalRoute.of(context)?.settings.arguments as Map;
+      // team 데이터를 처리합니다.
+      setState(() {
+        _titleController.text = team['title'];
+        _capacity = '${team['capacity']}';
+        _dateController.text = team['liveDate'];
+        _stTimeController.text = team['liveStTime'];
+        _endTimeController.text = team['liveEndTime'];
+        _location = team['location'];
+        _addressController.text = team['address'];
+        _account = team['account'].split('/')[0];
+        _accountController.text = team['account'].split('/')[1];
+        _priceController.text = '${team['price']}';
+        _contentController.text = team['content'];
+      });
+    });
   }
 
   @override
@@ -207,11 +242,17 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                       context: context,
                                       firstDate: DateTime(2024),
                                       lastDate: DateTime(2044),
+                                      initialDate: DateTime.parse(
+                                          _dateController.text
+                                              .replaceAll('/', '-')),
                                     );
                                     setState(() {
                                       _dateController.text =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(result ?? DateTime.now());
+                                          DateFormat('yyyy/MM/dd').format(
+                                              result ??
+                                                  DateTime.parse(_dateController
+                                                      .text
+                                                      .replaceAll('/', '-')));
                                     });
                                   },
                                   child: Row(
@@ -278,14 +319,20 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                   onTap: () async {
                                     TimeOfDay? result = await showTimePicker(
                                         context: context,
-                                        initialTime: TimeOfDay.now());
+                                        initialTime: TimeOfDay(
+                                          hour: int.parse(_stTimeController.text
+                                              .split(':')[0]),
+                                          minute: int.parse(_stTimeController
+                                              .text
+                                              .split(':')[1]),
+                                        ));
                                     if (result == null) {
                                       result = TimeOfDay.now();
                                       return;
                                     }
                                     setState(() {
                                       _stTimeController.text =
-                                          '${result!.hour.toString()}:${result!.minute.toString()}';
+                                          '${result!.hour.toString().length == 1 ? '0'+result!.hour.toString():result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0'+result!.minute.toString():result!.minute.toString()}';
                                     });
                                   },
                                   child: Row(
@@ -354,7 +401,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                     }
                                     setState(() {
                                       _endTimeController.text =
-                                          '${result!.hour.toString()}:${result!.minute.toString()}';
+                                          '${result!.hour.toString().length == 1 ? '0'+result!.hour.toString():result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0'+result!.minute.toString():result!.minute.toString()}';
                                     });
                                   },
                                   child: Row(
