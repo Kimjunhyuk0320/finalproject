@@ -77,6 +77,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                   horizontal: 20.0,
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
@@ -116,161 +117,283 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '모집팀 수',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 10.0),
-                            child: DropdownButton<String>(
-                              value: _capacity,
-                              items: <String>[
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  child: Text(
-                                    '${value}명',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '모집팀 수',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  value: value,
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _capacity = newValue!;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '공연일자',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: Icon(Icons.date_range),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '공연 시작 시각',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
                                 ),
-                                border: InputBorder.none,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '공연 종료 시각',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
+                              Container(
+                                alignment: Alignment.centerRight,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 10.0),
+                                child: DropdownButton<String>(
+                                  underline: Container(),
+                                  value: _capacity,
+                                  items: <String>[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.27,
+                                        child: Text(
+                                          '${value}명',
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                      value: value,
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _capacity = newValue!;
+                                    });
+                                  },
                                 ),
-                                border: InputBorder.none,
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '공연일자',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    DateTime? result = await showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime(2024),
+                                      lastDate: DateTime(2044),
+                                    );
+                                    setState(() {
+                                      _dateController.text =
+                                          DateFormat('yyyy-MM-dd')
+                                              .format(result ?? DateTime.now());
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: AbsorbPointer(
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            readOnly: true,
+                                            controller: _dateController,
+                                            decoration: InputDecoration(
+                                              hintText: '',
+                                              contentPadding: EdgeInsets.only(
+                                                bottom: 0.0,
+                                                left: 10.0,
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                          right: 10.0,
+                                        ),
+                                        child: Icon(Icons.date_range),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '공연 시작 시각',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    TimeOfDay? result = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now());
+                                    if (result == null) {
+                                      result = TimeOfDay.now();
+                                      return;
+                                    }
+                                    setState(() {
+                                      _stTimeController.text =
+                                          '${result!.hour.toString()}:${result!.minute.toString()}';
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: AbsorbPointer(
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            readOnly: true,
+                                            controller: _stTimeController,
+                                            decoration: InputDecoration(
+                                              hintText: '',
+                                              contentPadding: EdgeInsets.only(
+                                                bottom: 0.0,
+                                                left: 10.0,
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                          right: 10.0,
+                                        ),
+                                        child: Icon(Icons.timer_outlined),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '공연 종료 시각',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    TimeOfDay? result = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now());
+                                    if (result == null) {
+                                      result = TimeOfDay.now();
+                                      return;
+                                    }
+                                    setState(() {
+                                      _endTimeController.text =
+                                          '${result!.hour.toString()}:${result!.minute.toString()}';
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: AbsorbPointer(
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            readOnly: true,
+                                            controller: _endTimeController,
+                                            decoration: InputDecoration(
+                                              hintText: '',
+                                              contentPadding: EdgeInsets.only(
+                                                bottom: 0.0,
+                                                left: 10.0,
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                          right: 10.0,
+                                        ),
+                                        child: Icon(Icons.timer),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
+                      alignment: Alignment.centerLeft,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -285,23 +408,53 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                             ),
                           ),
                           Container(
+                            alignment: Alignment.centerRight,
                             decoration: BoxDecoration(
                                 color: Colors.grey[100],
                                 borderRadius: BorderRadius.circular(18.0)),
                             margin: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
-                                ),
-                                border: InputBorder.none,
-                              ),
+                                vertical: 0.0, horizontal: 10.0),
+                            child: DropdownButton<String>(
+                              underline: Container(),
+                              value: _location,
+                              items: <String>[
+                                '경기',
+                                '서울',
+                                '부산',
+                                '경남',
+                                '인천',
+                                '경북',
+                                '대구',
+                                '충남',
+                                '전남',
+                                '전북',
+                                '충북',
+                                '강원',
+                                '대전',
+                                '광주',
+                                '울산',
+                                '제주',
+                                '세종',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.27,
+                                    child: Text(
+                                      '${value}',
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                  value: value,
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _location = newValue!;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -330,7 +483,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             child: TextField(
-                              controller: _titleController,
+                              controller: _addressController,
                               decoration: InputDecoration(
                                 hintText: '',
                                 contentPadding: EdgeInsets.only(
@@ -358,25 +511,83 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
+                          Row(
+                            children: [
+                              Container(
+                                alignment: Alignment.centerRight,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 10.0),
+                                child: DropdownButton<String>(
+                                  underline: Container(),
+                                  value: _account,
+                                  items: <String>[
+                                    '신한은행',
+                                    '우리은행',
+                                    '하나은행',
+                                    'SC은행',
+                                    '도이치은행',
+                                    '뱅크오브아메리카',
+                                    '수협은행',
+                                    '제주은행',
+                                    '카카오뱅크',
+                                    '케이뱅크',
+                                    '한국씨티은행',
+                                    'BNP파리바은행',
+                                    'HSBC은행',
+                                    'JP모건체이스은행',
+                                    '산림조합중앙회',
+                                    '저축은행',
+                                    '신협중앙회',
+                                    '우체국',
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.27,
+                                        child: Text(
+                                          '${value}',
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                      value: value,
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _account = newValue!;
+                                    });
+                                  },
                                 ),
-                                border: InputBorder.none,
                               ),
-                            ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.51,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                child: TextField(
+                                  controller: _accountController,
+                                  decoration: InputDecoration(
+                                    hintText: '',
+                                    contentPadding: EdgeInsets.only(
+                                      bottom: 0.0,
+                                      left: 10.0,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -404,7 +615,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             child: TextField(
-                              controller: _titleController,
+                              controller: _priceController,
                               decoration: InputDecoration(
                                 hintText: '',
                                 contentPadding: EdgeInsets.only(
@@ -441,7 +652,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             child: TextField(
-                              controller: _titleController,
+                              controller: _contentController,
                               decoration: InputDecoration(
                                 hintText: '',
                                 contentPadding: EdgeInsets.only(
@@ -502,6 +713,17 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                       var result = await submit(team, user);
                                       if (result == 'done') {
                                         print('등록완료');
+                                        print(_titleController.text);
+                                        print(_capacity);
+                                        print(_dateController.text);
+                                        print(_stTimeController.text);
+                                        print(_endTimeController.text);
+                                        print(_location);
+                                        print(_addressController.text);
+                                        print(_account);
+                                        print(_accountController.text);
+                                        print(_priceController.text);
+                                        print(_contentController.text);
                                       } else {
                                         print('등록실패');
                                       }
