@@ -4,6 +4,7 @@ import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
+import 'package:livedom_app/screens/myPage/mypageTeam/temp_state.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/team/team_insert.dart';
 import 'package:livedom_app/screens/team/team_list.dart';

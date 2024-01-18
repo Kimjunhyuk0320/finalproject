@@ -29,6 +29,9 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   //스크롤 컨트롤러
   final ScrollController _infContoller = ScrollController();
 
+  //애니메이션 너비 속성
+  final List<double> _animaWidth = [];
+
   Future getTeamList() async {
     var teamListURL =
         'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}';
@@ -53,6 +56,9 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
         _page++;
         _teamList.addAll(tempTeamList);
       });
+      for (var i = 0; i < tempTeamList.length; i++) {
+        _animaWidth.add(0.0);
+      }
     }
   }
 
@@ -186,6 +192,9 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
         getTeamList();
       }
     });
+    for (var i = 0; i < 6; i++) {
+      _animaWidth.add(0.0);
+    }
   }
 
   @override
@@ -376,8 +385,10 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
               SizedBox(
                 height: 10.0,
               ),
-              
-              Container(
+              AnimatedContainer(
+                duration: Duration(
+                  milliseconds: 300,
+                ),
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -386,21 +397,23 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                   itemBuilder: (context, index) {
                     if (index < _teamList.length) {
                       final item = _teamList[index];
-                      double initialPosition = 0;
                       return GestureDetector(
-                        onHorizontalDragStart: (DragStartDetails details) {
-                          initialPosition = details.globalPosition.dx;
-                        },
-                        onHorizontalDragEnd: (DragEndDetails details) {
-                          if (details.velocity.pixelsPerSecond.dx > 0) {
-                            print('오른쪽으로 드래그했습니다.');
+                        onHorizontalDragUpdate: (details) {
+                          if (details.delta.dx > 0) {
+                            // 오른쪽 스와이프 제스처가 감지됨
+                            print('오른쪽스와이프');
+                            setState(() {
+                              _animaWidth[index] +=
+                                  2.0; // 애니메이션을 위해 width 값을 변경
+                            });
                           }
+                          print(_animaWidth[index]);
                         },
-                        onHorizontalDragUpdate: (DragUpdateDetails details) {
-                          if (details.globalPosition.dx - initialPosition >
-                              100) {
-                            print('오른쪽으로 100px 이상 드래그했습니다.');
-                          }
+                        onHorizontalDragEnd: (details) {
+                          // 스와이프 제스처가 끝났을 때 원래 크기로 애니메이션
+                          setState(() {
+                            _animaWidth[index] = 0.0; // 초기 크기로 애니메이션
+                          });
                         },
                         onTap: () {
                           Navigator.pushNamed(
@@ -409,97 +422,112 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                             arguments: item,
                           );
                         },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 20.0),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                                color: Colors.black12,
-                              ),
-                              borderRadius: BorderRadius.circular(18.0)),
-                          height: 100.0,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 12.0,
-                              ),
-                              Container(
-                                width: 30.0,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 8.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _animaWidth[index],
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  bottom: 20.0,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1.0,
+                                      color: Colors.black12,
+                                    ),
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                height: 100.0,
+                                child: Row(
                                   children: [
-                                    Confirmed(),
-                                    Approval(),
+                                    SizedBox(
+                                      width: 12.0,
+                                    ),
+                                    Container(
+                                      width: 30.0,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 8.0,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Confirmed(),
+                                          Approval(),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                '(지역) ',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                '제목',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                '연락처',
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                '닉네임',
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                '신청일자',
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: ListTile(
-                                  title: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        child: Text(
-                                          '(지역) ',
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          '제목',
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        child: Text(
-                                          '연락처',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          '닉네임',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          '신청일자',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     } else if (_pageObject['last'] != null &&
