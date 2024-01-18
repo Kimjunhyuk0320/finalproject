@@ -52,6 +52,9 @@ dependencies:
 
   encrypt: ^5.0.3
 
+  # 플러터에서 웹 콘텐츠를 표시
+  webview_flutter: ^4.4.4
+
   # user 관련 dependencies
   
   # Flutter 앱의 상태 관리, 네비게이션, 다이얼로그 및 다양한 편리한 기능들을 제공하는 강력한 상태 관리 라이브러리
