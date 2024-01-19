@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:livedom_app/provider/temp_user_provider.dart';
+import 'package:provider/provider.dart';
 
 class TeamStateScreen extends StatefulWidget {
   const TeamStateScreen({super.key});
@@ -12,14 +14,7 @@ class TeamStateScreen extends StatefulWidget {
 
 class _TeamStateScreenState extends State<TeamStateScreen> {
 //팀 리스트 state
-  List _teamList = [
-    {'appNo': 1},
-    {'appNo': 2},
-    {'appNo': 3},
-    {'appNo': 4},
-    {'appNo': 5},
-    {'appNo': 6},
-  ];
+  List _teamList = [];
 
   var _pageObject = {};
 
@@ -32,12 +27,13 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   //애니메이션 너비 속성
   final List<double> _animaWidth = [];
 
-  Future getTeamList() async {
+  Future getTeamAppList(user) async {
     var teamListURL =
-        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}';
+        'http://10.0.2.2:8080/api/user/team/listByLeader?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
+    print(teamListResponse.statusCode);
 
     if (teamListResponse.statusCode == 200) {
       //UTF - 8 디코딩
@@ -45,7 +41,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
 
       //JSON 디코딩
       var teamListJSON = jsonDecode(teamListDecoded);
-
+      print(teamListJSON);
       final List tempTeamList = teamListJSON['data'];
       _pageObject = teamListJSON['page'];
       if (_pageObject['page'] > _pageObject['last']) {
@@ -183,17 +179,539 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
     );
   }
 
+  Widget UnCheckedBackground() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            margin: EdgeInsets.only(
+              bottom: 20.0,
+              right: 1.0,
+            ),
+            decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(18.0)),
+            height: 100.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 13.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '승인',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 13.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '거절',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget ApprovalstateBackground() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            margin: EdgeInsets.only(
+              bottom: 20.0,
+              right: 1.0,
+            ),
+            decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(18.0)),
+            height: 100.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 13.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '확정',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 13.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '거절',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget setBackground(item) {
+    switch (item['approvalStatus']) {
+      case 0:
+        return UnCheckedBackground();
+      case 1:
+        return ApprovalstateBackground();
+      default:
+        return Container();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // getTeamList();
-    _infContoller.addListener(() async {
-      if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
-        getTeamList();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final context = this.context;
+      final user = Provider.of<TempUserProvider>(context, listen: false);
+      getTeamAppList(user);
+      _infContoller.addListener(() async {
+        if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
+          getTeamAppList(user);
+        }
+      });
+      for (var i = 0; i < 6; i++) {
+        _animaWidth.add(0.0);
       }
     });
-    for (var i = 0; i < 6; i++) {
-      _animaWidth.add(0.0);
+  }
+
+  Future ExApproval(context, index) async {
+    var user = Provider.of<TempUserProvider>(context, listen: false);
+    var result = await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        // 모달 바텀 시트에 표시될 위젯을 생성
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.2,
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                alignment: Alignment.center,
+                child: Text(
+                  '참가 신청을 승인하시겠습니까?',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        print('참가신청 승인을 확인했습니다.');
+                        //요청
+                        final String url =
+                            'http://10.0.2.2:8080/api/team/app/accept';
+                        final parsedUri = Uri.parse(url);
+                        final headers = {
+                          'Content-Type': 'application/json',
+                        };
+                        final body = {
+                          'appNo': _teamList[index]['appNo'],
+                        };
+                        final parsedBody = json.encode(body);
+                        var result = await http.put(
+                          parsedUri,
+                          headers: headers,
+                          body: parsedBody,
+                        );
+
+                        if (result.statusCode == 200) {
+                          print('참가신청 승인 처리가 완료되었습니다.');
+                          setState(() {
+                            _teamList[index]['approvalStatus'] = 1;
+                          });
+                        } else {
+                          print('참가신청 승인 처리에 실패하였습니다.');
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '예',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('참가신청 승인을 취소했습니다.');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '아니오',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (result != null) {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    } else {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    }
+  }
+
+  Future ExDenided(context, index) async {
+    final user = Provider.of<TempUserProvider>(
+      context,
+      listen: false,
+    );
+    var result = await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        // 모달 바텀 시트에 표시될 위젯을 생성
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.2,
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                alignment: Alignment.center,
+                child: Text(
+                  '참가 신청을 거절하시겠습니까?',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        print('참가신청 거절을 확인했습니다.');
+                        //요청
+                        final String url =
+                            'http://10.0.2.2:8080/api/team/app/denied';
+                        final parsedUri = Uri.parse(url);
+                        final headers = {
+                          'Content-Type': 'application/json',
+                        };
+                        final body = {
+                          'appNo': _teamList[index]['appNo'],
+                        };
+                        final parsedBody = json.encode(body);
+                        var result = await http.put(
+                          parsedUri,
+                          headers: headers,
+                          body: parsedBody,
+                        );
+
+                        if (result.statusCode == 200) {
+                          print('참가신청 거절 처리가 완료되었습니다.');
+                          setState(() {
+                            _teamList[index]['approvalStatus'] = 2;
+                          });
+                        } else {
+                          print('참가신청 승인 처리에 실패하였습니다.');
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '예',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('참가신청 거절을 취소했습니다.');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '아니오',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (result != null) {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    } else {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    }
+  }
+
+  Future ExConfirm(context, index) async {
+    final user = Provider.of<TempUserProvider>(
+      context,
+      listen: false,
+    );
+    var result = await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        // 모달 바텀 시트에 표시될 위젯을 생성
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.2,
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                alignment: Alignment.center,
+                child: Text(
+                  '참가 신청을 확정하시겠습니까?',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        print('참가신청 확정을 확인했습니다.');
+                        //요청
+                        final String url =
+                            'http://10.0.2.2:8080/api/team/app/confirmed';
+                        final parsedUri = Uri.parse(url);
+                        final headers = {
+                          'Content-Type': 'application/json',
+                        };
+                        final body = {
+                          'appNo': _teamList[index]['appNo'],
+                        };
+                        final parsedBody = json.encode(body);
+                        var result = await http.put(
+                          parsedUri,
+                          headers: headers,
+                          body: parsedBody,
+                        );
+
+                        if (result.statusCode == 200) {
+                          print('참가신청 확정 처리가 완료되었습니다.');
+                          setState(() {
+                            _teamList[index]['depositStatus'] = 1;
+                          });
+                        } else {
+                          print('참가신청 확정 처리에 실패하였습니다.');
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '예',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('참가신청 확정을 취소했습니다.');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '아니오',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (result != null) {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    } else {
+      setState(() {
+        _animaWidth[index] = 0.0;
+      });
+      return result;
+    }
+  }
+
+  Widget SetDepositWidget(item) {
+    switch (item['depositStatus']) {
+      case 0:
+        return UnDeposited();
+      case 1:
+        return Confirmed();
+      default:
+        return Container();
+    }
+  }
+
+  Widget SetApprovalWidget(item) {
+    switch (item['approvalStatus']) {
+      case 0:
+        return UnChecked();
+      case 1:
+        return Approval();
+      case 2:
+        return Denied();
+      default:
+        return Container();
     }
   }
 
@@ -385,10 +903,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
               SizedBox(
                 height: 10.0,
               ),
-              AnimatedContainer(
-                duration: Duration(
-                  milliseconds: 300,
-                ),
+              Container(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -398,135 +913,151 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                     if (index < _teamList.length) {
                       final item = _teamList[index];
                       return GestureDetector(
-                        onHorizontalDragUpdate: (details) {
-                          if (details.delta.dx > 0) {
+                        onHorizontalDragUpdate: (details) async {
+                          if ((item['approvalStatus'] == 0 ||
+                                  item['depositStatus'] == 0) &&
+                              item['approvalStatus'] != 2 &&
+                              details.delta.dx > 0) {
                             // 오른쪽 스와이프 제스처가 감지됨
                             print('오른쪽스와이프');
                             setState(() {
-                              _animaWidth[index] +=
-                                  2.0; // 애니메이션을 위해 width 값을 변경
+                              _animaWidth[index] =
+                                  50.0; // 애니메이션을 위해 width 값을 변경
                             });
+                            if (item['approvalStatus'] == 1) {
+                              ExConfirm(context, index);
+                            } else {
+                              ExApproval(context, index);
+                            }
+                            return;
                           }
-                          print(_animaWidth[index]);
-                        },
-                        onHorizontalDragEnd: (details) {
-                          // 스와이프 제스처가 끝났을 때 원래 크기로 애니메이션
-                          setState(() {
-                            _animaWidth[index] = 0.0; // 초기 크기로 애니메이션
-                          });
+
+                          if (item['approvalStatus'] == 0 &&
+                              details.delta.dx < 0) {
+                            // 오른쪽 스와이프 제스처가 감지됨
+                            print('왼쪽스와이프');
+                            setState(() {
+                              _animaWidth[index] =
+                                  -50.0; // 애니메이션을 위해 width 값을 변경
+                            });
+                            ExDenided(context, index);
+                          }
                         },
                         onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/team/read',
-                            arguments: item,
-                          );
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   '/team/read',
+                          //   arguments: item,
+                          // );
+                          // ExApproval(context);
                         },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        child: Stack(
                           children: [
-                            SizedBox(
-                              width: _animaWidth[index],
-                            ),
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                margin: EdgeInsets.only(
-                                  bottom: 20.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1.0,
-                                      color: Colors.black12,
+                            setBackground(item),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: AnimatedContainer(
+                                    transform: Matrix4.translationValues(
+                                        _animaWidth[index], 0, 0),
+                                    duration: Duration(
+                                      milliseconds: 200,
                                     ),
-                                    borderRadius: BorderRadius.circular(18.0)),
-                                height: 100.0,
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 12.0,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.5,
+                                    margin: EdgeInsets.only(
+                                      bottom: 20.0,
                                     ),
-                                    Container(
-                                      width: 30.0,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 8.0,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Confirmed(),
-                                          Approval(),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: ListTile(
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              child: Text(
-                                                '(지역) ',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                '제목',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          width: 1.0,
+                                          color: Colors.black12,
                                         ),
-                                        subtitle: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              child: Text(
-                                                '연락처',
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                '닉네임',
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                '신청일자',
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                        borderRadius:
+                                            BorderRadius.circular(18.0)),
+                                    height: 100.0,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 12.0,
                                         ),
-                                      ),
+                                        Container(
+                                          width: 30.0,
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 8.0,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              SetDepositWidget(item),
+                                              SetApprovalWidget(item),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  child: Text(
+                                                    '${item['title'].length > 9 ? item['title'].substring(0, 9) + '...' : item['title']}',
+                                                    style: TextStyle(
+                                                      fontSize: 18.0,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            subtitle: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  child: Text(
+                                                    '${item['phone']}',
+                                                    style: TextStyle(
+                                                      fontSize: 12.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: Text(
+                                                    '${item['bandName']}',
+                                                    style: TextStyle(
+                                                      fontSize: 12.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: Text(
+                                                    '${item['updDate'].split('T')[0]}',
+                                                    style: TextStyle(
+                                                      fontSize: 12.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ],
                         ),
