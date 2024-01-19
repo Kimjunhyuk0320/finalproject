@@ -282,10 +282,10 @@ class _joinScreenState2 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "비밀번호",
-                  controller: passwordController,
+                  controller: TextEditingController(),
                   onChanged: (value) {
                     print('[회원기입] - 비밀번호 : $value');
-                    passwordController.text = value;
+                    // passwordController.text = value;
                   },
 
                   prefix: const Padding(
