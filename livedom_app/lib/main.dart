@@ -6,6 +6,7 @@ import 'package:livedom_app/screens/myPage/liveBoard/buy_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/sale_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/ticket_detail.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/myPage/mypageTeam/my_team_app.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/temp_state.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
         '/liveboard': (context) => LiveBoardListScreen(),
         '/liveboard/read': (context) => LiveBoardReadScreen(),
         '/mypage/team/state': (context) => TeamStateScreen(),
+        '/mypage/team/myApp': (context) => MyTeamAppScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),
