@@ -175,6 +175,40 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 ),
               ),
               Container(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: 90.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(
+                      18.0,
+                    ),
+                  ),
+                  margin: EdgeInsets.only(
+                    right: 10.0,
+                  ),
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/team/insert');
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '글쓰기',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(Icons.edit)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Container(
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
