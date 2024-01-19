@@ -389,7 +389,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                 duration: Duration(
                   milliseconds: 300,
                 ),
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.7,
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -430,6 +430,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                             ),
                             Expanded(
                               child: Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
                                 margin: EdgeInsets.only(
                                   bottom: 20.0,
                                 ),
