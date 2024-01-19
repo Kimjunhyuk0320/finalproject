@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 5
                 ),
                 onPressed: () async {
-                  Navigator.pushReplacementNamed(context, "/liveboard");
+                  Navigator.pushNamed(context, "/liveboard");
                 },
               ),
               ElevatedButton(
@@ -90,6 +90,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 onPressed: () async {
                   Navigator.pushReplacementNamed(context, "/mypage");
+                },
+              ),
+              ElevatedButton(
+                child: Text("티켓리스트"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  elevation: 5
+                ),
+                onPressed: () async {
+                  Navigator.pushNamed(context, "/mypage/ticketList");
+                },
+              ),
+              ElevatedButton(
+                child: Text("티켓판매리스트"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  elevation: 5
+                ),
+                onPressed: () async {
+                  Navigator.pushNamed(context, "/mypage/ticketSaleList");
                 },
               ),
             ],

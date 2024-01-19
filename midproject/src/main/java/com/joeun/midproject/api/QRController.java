@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/qr")
+@RequestMapping("/api/qr")
 public class QRController {
 
     @Autowired

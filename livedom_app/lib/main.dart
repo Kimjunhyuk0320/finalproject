@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
+import 'package:livedom_app/screens/myPage/liveBoard/buy_ticket_list.dart';
+import 'package:livedom_app/screens/myPage/liveBoard/sale_ticket_list.dart';
+import 'package:livedom_app/screens/myPage/liveBoard/ticket_detail.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
@@ -69,6 +72,9 @@ class MyApp extends StatelessWidget {
 
         // mypage
         '/mypage': (context) => MyPageScreen(),
+        '/mypage/ticketList': (context) => BuyTicketListScreen(),
+        '/mypage/ticketList/detail': (context) => TicketDetail(),
+        '/mypage/ticketSaleList': (context) => SaleTicketListScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),

@@ -63,6 +63,12 @@ dependencies:
   # flutter_svg
   flutter_svg: ^2.0.9
 
+  # shimmer 반짝반짝 빛나는 스켈레톤
+  shimmer: ^3.0.0
+
+  #qr스캐너
+  qr_code_scanner: ^1.0.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -78,7 +84,7 @@ flutter:
 
   assets:
     - assets/images/
-    # - images/
+    - images/
 
 
 flutter_icons:

@@ -18,14 +18,16 @@ class CommentScreen extends StatefulWidget {
 }
 
 class _CommentScreenState extends State<CommentScreen> {
-  late LiveBoard item;
-  late String parentTable;
-  int editingComment = 0;
+  // 유저 정보
   Map<String, String> user = {
     'writer' : '테스트11',
     'username' : '테스트11',
     'profileNo' : '15',
   };
+  
+  late LiveBoard item;
+  late String parentTable;
+  int editingComment = 0;
   final ScrollController _controller = ScrollController();
   List<dynamic> items = [];
   int _page = 1;

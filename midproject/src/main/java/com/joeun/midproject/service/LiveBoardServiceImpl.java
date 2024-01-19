@@ -213,7 +213,7 @@ public class LiveBoardServiceImpl implements LiveBoardService{
         int result = ticketMapper.insert(ticket);
         int parentNo = ticketMapper.maxPk();
         // qr코드 스캔했을 때 주소
-        String url = "http://localhost:3000/qr/check?ticketNo="+parentNo;
+        String url = "/qr/check?ticketNo="+parentNo;
         String parentTable = "ticket_purchases";
 
         // QR 코드 생성
