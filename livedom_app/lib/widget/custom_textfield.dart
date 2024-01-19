@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/text_style.dart';
 
+// 커스텀 텍스트 필드
 class CustomTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final Widget prefix;
   final Widget sufix;
   final Color? borderColor;
+  final void Function(String)? onChanged;   // [추가]
+
   const CustomTextField(
-      {super.key,
+    {
+      super.key,
       required this.hintText,
       required this.controller,
       required this.prefix,
       required this.sufix,
-      this.borderColor});
+      this.borderColor,
+      this.onChanged,   // [추가]
+    }
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +29,7 @@ class CustomTextField extends StatelessWidget {
       height: 56,
       child: TextFormField(
         controller: controller,
+        onChanged: onChanged,
         style: pSemiBold18.copyWith(
           fontSize: 14,
         ),

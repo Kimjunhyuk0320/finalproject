@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
+import 'package:http/http.dart' as http;
+
 
 class joinScreen extends StatefulWidget {
   const joinScreen({super.key});
@@ -12,6 +16,55 @@ class joinScreen extends StatefulWidget {
 }
 
 class _joinScreenState extends State<joinScreen> {
+  
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nicknameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController authController = TextEditingController();
+
+  Future<void> register() async {
+    final String username = usernameController.text;
+    final String password = passwordController.text;
+    final String name = nameController.text;
+    final String nickname = nicknameController.text;
+    final String email = emailController.text;
+    final String phone = phoneController.text;
+    final String auth = authController.text;
+
+    final Uri url = Uri.parse('http://10.0.2.2:8080/users');
+
+    final Map<String, String> data = {
+      'username': username,
+      'password': password,
+      'name': name,
+      'nickname': nickname,
+      'email': email,
+      'phone': phone,
+      'auth': auth,
+    };
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // 회원가입 성공
+        print('Registration successful!');
+      } else {
+        // 회원가입 실패
+        print('Registration failed. ${response.body}');
+      }
+    } catch (error) {
+      print('Error during registration: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +110,11 @@ class _joinScreenState extends State<joinScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "아이디",
-                  controller: TextEditingController(),
+                  controller: usernameController,
+                  onChanged: (value) {
+                    print('[회원기입] - 아이디 : $value');
+                    usernameController.text = value;
+                  },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -225,7 +282,12 @@ class _joinScreenState2 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "비밀번호",
-                  controller: TextEditingController(),
+                  controller: passwordController,
+                  onChanged: (value) {
+                    print('[회원기입] - 비밀번호 : $value');
+                    passwordController.text = value;
+                  },
+
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -886,4 +948,3 @@ class PermissionButton extends StatelessWidget {
     );
   }
 }
-

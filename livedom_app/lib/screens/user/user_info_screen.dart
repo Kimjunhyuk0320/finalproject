@@ -6,6 +6,7 @@ import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
+import 'package:livedom_app/screens/user/user_update_screen.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key? key}) : super(key: key);
@@ -13,6 +14,8 @@ class UserInfoScreen extends StatefulWidget {
   @override
   State<UserInfoScreen> createState() => _UserInfoScreenState();
 }
+
+
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
@@ -27,122 +30,141 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).padding.top + 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "",
-                  style: pSemiBold20.copyWith(
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-            ),
+            // SizedBox(height: MediaQuery.of(context).padding.top + 15),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       "",
+            //       style: pSemiBold20.copyWith(
+            //         fontSize: 18,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
                 physics: const ClampingScrollPhysics(),
                 children: [
+                  const SizedBox(height: 40),
                   Column(
                     children: [
                       Center(
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 120,
-                                          height: 120,
-                                          decoration: const ShapeDecoration(
-                                            color: Colors.white,
-                                            shape: OvalBorder(),
-                                            shadows: [
-                                              BoxShadow(
-                                                color: Color(0x1E9BA3AF),
-                                                blurRadius: 50,
-                                                offset: Offset(5, 15),
-                                                spreadRadius: 0,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 10,
-                                        top: 10,
-                                        child: Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: const ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                DefaultImages.lee,
-                                              ),
-                                              fit: BoxFit.fill,
-                                            ),
-                                            shape: OvalBorder(),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                        child: GestureDetector(
+                          onTap: () {
+                            print('터치스크린 이벤트 발생');
+                            // GestureDetector를 터치했을 때 팝업 띄우기
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileScreen(),
                               ),
-                              Positioned(
-                                left: 85,
-                                top: 85,
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFF111827),
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                        width: 2,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignOutside,
-                                        color: Colors.white,
+                            );
+                          },
+                          child: Hero(
+                            tag: 'profileImage',
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    left: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 120,
+                                      height: 120,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            child: Container(
+                                              width: 120,
+                                              height: 120,
+                                              decoration: const ShapeDecoration(
+                                                color: Colors.white,
+                                                shape: OvalBorder(),
+                                                shadows: [
+                                                  BoxShadow(
+                                                    color: Color(0x1E9BA3AF),
+                                                    blurRadius: 50,
+                                                    offset: Offset(5, 15),
+                                                    spreadRadius: 0,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            left: 10,
+                                            top: 10,
+                                            child: Container(
+                                              width: 100,
+                                              height: 100,
+                                              decoration: const ShapeDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    DefaultImages.lee,
+                                                  ),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                shape: OvalBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      borderRadius: BorderRadius.circular(1000),
                                     ),
                                   ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 5,
-                                        top: 5,
-                                        child: Container(
-                                          width: 10,
-                                          height: 10,
-                                          child: Stack(children: [
-                                            Icon(
-                                              Icons.edit, // 원하는 아이콘을 설정
-                                              color: Colors.white, // 아이콘의 색상
-                                              size: 20.0, // 아이콘의 크기
-                                            ),
-                                          ]),
+                                  Positioned(
+                                    left: 85,
+                                    top: 85,
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: ShapeDecoration(
+                                        color: const Color(0xFF111827),
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(
+                                            width: 2,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignOutside,
+                                            color: Colors.white,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(1000),
                                         ),
                                       ),
-                                    ],
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 5,
+                                            top: 5,
+                                            child: Container(
+                                              width: 10,
+                                              height: 10,
+                                              child: Stack(
+                                                children: [
+                                                  Icon(
+                                                    Icons.add, // 원하는 아이콘을 설정
+                                                    color:
+                                                        Colors.white, // 아이콘의 색상
+                                                    size: 20.0, // 아이콘의 크기
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -360,7 +382,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => UserInfoScreen()),
+                                builder: (context) => UserUpdateScreen(),
+                              ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -436,4 +459,37 @@ Widget row(String image, String text, VoidCallback onTap) {
       ],
     ),
   );
+}
+
+// 프로필 스크린
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Hero(
+          tag: 'profileImage', // 홈 화면에서 사용한 태그와 동일해야 합니다.
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              width: 400,
+              height: 400,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                  image: AssetImage(
+                    DefaultImages.lee,
+                  ),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
