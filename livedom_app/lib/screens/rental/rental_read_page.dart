@@ -1,21 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/model/rental.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
-
-class LiveBoardReadScreen extends StatefulWidget {
+import 'package:intl/intl.dart';
+class RentalReadScreen extends StatefulWidget {
   @override
-  State<LiveBoardReadScreen> createState() => _LiveBoardReadScreenState();
+  State<RentalReadScreen> createState() => _RentalReadScreenState();
 }
 
-class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
-  
-  int _count = 1;
+class _RentalReadScreenState extends State<RentalReadScreen> {
   int selectedIndex = 0;
+  int _count = 1;
+  // 말 줄이기 함수
+  String truncateText(String text, int length) {
+    if (text.length <= length) {
+      return text;
+    } else {
+      return '${text.substring(0, length)}...';
+    }
+  }
+  // 가격 변환
+  String formatCurrency(int amount) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(amount);
+  }
+  // 줄바꿈
+  String formatMultilineText(String text) {
+    final int maxLineLength = 15; // 원하는 최대 길이 설정
+    final List<String> words = text.split(' ');
+
+    String result = '';
+    String line = '';
+    for (String word in words) {
+      if ((line + ' ' + word).length <= maxLineLength) {
+        line += (line.isNotEmpty ? ' ' : '') + word;
+      } else {
+        result += (result.isNotEmpty ? '\n' : '') + line;
+        line = word;
+      }
+    }
+
+    if (line.isNotEmpty) {
+      result += (result.isNotEmpty ? '\n' : '') + line;
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final LiveBoard item =
-        ModalRoute.of(context)!.settings.arguments as LiveBoard;
+    final Rental item =
+        ModalRoute.of(context)!.settings.arguments as Rental;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -57,7 +92,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                item.soldOut == 0
+                                item.confirmed == 0
                                     ? Container(
                                         width: 50,
                                         decoration: BoxDecoration(
@@ -68,7 +103,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                           ),
                                         ),
                                         child: Text(
-                                          '판매중',
+                                          '모집중',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Color.fromARGB(
@@ -91,7 +126,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         ),
                                       ),
                                 Text(
-                                  item.title ?? '',
+                                  formatMultilineText(item.title ?? ''),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
@@ -102,7 +137,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   maxLines: 2,
                                 ),
                                 Text(
-                                  item.crew ?? '',
+                                  item.writer ?? '',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
@@ -126,15 +161,11 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '잔여 티켓 ${item.ticketLeft}장' ?? '',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
                                       item.liveDate ?? '',
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     Text(
-                                      item.liveTime ?? '',
+                                      '${formatCurrency(item.price ?? 0)}원',
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ],
@@ -151,7 +182,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   top: true,
                   child: AppBar(
                     title: const Text(
-                      '공연 정보',
+                      '클럽 정보',
                       style: TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
@@ -194,7 +225,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
               ],
             ),
             SizedBox(height: 20,),
-            // 탭바
+             // 탭바
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 13),
               child: Container(
@@ -274,14 +305,14 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                 ),
                 Visibility(
                   visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
-                  child: CommentScreen(item: item, parentTable: 'live_board'),
+                  child: CommentScreen(item: item, parentTable: 'facility_rental'),
                 ),
               ],
             ),
           ),
 
           
-          SizedBox(height: 60,)
+          SizedBox(height: 60,),
           ],
         ),
       ),
@@ -338,16 +369,16 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            item.title ?? '제목 없음',
+                                            truncateText(item.title ?? '제목없음', 10),
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 30.0,
+                                              fontSize: 25.0,
                                               fontWeight: FontWeight.bold,
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
                                           Text(
-                                            '티켓을 구매합니다',
+                                            '뮬 대관 신청합니다',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 20.0,
@@ -374,7 +405,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '잔여티켓',
+                                      '지역',
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 20.0,
@@ -383,7 +414,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                     ),
                                     SizedBox(height: 15.0,),
                                     Text(
-                                      '선택한 티켓',
+                                      '대관 가격',
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 20.0,
@@ -396,86 +427,22 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${item.ticketLeft}장',
+                                      item.location??'',
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 20.0,
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
-                                    SizedBox(height: 10.0,),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${_count}장',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20.0,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        SizedBox(width: 30.0,),
-                                        Container(
-                                          height: 35.0,
-                                          width: 35.0,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (_count < 9) {
-                                                  _count++;
-                                                }
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 190, 190, 190),
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0,
-                                                  vertical: 10.0),
-                                              textStyle: TextStyle(
-                                                  fontSize: 16.0),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                            ),
-                                            child: Text('+'),
-                                          ),
-                                        ),
-                                        SizedBox(width: 5.0,),
-                                        Container(
-                                          height: 35.0,
-                                          width: 35.0,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (_count > 1) {
-                                                  _count--;
-                                                }
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 190, 190, 190),
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0,
-                                                  vertical: 10.0),
-                                              textStyle: TextStyle(
-                                                  fontSize: 16.0),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                            ),
-                                            child: Text('-'),
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                    SizedBox(height: 15.0,),
+                                    Text(
+                                      '${formatCurrency(item.price ?? 0)}원'??'',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20.0,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
                                   ],
                                 ),
                               ],
@@ -500,7 +467,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         BorderRadius.circular(15.0),
                                   ),
                                 ),
-                                child: Text('결제하기'),
+                                child: Text('대관 신청하기'),
                               ),
                             ),
                           ],

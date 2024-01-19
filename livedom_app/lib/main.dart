@@ -10,6 +10,7 @@ import 'package:livedom_app/screens/myPage/mypageTeam/my_team_app.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/temp_state.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
+import 'package:livedom_app/screens/rental/rental_read_page.dart';
 import 'package:livedom_app/screens/team/team_insert.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
 import 'package:livedom_app/screens/team/team_read.dart';
@@ -94,6 +95,7 @@ class MyApp extends StatelessWidget {
 
         // rental
         '/rental': (context) => RentalListScreen(),
+        '/rental/read': (context) => RentalReadScreen(),
 
         // team
         '/team': (context) => TeamListScreen(),
