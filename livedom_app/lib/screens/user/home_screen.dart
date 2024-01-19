@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 5
                 ),
                 onPressed: () async {
-                  Navigator.pushReplacementNamed(context, "/login");
+                  Navigator.pushNamed(context, "/login");
                 },
               ),
               ElevatedButton(
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 5
                 ),
                 onPressed: () async {
-                  Navigator.pushReplacementNamed(context, "/mypage");
+                  Navigator.pushNamed(context, "/mypage");
                 },
               ),
               ElevatedButton(

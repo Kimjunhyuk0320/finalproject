@@ -133,7 +133,7 @@ class _joinScreenState extends State<joinScreen> {
                   onTap: () {
                     User inputUser = User();
                     inputUser.username = usernameController.text;
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                       context,
                       '/join/pw',
                       arguments: inputUser,
@@ -329,7 +329,7 @@ class JoinPwScreen extends StatelessWidget {
                   onTap: () {
                     User? inputUser = user;
                     inputUser?.password = passwordController.text;
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                       context,
                       '/join/name',
                       arguments: inputUser,
@@ -481,7 +481,7 @@ class JoinNameScreen extends StatelessWidget {
                     User? inputUser = user;
                     inputUser?.name = nameController.text;
                     inputUser?.nickName = nickNameController.text;
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                       context,
                       '/join/phone',
                       arguments: inputUser,
@@ -584,7 +584,7 @@ class JoinPhoneScreen extends StatelessWidget {
                   text: "다음",
                   onTap: () {
                     user?.phone = phoneController.text;
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                       context,
                       '/join/email',
                       arguments:user,
@@ -687,7 +687,7 @@ class JoinEmailScreen extends StatelessWidget {
                   text: "다음",
                   onTap: () {
                     user!.email = emailController.text;
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                       context,
                       '/join/auth',
                       arguments: user,
@@ -816,7 +816,7 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                       print('User객체 확인 이메일 : ${user.email}');
                       print('User객체 확인 권한 : ${user.auth}');
 
-                      // Navigator.pushReplacementNamed(
+                      // Navigator.pushNamed(
                       //   context,
                       //   '/join/phone',
                       //   arguments: inputUser,
