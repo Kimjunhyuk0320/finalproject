@@ -16,6 +16,8 @@ import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/user/login_screen.dart';
 import 'package:livedom_app/screens/user/logout_screen.dart';
+import 'package:livedom_app/screens/user/user_info_screen.dart';
+import 'package:livedom_app/screens/user/user_update_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -66,15 +68,17 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/logout': (context) => LogoutScreen(),
 
-        // liveboard
-        '/liveboard': (context) => LiveBoardListScreen(),
-        '/liveboard/read': (context) => LiveBoardReadScreen(),
-
         // mypage
         '/mypage': (context) => MyPageScreen(),
+        '/userinfo': (context) => UserInfoScreen(),
+        '/userupdate': (context) => UserUpdateScreen(),
         '/mypage/ticketList': (context) => BuyTicketListScreen(),
         '/mypage/ticketList/detail': (context) => TicketDetail(),
         '/mypage/ticketSaleList': (context) => SaleTicketListScreen(),
+
+        // liveboard
+        '/liveboard': (context) => LiveBoardListScreen(),
+        '/liveboard/read': (context) => LiveBoardReadScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),

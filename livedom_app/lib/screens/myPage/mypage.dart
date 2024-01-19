@@ -12,7 +12,16 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('마이페이지'),
+        title: const Text(
+          'MyPage',
+          style: TextStyle(
+            color: Color(0xFF0E1828),
+            fontSize: 18,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w900,
+            height: 0,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Column(
@@ -43,7 +52,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         color: Color(0xFF0E1828),
                         fontSize: 29,
                         fontFamily: 'Inter',
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         height: 0,
                       ),
                     ),
@@ -84,7 +93,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/");
+                        Navigator.pushReplacementNamed(context, "/userinfo");
                       },
                     ),
                     SizedBox(
@@ -109,7 +118,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/");
+                        Navigator.pushReplacementNamed(context, "/userupdate");
                       },
                     ),
                   ],

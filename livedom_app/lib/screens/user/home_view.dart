@@ -5,8 +5,11 @@ import 'package:get/get.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
+import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/user/home_screen.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -16,6 +19,12 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final List<String> slideList = [
+    'assets/images/newJS.png',
+    'assets/images/aespa.jpg',
+    'assets/images/SLan.webp',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,76 +43,75 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SizedBox(height: MediaQuery.of(context).padding.top + 15),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hi kyocha_nnnnnnn!",
-                        style: pRegular14.copyWith(
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        "Welcome Back!",
-                        style: pBold.copyWith(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // Get.to(
-                    //   const HomeScreen(),
-                    //   transition: Transition.rightToLeft,
-                    // );
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          DefaultImages.h3,
-                        ),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
                 physics: const ClampingScrollPhysics(),
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      const SizedBox(height: 0),
-                      Container(
-                        height: 200,
-                        // width: 200,
-                        // width: Get.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          image: DecorationImage(
-                            image: AssetImage(
-                              DefaultImages.newJS,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Hi kyocha_nnnnnnn!",
+                              style: pRegular14.copyWith(
+                                fontSize: 12,
+                              ),
                             ),
-                            fit: BoxFit.cover,
+                            const SizedBox(height: 1),
+                            Text(
+                              "Welcome Back!",
+                              style: pBold.copyWith(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/mypage");
+                        },
+                        child: Container(
+                          height: 48,
+                          width: 48,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                DefaultImages.h3,
+                              ),
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  CarouselSlider.builder(
+                    itemCount: slideList.length,
+                    itemBuilder: (context, index, realIndex) {
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              "${slideList[index]}",
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    options: CarouselOptions(viewportFraction: 1.0),
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Container(
                         height: 80,
                         // width: Get.width,
@@ -114,40 +122,33 @@ class _HomeViewState extends State<HomeView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/liveboard');
+                            icon(
+                              DefaultImages.h5,
+                              "클럽 대관",
+                              () {
+                                Navigator.pushNamed(context, "/liveboard");
                               },
-                              child: icon(
-                                DefaultImages.h5,
-                                "클럽 대관",
-                                () {},
-                              ),
                             ),
                             icon(
                               DefaultImages.h7,
                               "밴드 모집",
                               () {
-                                Get.to(
-                                  const HomeScreen(),
-                                  transition: Transition.rightToLeft,
-                                );
+                                Navigator.pushNamed(context, "/team");
                               },
                             ),
                             icon(
                               DefaultImages.h6,
                               "티켓팅",
                               () {
-                                Get.to(
-                                  const HomeScreen(),
-                                  transition: Transition.rightToLeft,
-                                );
+                                Navigator.pushNamed(context, "/rental");
                               },
                             ),
                             icon(
                               DefaultImages.h1,
                               "More",
-                              () {},
+                              () {
+                                Navigator.pushNamed(context, "/mypage");
+                              },
                             ),
                           ],
                         ),

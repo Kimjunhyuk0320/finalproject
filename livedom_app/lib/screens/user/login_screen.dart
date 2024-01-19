@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
+import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/user/home_view.dart';
@@ -23,12 +24,12 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top + 15),
           const Padding(
-            padding: EdgeInsets.only(left: 14, right: 14),
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: CustomBackIcon(),
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.only(top: 100, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
               physics: const ClampingScrollPhysics(),
               children: [
                 Column(
@@ -96,20 +97,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             '로그인',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20.0,
+                              fontSize: 17.0,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
                     Row(
                       children: <Widget>[
                         Container(
                           color: Colors.grey,
-                          width: 168.0,
+                          width: 164.0,
                           height: 1.0,
                         ),
                         Container(
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Container(
                           color: Color.fromARGB(255, 209, 209, 209),
-                          width: 168.0,
+                          width: 164.0,
                           height: 1.0,
                         ),
                       ],
@@ -140,15 +140,40 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(
                             15.0), // 숫자를 조절하여 원하는 둥근 정도를 지정
                       ),
-                      child: const Center(
-                        child: Text(
-                          '카카오 로그인',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w700,
+                      child: Row(
+                        mainAxisAlignment:MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // 이미지 추가
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const ShapeDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  DefaultImages.kakaoLogo,
+                                ),
+                                fit: BoxFit.fill,
+                              ),
+                              shape: OvalBorder(),
+                            ),
                           ),
-                        ),
+
+                          // 간격을 주기 위한 SizedBox
+                          SizedBox(width: 8.0),
+
+                          // 텍스트 추가
+                          Center(
+                            child: Text(
+                              '카카오 로그인',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 130),
@@ -164,15 +189,33 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: const Center(
-                        child: Text(
-                          '아직 회원이 아니신가요? 회원가입',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '아직 회원이 아니신가요? ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '회원가입',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                        textAlign: TextAlign.center,
+                      )),
                     ),
                   ],
                 ),
