@@ -1,14 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:livedom_app/model/liveboard.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:livedom_app/model/comment.dart';
 import 'package:intl/intl.dart';
 
 class CommentScreen extends StatefulWidget {
-  final LiveBoard item;
+  final dynamic item;
   final String parentTable;
   
   CommentScreen({Key? key, required this.item, required this.parentTable}) : super(key: key);
@@ -25,7 +22,7 @@ class _CommentScreenState extends State<CommentScreen> {
     'profileNo' : '15',
   };
   
-  late LiveBoard item;
+  late dynamic item;
   late String parentTable;
   int editingComment = 0;
   final ScrollController _controller = ScrollController();
@@ -199,8 +196,8 @@ Future<void> deleteComment(int commentNo) async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return 
+      Column(
         children: [
           Row(
             children: [
@@ -213,7 +210,7 @@ Future<void> deleteComment(int commentNo) async {
               ),
               SizedBox(width: 5,),
               Text(
-                '${_pageObj['total']}',
+                '${_pageObj['total'] ?? 0}',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.red,
@@ -282,8 +279,7 @@ Future<void> deleteComment(int commentNo) async {
             ),
           ),
           SizedBox(height: 30,),
-          Expanded(
-            child: ListView.builder(
+          ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -466,10 +462,8 @@ Future<void> deleteComment(int commentNo) async {
               },
               itemCount: items.length + 1,
             ),
-          ),
             
         ],
-      ),
-    );
+      );
   }
 }

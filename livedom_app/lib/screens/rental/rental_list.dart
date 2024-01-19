@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:livedom_app/model/Rental.dart';
+import 'package:livedom_app/model/rental.dart';
 
 
 class RentalListScreen extends StatefulWidget {
@@ -70,7 +70,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
 
         items.addAll(list.map<Rental>((item) {
           return Rental(
-            frNo: item['frNo'],
+            boardNo: item['frNo'],
             title: item['title'],
             writer: item['writer'],
             username: item['username'],
@@ -160,7 +160,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                   top: true,
                   child: AppBar(
                     title: const Text(
-                      'LiveDom',
+                      '클럽 대관',
                       style: TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
@@ -216,7 +216,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                             // 터치 이벤트 핸들링
                             Navigator.pushNamed(
                               context, 
-                              "/Rental/read",
+                              "/rental/read",
                               arguments: item,
                             );
                           },
@@ -236,7 +236,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        item.soldOut == 0
+                                        item.confirmed == 0
                                             ? Container(
                                                 width: 50,
                                                 decoration: BoxDecoration(
@@ -246,13 +246,13 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  '판매중',
+                                                  '모집중',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(color: Colors.grey),
                                                 ),
                                               )
                                             : Container(
-                                                width: 50,
+                                                width: 60,
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(20.0),
                                                   border: Border.all(
@@ -260,7 +260,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  '매진',
+                                                  '모집종료',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(color: Colors.red),
                                                 ),
@@ -273,7 +273,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          truncateText(item.crew, 17),
+                                          truncateText(item.writer, 17),
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
@@ -288,10 +288,6 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                           children: [
                                             Text(
                                               truncateText(item.liveDate, 17),
-                                              style: TextStyle(color: Colors.grey),
-                                            ),
-                                            Text(
-                                              truncateText(item.liveTime, 17),
                                               style: TextStyle(color: Colors.grey),
                                             ),
                                             Text(

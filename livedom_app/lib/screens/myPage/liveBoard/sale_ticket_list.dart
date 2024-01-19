@@ -12,6 +12,8 @@ class SaleTicketListScreen extends StatefulWidget {
 }
 
 class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
+  int selectedIndex = 0;
+
   // 유저 정보
     Map<String, String> user = {
     'writer' : '테스트11',
@@ -106,47 +108,104 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                 ),
               ),
               SizedBox(height: 20,),
-              // 탭바 뷰
-              DefaultTabController(
-              length: 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  children: [
-                    TabBar(
-                      tabAlignment: TabAlignment.start,
-                      tabs: [
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('전체'),
-                          ),
+              // 탭바
+              Padding(
+              padding: EdgeInsets.symmetric(horizontal: 13),
+              child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey, // 테두리 색상 설정
+                    width: 1.0, // 테두리 두께 설정
+                  ),
+                ),
+              ),
+              child: Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = 0;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selectedIndex == 0 ? Colors.black : Colors.transparent,
+                          width: 1.0,
                         ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('예매완료'),
-                          ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('예매취소'),
-                          ),
-                        ),
-                      ],
-                      unselectedLabelColor: Colors.grey,
-                      labelColor: Colors.black,
-                      indicatorColor: Colors.black,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      isScrollable: true,
+                      ),
                     ),
-                    SizedBox(height: 20,),
-                    SizedBox(
-                      height: 10000,
-                      child: TabBarView(
-                        children: [
-                        ListView.builder(
+                    child: Text(
+                      '전체',
+                      style: TextStyle(
+                        color: selectedIndex == 0 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = 1;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selectedIndex == 1 ? Colors.black : Colors.transparent,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      '예매완료',
+                      style: TextStyle(
+                        color: selectedIndex == 1 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = 2;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selectedIndex == 2 ? Colors.black : Colors.transparent,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      '예매취소',
+                      style: TextStyle(
+                        color: selectedIndex == 2 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ),
+            ),
+             // 탭바 뷰
+              Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
+                    child: ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -178,7 +237,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
-                                                      item.reservationNo,
+                                                      truncateText(item.reservationNo, 30),
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
@@ -235,7 +294,10 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                           },
                           itemCount: items.length,
                         ),
-                        ListView.builder(
+                  ),
+                  Visibility(
+                    visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
+                    child:  ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -267,7 +329,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
-                                                      item.reservationNo,
+                                                      truncateText(item.reservationNo, 30),
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
@@ -326,13 +388,16 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                           },
                           itemCount: items.length,
                         ),
-                        ListView.builder(
+                  ),
+                  Visibility(
+                    visible: selectedIndex == 2, // 인덱스에 따라 화면 보이기/숨기기
+                    child:  ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           itemBuilder: (context, index) {
                             final item = items[index];
-                            if( item.refund == 1){
+                            if(item.refund == 1){
                               return Container(
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: Column(
@@ -358,7 +423,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
-                                                      item.reservationNo,
+                                                      truncateText(item.reservationNo, 30),
                                                       textAlign: TextAlign.left,
                                                     ),
                                                     Text(
@@ -413,14 +478,12 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                             }else{
                               return SizedBox();
                             }
+                            
                           },
                           itemCount: items.length,
                         ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             ],

@@ -1,5 +1,5 @@
 class Rental {
-  int? frNo;
+  int? boardNo;
   String? title;
   String? writer;
   String? username;
@@ -16,7 +16,7 @@ class Rental {
   int? thumbnail;
 
   Rental({
-    required this.frNo,
+    required this.boardNo,
     required this.title,
     required this.writer,
     required this.username,
