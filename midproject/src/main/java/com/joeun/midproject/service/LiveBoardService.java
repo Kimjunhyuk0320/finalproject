@@ -36,5 +36,11 @@ public interface LiveBoardService {
     public List<Ticket> listByBoardNo(int boardNo) throws Exception;
 
     // 티켓 이용가능한지 조회
-    public int ticketAvailable(int ticketNo) throws Exception;
+    public Ticket ticketAvailable(int ticketNo) throws Exception;
+
+    // 티켓 이용가능한지 조회
+    public int useTicket(int ticketNo) throws Exception;
+
+
+
 }

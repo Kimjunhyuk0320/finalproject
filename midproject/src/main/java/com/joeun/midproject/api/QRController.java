@@ -1,6 +1,8 @@
 package com.joeun.midproject.api;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.joeun.midproject.dto.QR;
+import com.joeun.midproject.dto.Ticket;
 import com.joeun.midproject.service.LiveBoardService;
 import com.joeun.midproject.service.QRService;
 import com.joeun.midproject.util.MediaUtil;
@@ -50,16 +53,38 @@ public class QRController {
     
     // 티켓이 유효한지 체크
     @GetMapping("/check")
-    public ResponseEntity<String> ticketCheck(int ticketNo) throws Exception {
+    public ResponseEntity<Map<String, Object>> ticketCheck(int ticketNo) throws Exception {
         log.info("[GET] - /qr/check");
-        int result = liveBoardService.ticketAvailable(ticketNo);
+        Ticket ticket = liveBoardService.ticketAvailable(ticketNo);
 
-        if( result > 0){
-            return new ResponseEntity<>("available", HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>("unavailable", HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        map.put("ticket", ticket);
+        if(ticket == null){
+            map.put("able", "unavailable");
+            return new ResponseEntity<>(map, HttpStatus.OK);
         }
+        
+        if(ticket.getRefund() == 0){
+            map.put("able", "available");
+        }else if(ticket.getRefund() == 2){
+            map.put("able", "used");
+        }else{
+            map.put("able", "unavailable");
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 
+    // 티켓이 유효한지 체크
+    @GetMapping("/use")
+    public ResponseEntity<String> useTicket(int ticketNo) throws Exception {
+        log.info("[GET] - /qr/use");
+        int result = liveBoardService.useTicket(ticketNo);
+ 
+        if(result == 1){
+            return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("FAIL", HttpStatus.OK);
+        }
     }
     
 

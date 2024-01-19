@@ -29,4 +29,8 @@ public interface TicketMapper {
 
     // 티켓에 qrNo 주입하기
     public int updateTicket(Ticket ticket) throws Exception;
+
+    // 티켓 사용하기
+    public int useTicket(int ticketNo) throws Exception;
+
 }

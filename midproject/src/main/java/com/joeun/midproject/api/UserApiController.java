@@ -155,7 +155,6 @@ public class UserApiController {
     @GetMapping("/listByPhone")
     public ResponseEntity<List<Ticket>> listByPhone(Users users) throws Exception {
         List<Ticket> ticketList = userService.listByPhone(users);
-        ticketList.add(new Ticket());
         return new ResponseEntity<List<Ticket>>(ticketList, HttpStatus.OK);
     }
 
@@ -163,9 +162,7 @@ public class UserApiController {
     @GetMapping("/listByUserName")
     public ResponseEntity<List<Ticket>> listByUserName(Users users) throws Exception {
         List<Ticket> ticketList = userService.listByUserName(users);
-        // if(ticketList == null) {
-        //     return new ResponseEntity<List<Ticket>>(null, HttpStatus.OK);
-        // }
+
         return new ResponseEntity<List<Ticket>>(ticketList, HttpStatus.OK);
     }
 }

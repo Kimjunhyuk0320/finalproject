@@ -163,10 +163,27 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                       color: Colors.white,
                     ),
                     actions: [
-                      IconButton(
-                        icon: Icon(Icons.menu),
-                        onPressed: () {},
-                        color: Colors.white,
+                      PopupMenuButton(
+                        icon: Icon(Icons.menu, color: Colors.white),
+                        onSelected: (value) {
+                          if (value == 'item1') {
+                            // 'item1'이 선택되었을 때 수행할 작업
+                          } else if (value == 'item2') {
+                            // 'item2'가 선택되었을 때 수행할 작업
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              value: 'item1',
+                              child: Text('게시글 수정'),
+                            ),
+                            PopupMenuItem(
+                              value: 'item2',
+                              child: Text('게시글 삭제'),
+                            ),
+                          ];
+                        },
                       ),
                     ],
                     backgroundColor: Colors.transparent,

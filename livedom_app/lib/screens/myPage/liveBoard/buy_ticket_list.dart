@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -152,7 +153,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           itemBuilder: (context, index) {
                             final item = items[index];
-                            if( item.ticketNo != 0){
+                            
                               return Container(
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: Column(
@@ -206,10 +207,114 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                         Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
+                                                          style: TextStyle(color: Colors.grey),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Divider(
+                                      color: Colors.grey, // 원하는 색상으로 변경
+                                      thickness: 0.5, // 원하는 두께로 변경
+                                      height: 40.0, // 위아래 여백 조절
+                                    ),
+                                  ],
+                                ),
+                              );
+                          },
+                          itemCount: items.length,
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+                            if( item.refund != 1 ){
+                              return Container(
+                                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                child: Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        // 터치 이벤트 핸들링
+                                        Navigator.pushNamed(
+                                          context, 
+                                          "/mypage/ticketList/detail",
+                                          arguments: item,
+                                        );
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Image.network(
+                                            'http://10.0.2.2:8080/api/file/img/${item.thumbnail}',
+                                            width: 100,
+                                            height: 160,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 16.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    
+                                                    Text(
+                                                      truncateText(item.title, 17), // 최대 길이를 설정 (예: 20)
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                    Text(
+                                                      truncateText(item.reservationNo, 17),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                    Text(
+                                                      '예매자명 : ${truncateText(item.name, 17)}',
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30.0,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          truncateText(item.liveDate, 17),
+                                                          style: TextStyle(color: Colors.grey),
+                                                        ),
+                                                        Text(
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                       ],
@@ -232,6 +337,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                 ),
                               );
                             }
+                            else {return SizedBox(width: 0, height: 0,);}
                             
                           },
                           itemCount: items.length,
@@ -242,7 +348,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           itemBuilder: (context, index) {
                             final item = items[index];
-                            if( item.ticketNo != 0 && item.refund == 0){
+                            if(item.refund == 1){
                               return Container(
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: Column(
@@ -296,10 +402,18 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                         Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                       ],
@@ -321,99 +435,11 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                   ],
                                 ),
                               );
-                            }
-                            
-                          },
-                          itemCount: items.length,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                          itemBuilder: (context, index) {
-                            final item = items[index];
-                            if( item.ticketNo != 0 && item.refund == 1){
-                              return Container(
-                                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        // 터치 이벤트 핸들링
-                                        Navigator.pushNamed(
-                                          context, 
-                                          "/mypage/ticketList/detail",
-                                          arguments: item,
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Image.network(
-                                            'http://10.0.2.2:8080/api/file/img/${item.thumbnail}',
-                                            width: 100,
-                                            height: 160,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 16.0),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    
-                                                    Text(
-                                                      truncateText(item.title, 17), // 최대 길이를 설정 (예: 20)
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                    Text(
-                                                      truncateText(item.reservationNo, 17),
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                    Text(
-                                                      '예매자명 : ${truncateText(item.name, 17)}',
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 30.0,
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          truncateText(item.liveDate, 17),
-                                                          style: TextStyle(color: Colors.grey),
-                                                        ),
-                                                        Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
-                                                          style: TextStyle(color: Colors.grey),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    Divider(
-                                      color: Colors.grey, // 원하는 색상으로 변경
-                                      thickness: 0.5, // 원하는 두께로 변경
-                                      height: 40.0, // 위아래 여백 조절
-                                    ),
-                                  ],
-                                ),
-                              );
+                            }else{
+                              return SizedBox();
                             }
                           },
-                          itemCount: items.length,
+                          itemCount: items.where((item) => item.refund == 1).length,
                         ),
                         ],
                       ),

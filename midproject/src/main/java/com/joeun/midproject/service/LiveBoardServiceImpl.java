@@ -310,12 +310,24 @@ public class LiveBoardServiceImpl implements LiveBoardService{
     }
 
     @Override
-    public int ticketAvailable(int ticketNo) throws Exception {
-        int result = 0;
+    public Ticket ticketAvailable(int ticketNo) throws Exception {
         Ticket ticket = ticketMapper.ticketNoSearch(ticketNo);
-        if(ticket != null){
-            result = 1;
-        }
+        int boardNo = ticket.getBoardNo();
+        LiveBoard LiveBoard = liveBoardMapper.select(boardNo);
+        ticket.setTitle(LiveBoard.getTitle());
+        ticket.setPrice(LiveBoard.getPrice());
+        ticket.setAddress(LiveBoard.getAddress());
+        ticket.setLiveDate(LiveBoard.getLiveDate());
+        ticket.setLiveTime(LiveBoard.getLiveTime());
+        ticket.setLocation(LiveBoard.getLocation());
+        
+        return ticket;
+    }
+
+    @Override
+    public int useTicket(int ticketNo) throws Exception {
+        int result = ticketMapper.useTicket(ticketNo);
+
         return result;
     }
 

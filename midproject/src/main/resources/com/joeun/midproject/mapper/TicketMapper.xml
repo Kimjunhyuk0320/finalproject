@@ -63,4 +63,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SET qr_no = #{qrNo}
         WHERE ticket_no = #{ticketNo};
     </update>
+    <!-- 사용한 티켓으로 바꾸기 -->
+    <update id="useTicket">
+        UPDATE ticket_purchases
+        SET refund = 2
+        WHERE ticket_no = #{ticketNo};
+    </update>
 </mapper>

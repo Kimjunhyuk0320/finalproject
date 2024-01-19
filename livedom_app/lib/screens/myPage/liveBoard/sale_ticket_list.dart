@@ -152,7 +152,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           itemBuilder: (context, index) {
                             final item = items[index];
-                            if( item.ticketNo != 0){
+                           
                               return Container(
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: Column(
@@ -197,10 +197,18 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                         Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                       ],
@@ -222,7 +230,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   ],
                                 ),
                               );
-                            }
+                            
                             
                           },
                           itemCount: items.length,
@@ -278,10 +286,18 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                         Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                       ],
@@ -303,6 +319,8 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   ],
                                 ),
                               );
+                            }else{
+                              return SizedBox();
                             }
                             
                           },
@@ -314,7 +332,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           itemBuilder: (context, index) {
                             final item = items[index];
-                            if( item.refund != 0){
+                            if( item.refund == 1){
                               return Container(
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: Column(
@@ -359,10 +377,18 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                         Text(
-                                                          (item.refund == 0) ?
-                                                          '예매완료' : 
-                                                          '예매취소'
-                                                          ,
+                                                          (() {
+                                                            switch (item.refund) {
+                                                              case 0:
+                                                                return '예매완료';
+                                                              case 1:
+                                                                return '환불완료';
+                                                              case 2:
+                                                                return '이용완료';
+                                                              default:
+                                                                return '예매완료';
+                                                            }
+                                                          })(),
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
                                                       ],
@@ -384,6 +410,8 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   ],
                                 ),
                               );
+                            }else{
+                              return SizedBox();
                             }
                           },
                           itemCount: items.length,
@@ -400,18 +428,20 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const QRViewExample(),
-            )
-          );
+            builder: (context) => const QRViewExample(),
+          ));
         },
         child: Icon(
-          Icons.qr_code_scanner,
-          color: Colors.black,
+          Icons.camera_alt, // 카메라 아이콘
+          color: Colors.white, // 흰색 아이콘
         ),
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.black, // 검은색 배경
+        elevation: 2.0, // 그림자 효과
+        shape: CircleBorder(), // 원형 버튼으로 설정
       ),
+
     );
   }
 }
