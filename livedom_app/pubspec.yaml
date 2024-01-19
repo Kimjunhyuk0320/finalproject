@@ -24,7 +24,7 @@ dependencies:
   calendar_date_picker2: ^0.5.3
 
   # 이미지 슬라이드
-  carousel_slider: ^4.2.1
+  # carousel_slider: ^4.2.1
 
   # 카카오 sdk
   kakao_flutter_sdk: ^1.8.0 
@@ -63,6 +63,10 @@ dependencies:
   # flutter_svg
   flutter_svg: ^2.0.9
 
+  # 이미지 슬라이드
+  carousel_slider: ^4.2.1
+  flutter_native_splash: ^2.3.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -78,7 +82,7 @@ flutter:
 
   assets:
     - assets/images/
-    # - images/
+    - images/
 
 
 flutter_icons:

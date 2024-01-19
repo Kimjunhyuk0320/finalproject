@@ -100,6 +100,7 @@ class DefaultImages {
 
   static const String lee = 'assets/images/lee.jpg';
   static const String newJS = 'assets/images/newJS.png';
+  static const String kakaoLogo = 'assets/images/kakaoLogo.png';
 
 
   static const String button = 'assets/images/button.png';

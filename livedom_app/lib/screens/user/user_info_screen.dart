@@ -7,14 +7,14 @@ import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 
-class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
+class UserInfoScreen extends StatefulWidget {
+  const UserInfoScreen({Key? key}) : super(key: key);
 
   @override
-  State<UserInfo> createState() => _UserInfoState();
+  State<UserInfoScreen> createState() => _UserInfoScreenState();
 }
 
-class _UserInfoState extends State<UserInfo> {
+class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -360,7 +360,7 @@ class _UserInfoState extends State<UserInfo> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => UserInfo()),
+                                  builder: (context) => UserInfoScreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
