@@ -165,7 +165,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                       textAlign: TextAlign.center,
                     ),
                      leading: IconButton(
-                      icon: Icon(Icons.arrow_back),
+                      icon: Icon(Icons.arrow_back_ios_new),
                       onPressed: () {
                         Navigator.of(context).pop(); // 뒤로가기 기능
                       },

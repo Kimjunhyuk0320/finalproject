@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/screens/user/user_info_screen.dart';
+import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 
 class joinScreen extends StatefulWidget {
@@ -70,34 +72,15 @@ class _joinScreenState extends State<joinScreen> {
               const SizedBox(height: 420),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
+                child: CustomButton(
+                  text: "다음",
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => _joinScreenState2()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -274,34 +257,15 @@ class _joinScreenState2 extends StatelessWidget {
               const SizedBox(height: 320),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
+                child: CustomButton(
+                  text: "다음",
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => _joinScreenState3()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -438,34 +402,15 @@ class _joinScreenState3 extends StatelessWidget {
               const SizedBox(height: 320),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
+                child: CustomButton(
+                  text: "다음",
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => _joinScreenState4()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -553,37 +498,18 @@ class _joinScreenState4 extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 400),
+              const SizedBox(height: 390),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
+                child: CustomButton(
+                  text: "다음",
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => _joinScreenState5()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -626,33 +552,34 @@ class _joinScreenState5 extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Padding(
-                  padding: EdgeInsets.only(left: 40),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '이메일을 작성해주세요. \n',
-                          style: TextStyle(
-                            color: Color(0xFF8D8D8D),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w200,
-                            height: 0,
-                          ),
+                padding: EdgeInsets.only(left: 40),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '이메일을 작성해주세요. \n',
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w200,
+                          height: 0,
                         ),
-                        TextSpan(
-                          text: '(*다른 이메일을 작성시 불이익을 받을 수 있습니다.)',
-                          style: TextStyle(
-                            color: Color(0xFF8D8D8D),
-                            fontSize: 13,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w200,
-                            height: 0,
-                          ),
+                      ),
+                      TextSpan(
+                        text: '(*다른 이메일을 작성시 불이익을 받을 수 있습니다.)',
+                        style: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 13,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w200,
+                          height: 0,
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -670,37 +597,18 @@ class _joinScreenState5 extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 400),
+              const SizedBox(height: 390),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
+                child: CustomButton(
+                  text: "다음",
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => _joinScreenState6()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -806,82 +714,23 @@ class _joinScreenState6State extends State<_joinScreenState6> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 70),
+                const SizedBox(height: 50),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: CustomButton(
+                    text: "가입 완료",
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UserInfo()),
+                            builder: (context) => UserInfoScreen()),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                    ),
-                    child: Container(
-                      width: 320.0,
-                      height: 60.0,
-                      child: const Center(
-                        child: Text(
-                          '회원가입 완료',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class PermissionButton extends StatelessWidget {
-  final String permission;
-  final bool isSelected;
-  final VoidCallback onSelect;
-
-  PermissionButton({
-    required this.permission,
-    required this.isSelected,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8), // 여백을 조절하려면 여기서 조절합니다.
-      child: ElevatedButton(
-        onPressed: onSelect,
-        style: ElevatedButton.styleFrom(
-          primary: isSelected ? Color.fromRGBO(16, 24, 39, 1) : null,
-          onPrimary: isSelected ? Colors.white : null,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.grey),
-          ),
-          minimumSize: Size(320, 100),
-        ),
-        child: Text(
-          permission,
-          style: const TextStyle(
-            // color: Color.fromRGBO(0, 0, 0, 1),
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
     );
@@ -962,8 +811,7 @@ class _joinScreenState7 extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => UserInfo()),
+                      MaterialPageRoute(builder: (context) => UserInfoScreen()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -995,3 +843,47 @@ class _joinScreenState7 extends StatelessWidget {
     );
   }
 }
+
+// 권한 설정 선택 버튼 관련
+class PermissionButton extends StatelessWidget {
+  final String permission;
+  final bool isSelected;
+  final VoidCallback onSelect;
+
+  PermissionButton({
+    required this.permission,
+    required this.isSelected,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(8), // 여백을 조절하려면 여기서 조절합니다.
+      child: ElevatedButton(
+        onPressed: onSelect,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected
+              ? Color.fromRGBO(16, 24, 39, 1)
+              : ConstColors.lightGrayColor,
+          onPrimary: isSelected ? Colors.white : Colors.black,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            // side: BorderSide(color: Colors.grey),
+          ),
+          minimumSize: Size(320, 100),
+        ),
+        child: Text(
+          permission,
+          style: const TextStyle(
+            // color: Color.fromRGBO(0, 0, 0, 1),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+

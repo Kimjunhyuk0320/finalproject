@@ -269,7 +269,16 @@ public class UserServiceImpl implements UserService {
             int boardNo = ticketList.get(i).getBoardNo();
             LiveBoard LiveBoard = liveBoardMapper.select(boardNo);
             ticketList.get(i).setTitle(LiveBoard.getTitle());
+            ticketList.get(i).setPrice(LiveBoard.getPrice());
+            ticketList.get(i).setAddress(LiveBoard.getAddress());
             ticketList.get(i).setLiveDate(LiveBoard.getLiveDate());
+            ticketList.get(i).setLiveTime(LiveBoard.getLiveTime());
+            ticketList.get(i).setLocation(LiveBoard.getLocation());
+            Files file = new Files();
+            file.setParentTable("live_board");
+            file.setParentNo(boardNo);
+            file = fileMapper.selectThumbnail(file);
+            ticketList.get(i).setThumbnail(file.getFileNo());
         }
         return ticketList;
     }

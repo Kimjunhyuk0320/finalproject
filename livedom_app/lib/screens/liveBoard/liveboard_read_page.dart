@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:convert';
 
 class LiveBoardReadScreen extends StatefulWidget {
   @override
@@ -158,7 +156,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(
-                      icon: Icon(Icons.arrow_back),
+                      icon: Icon(Icons.arrow_back_ios_new),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -186,6 +184,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                 child: Column(
                   children: [
                     TabBar(
+                      tabAlignment: TabAlignment.start,
                       tabs: [
                         Tab(
                           child: Align(
