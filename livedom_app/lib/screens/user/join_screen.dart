@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
+import 'package:livedom_app/model/user.dart';
 import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:http/http.dart' as http;
-
 
 class joinScreen extends StatefulWidget {
   const joinScreen({super.key});
@@ -16,54 +16,53 @@ class joinScreen extends StatefulWidget {
 }
 
 class _joinScreenState extends State<joinScreen> {
-  
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController nicknameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController authController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  // final TextEditingController nameController = TextEditingController();
+  // final TextEditingController nicknameController = TextEditingController();
+  // final TextEditingController emailController = TextEditingController();
+  // final TextEditingController phoneController = TextEditingController();
+  // final TextEditingController authController = TextEditingController();
 
-  Future<void> register() async {
-    final String username = usernameController.text;
-    final String password = passwordController.text;
-    final String name = nameController.text;
-    final String nickname = nicknameController.text;
-    final String email = emailController.text;
-    final String phone = phoneController.text;
-    final String auth = authController.text;
+  // Future<void> register() async {
+  //   final String username = usernameController.text;
+  //   final String password = passwordController.text;
+  //   final String name = nameController.text;
+  //   final String nickname = nicknameController.text;
+  //   final String email = emailController.text;
+  //   final String phone = phoneController.text;
+  //   final String auth = authController.text;
 
-    final Uri url = Uri.parse('http://10.0.2.2:8080/users');
+  //   final Uri url = Uri.parse('http://10.0.2.2:8080/users');
 
-    final Map<String, String> data = {
-      'username': username,
-      'password': password,
-      'name': name,
-      'nickname': nickname,
-      'email': email,
-      'phone': phone,
-      'auth': auth,
-    };
+  //   final Map<String, String> data = {
+  //     'username': username,
+  //     'password': password,
+  //     'name': name,
+  //     'nickname': nickname,
+  //     'email': email,
+  //     'phone': phone,
+  //     'auth': auth,
+  //   };
 
-    try {
-      final http.Response response = await http.post(
-        url,
-        body: jsonEncode(data),
-        headers: {'Content-Type': 'application/json'},
-      );
+  //   try {
+  //     final http.Response response = await http.post(
+  //       url,
+  //       body: jsonEncode(data),
+  //       headers: {'Content-Type': 'application/json'},
+  //     );
 
-      if (response.statusCode == 200) {
-        // 회원가입 성공
-        print('Registration successful!');
-      } else {
-        // 회원가입 실패
-        print('Registration failed. ${response.body}');
-      }
-    } catch (error) {
-      print('Error during registration: $error');
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       // 회원가입 성공
+  //       print('Registration successful!');
+  //     } else {
+  //       // 회원가입 실패
+  //       print('Registration failed. ${response.body}');
+  //     }
+  //   } catch (error) {
+  //     print('Error during registration: $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,10 +131,12 @@ class _joinScreenState extends State<joinScreen> {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
-                    Navigator.push(
+                    User inputUser = User();
+                    inputUser.username = usernameController.text;
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState2()),
+                      '/join/pw',
+                      arguments: inputUser,
                     );
                   },
                 ),
@@ -149,9 +150,14 @@ class _joinScreenState extends State<joinScreen> {
 }
 
 // 페이지 2
-class _joinScreenState2 extends StatelessWidget {
+class JoinPwScreen extends StatelessWidget {
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    print('JoinScreen -> JoinPwSreen : ${user?.username}');
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -282,12 +288,11 @@ class _joinScreenState2 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "비밀번호",
-                  controller: TextEditingController(),
+                  controller: passwordController,
                   onChanged: (value) {
                     print('[회원기입] - 비밀번호 : $value');
                     // passwordController.text = value;
                   },
-
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -322,10 +327,12 @@ class _joinScreenState2 extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
-                    Navigator.push(
+                    User? inputUser = user;
+                    inputUser?.password = passwordController.text;
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState3()),
+                      '/join/name',
+                      arguments: inputUser,
                     );
                   },
                 ),
@@ -339,9 +346,13 @@ class _joinScreenState2 extends StatelessWidget {
 }
 
 // 페이지 3
-class _joinScreenState3 extends StatelessWidget {
+class JoinNameScreen extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nickNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -432,7 +443,7 @@ class _joinScreenState3 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "이름",
-                  controller: TextEditingController(),
+                  controller: nameController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -449,7 +460,7 @@ class _joinScreenState3 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "별명",
-                  controller: TextEditingController(),
+                  controller: nickNameController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -467,10 +478,13 @@ class _joinScreenState3 extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
-                    Navigator.push(
+                    User? inputUser = user;
+                    inputUser?.name = nameController.text;
+                    inputUser?.nickName = nickNameController.text;
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState4()),
+                      '/join/phone',
+                      arguments: inputUser,
                     );
                   },
                 ),
@@ -484,9 +498,12 @@ class _joinScreenState3 extends StatelessWidget {
 }
 
 // 페이지 4
-class _joinScreenState4 extends StatelessWidget {
+class JoinPhoneScreen extends StatelessWidget {
+  final TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -548,7 +565,7 @@ class _joinScreenState4 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "01012345678",
-                  controller: TextEditingController(),
+                  controller: phoneController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -566,10 +583,11 @@ class _joinScreenState4 extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
-                    Navigator.push(
+                    user?.phone = phoneController.text;
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState5()),
+                      '/join/email',
+                      arguments:user,
                     );
                   },
                 ),
@@ -583,9 +601,12 @@ class _joinScreenState4 extends StatelessWidget {
 }
 
 // 페이지 5
-class _joinScreenState5 extends StatelessWidget {
+class JoinEmailScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -647,7 +668,7 @@ class _joinScreenState5 extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "example.mail.com",
-                  controller: TextEditingController(),
+                  controller: emailController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -665,10 +686,11 @@ class _joinScreenState5 extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
-                    Navigator.push(
+                    user!.email = emailController.text;
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => _joinScreenState6()),
+                      '/join/auth',
+                      arguments: user,
                     );
                   },
                 ),
@@ -682,12 +704,12 @@ class _joinScreenState5 extends StatelessWidget {
 }
 
 // 페이지 6
-class _joinScreenState6 extends StatefulWidget {
+class JoinAuthScreen extends StatefulWidget {
   @override
-  _joinScreenState6State createState() => _joinScreenState6State();
+  JoinAuthScreenState createState() => JoinAuthScreenState();
 }
 
-class _joinScreenState6State extends State<_joinScreenState6> {
+class JoinAuthScreenState extends State<JoinAuthScreen> {
   String selectedPermission = ''; // 선택된 권한
 
   void selectPermission(String permission) {
@@ -698,6 +720,8 @@ class _joinScreenState6State extends State<_joinScreenState6> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final TextEditingController authController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -782,124 +806,27 @@ class _joinScreenState6State extends State<_joinScreenState6> {
                   child: CustomButton(
                     text: "가입 완료",
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserInfoScreen()),
-                      );
+                      user!.auth = selectedPermission;
+
+                      print('User객체 확인 아이디 : ${user.username}');
+                      print('User객체 확인 비번 : ${user.password}');
+                      print('User객체 확인 실명 : ${user.name}');
+                      print('User객체 확인 닉네임 : ${user.nickName}');
+                      print('User객체 확인 연락처 : ${user.phone}');
+                      print('User객체 확인 이메일 : ${user.email}');
+                      print('User객체 확인 권한 : ${user.auth}');
+
+                      // Navigator.pushReplacementNamed(
+                      //   context,
+                      //   '/join/phone',
+                      //   arguments: inputUser,
+                      // );
                     },
                   ),
                 ),
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// 페이지 6
-class _joinScreenState7 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text('6/6'),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 30),
-              const Padding(
-                padding: EdgeInsets.only(left: 40),
-                child: Text(
-                  '아래에 해당하는 \n권한을 설정해주세요.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.only(left: 40),
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '하나의 권한을 선택해주세요.',
-                        style: TextStyle(
-                          color: Color(0xFF8D8D8D),
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w200,
-                          height: 0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: CustomTextField(
-                  hintText: "example.mail.com",
-                  controller: TextEditingController(),
-                  prefix: const Padding(
-                    padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
-                    child: Icon(
-                      Icons.phone, // 원하는 아이콘을 설정
-                      color: Colors.grey, // 아이콘의 색상
-                      size: 20.0, // 아이콘의 크기
-                    ),
-                  ),
-                  sufix: const SizedBox(width: 10),
-                ),
-              ),
-              const SizedBox(height: 320),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UserInfoScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // 원하는 배경색을 설정
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: 320.0,
-                    height: 60.0,
-                    child: const Center(
-                      child: Text(
-                        '회원가입 완료',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
