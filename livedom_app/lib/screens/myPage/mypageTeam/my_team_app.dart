@@ -401,7 +401,7 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
                 height: MediaQuery.of(context).size.height * 0.1,
                 alignment: Alignment.center,
                 child: Text(
-                  '참가 신청을 거절하시겠습니까?',
+                  '참가 신청을 취소하시겠습니까?',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
@@ -415,7 +415,7 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
                   Container(
                     child: ElevatedButton(
                       onPressed: () async {
-                        print('참가신청 거절을 확인했습니다.');
+                        print('참가신청을 취소 확인했습니다.');
                         //요청
                         final String url =
                             'http://10.0.2.2:8080/api/team/app/${_teamList[index]['appNo']}';
@@ -809,7 +809,7 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
                 height: 10.0,
               ),
               Container(
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -819,7 +819,6 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
                       final item = _teamList[index];
                       return GestureDetector(
                         onHorizontalDragUpdate: (details) async {
-
                           if (item['approvalStatus'] == 0 &&
                               details.delta.dx < 0) {
                             // 오른쪽 스와이프 제스처가 감지됨
@@ -831,13 +830,16 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
                             ExCancel(context, index);
                           }
                         },
-                        onTap: () {
-                          // Navigator.pushNamed(
-                          //   context,
-                          //   '/team/read',
-                          //   arguments: item,
-                          // );
-                          // ExApproval(context);
+                        onTap: () async {
+                          final result = await http.get(Uri.parse(
+                              'http://10.0.2.2:8080/api/team/${item['teamNo']}'));
+                          Map decodedResult = await json.decode(utf8.decode(result.bodyBytes));
+
+                          Navigator.pushNamed(
+                            context,
+                            '/team/read',
+                            arguments: decodedResult,
+                          );
                         },
                         child: Stack(
                           children: [

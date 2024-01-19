@@ -236,7 +236,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        item.soldOut == 0
+                                        item.confirmed == 0
                                             ? Container(
                                                 width: 50,
                                                 decoration: BoxDecoration(
@@ -273,7 +273,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          truncateText(item.crew, 17),
+                                          truncateText(item.price.toString(), 17),
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
@@ -290,10 +290,10 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                               truncateText(item.liveDate, 17),
                                               style: TextStyle(color: Colors.grey),
                                             ),
-                                            Text(
-                                              truncateText(item.liveTime, 17),
-                                              style: TextStyle(color: Colors.grey),
-                                            ),
+                                            // Text(
+                                            //   truncateText('', 17),
+                                            //   style: TextStyle(color: Colors.grey),
+                                            // ),
                                             Text(
                                               truncateText(item.location, 17),
                                               style: TextStyle(color: Colors.grey),

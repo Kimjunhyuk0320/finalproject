@@ -904,7 +904,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                 height: 10.0,
               ),
               Container(
-                width: MediaQuery.of(context).size.width * 0.7,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -944,12 +944,11 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                           }
                         },
                         onTap: () {
-                          // Navigator.pushNamed(
-                          //   context,
-                          //   '/team/read',
-                          //   arguments: item,
-                          // );
-                          // ExApproval(context);
+                          Navigator.pushNamed(
+                            context,
+                            '/mypage/team/state/read',
+                            arguments: item,
+                          );
                         },
                         child: Stack(
                           children: [
