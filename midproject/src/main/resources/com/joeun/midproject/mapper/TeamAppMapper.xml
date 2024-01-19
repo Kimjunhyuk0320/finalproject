@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- SELECT a.* FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no) WHERE t.username = #{username} ORDER BY upd_date DESC -->
 
-    SELECT a.*
+    SELECT a.*, t.title as teamTitle
    FROM `team_applications` AS a JOIN `team_recruitments` AS t ON(a.team_no = t.team_no)
    WHERE
    t.username = #{username}

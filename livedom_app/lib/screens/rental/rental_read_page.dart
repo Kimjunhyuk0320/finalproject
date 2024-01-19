@@ -3,6 +3,10 @@ import 'package:livedom_app/model/rental.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
 import 'package:intl/intl.dart';
+import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/screens/comment/comment_screen.dart';
+import 'dart:ui';
+
 class RentalReadScreen extends StatefulWidget {
   @override
   State<RentalReadScreen> createState() => _RentalReadScreenState();

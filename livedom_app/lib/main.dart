@@ -6,9 +6,10 @@ import 'package:livedom_app/screens/myPage/liveBoard/buy_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/sale_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/ticket_detail.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/myPage/mypageTeam/confirmed_live.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/my_team_app.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
-import 'package:livedom_app/screens/myPage/mypageTeam/temp_state.dart';
+import 'package:livedom_app/screens/myPage/mypageTeam/team_state_read.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/rental/rental_read_page.dart';
 import 'package:livedom_app/screens/team/team_insert.dart';
@@ -91,7 +92,9 @@ class MyApp extends StatelessWidget {
         '/liveboard': (context) => LiveBoardListScreen(),
         '/liveboard/read': (context) => LiveBoardReadScreen(),
         '/mypage/team/state': (context) => TeamStateScreen(),
+        '/mypage/team/state/read': (context) => TeamStateReadScreen(),
         '/mypage/team/myApp': (context) => MyTeamAppScreen(),
+        '/mypage/team/confirmedLive': (context) => ConfirmedLiveScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),

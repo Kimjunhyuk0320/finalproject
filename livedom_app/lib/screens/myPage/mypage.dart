@@ -173,7 +173,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/mypage/team/state");
+                        Navigator.pushNamed(context, "/mypage/team/state");
                       },
                     ),
                   ],
@@ -209,7 +209,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/mypage/team/myApp");
+                        Navigator.pushNamed(context, "/mypage/team/myApp");
                       },
                     ),
                     SizedBox(
@@ -270,7 +270,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           minimumSize: Size(140, 110),
                           elevation: 5),
                       onPressed: () async {
-                        Navigator.pushReplacementNamed(context, "/");
+                        Navigator.pushNamed(context, "/mypage/team/confirmedLive");
                       },
                     ),
                     SizedBox(
