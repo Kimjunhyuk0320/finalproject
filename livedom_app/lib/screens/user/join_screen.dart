@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/model/user.dart';
-import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
-import 'package:http/http.dart' as http;
 
 class joinScreen extends StatefulWidget {
   const joinScreen({super.key});
@@ -15,54 +11,37 @@ class joinScreen extends StatefulWidget {
   State<joinScreen> createState() => _joinScreenState();
 }
 
+// 페이지 1 - 아이디 설정
 class _joinScreenState extends State<joinScreen> {
   final TextEditingController usernameController = TextEditingController();
-  // final TextEditingController passwordController = TextEditingController();
-  // final TextEditingController nameController = TextEditingController();
-  // final TextEditingController nicknameController = TextEditingController();
-  // final TextEditingController emailController = TextEditingController();
-  // final TextEditingController phoneController = TextEditingController();
-  // final TextEditingController authController = TextEditingController();
 
-  // Future<void> register() async {
-  //   final String username = usernameController.text;
-  //   final String password = passwordController.text;
-  //   final String name = nameController.text;
-  //   final String nickname = nicknameController.text;
-  //   final String email = emailController.text;
-  //   final String phone = phoneController.text;
-  //   final String auth = authController.text;
+  // 아이디 유효성 검사 함수
+  bool isValidUsername(String username) {
+    // 정규표현식을 사용하여 유효성 검사
+    RegExp regExp = RegExp(r'^[a-zA-Z0-9]+$');
+    return regExp.hasMatch(username);
+  }
 
-  //   final Uri url = Uri.parse('http://10.0.2.2:8080/users');
-
-  //   final Map<String, String> data = {
-  //     'username': username,
-  //     'password': password,
-  //     'name': name,
-  //     'nickname': nickname,
-  //     'email': email,
-  //     'phone': phone,
-  //     'auth': auth,
-  //   };
-
-  //   try {
-  //     final http.Response response = await http.post(
-  //       url,
-  //       body: jsonEncode(data),
-  //       headers: {'Content-Type': 'application/json'},
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       // 회원가입 성공
-  //       print('Registration successful!');
-  //     } else {
-  //       // 회원가입 실패
-  //       print('Registration failed. ${response.body}');
-  //     }
-  //   } catch (error) {
-  //     print('Error during registration: $error');
-  //   }
-  // }
+  // 아이디 유효성 검사 실패 팝업
+  void showInvalidUsernamePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("유효하지 않은 아이디 형식"),
+          content: Text("아이디는 영문과 숫자로만 작성 가능합니다."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +75,7 @@ class _joinScreenState extends State<joinScreen> {
               const Padding(
                 padding: EdgeInsets.only(left: 40),
                 child: Text(
-                  '아이디는 n글자 이상으로 설정해주세요',
+                  '아이디는 7글자 이상으로 설정해주세요',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 15.0,
@@ -131,6 +110,55 @@ class _joinScreenState extends State<joinScreen> {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
+                    // 입력된 아이디
+                    String username = usernameController.text;
+                    if (username.length <= 7) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('아이디를 7글자 이상으로 설정해주세요.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
+                    // 입력된 값이 없다면 다음 함수 실행
+                    if (username == '') {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('아이디를 설정해주세요.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
+                    // 아이디 유효성 검사 추가
+                    if (!isValidUsername(usernameController.text)) {
+                      // 유효하지 않은 경우 팝업 표시
+                      showInvalidUsernamePopup(context);
+                      return;
+                    }
                     User inputUser = User();
                     inputUser.username = usernameController.text;
                     Navigator.pushNamed(
@@ -149,14 +177,32 @@ class _joinScreenState extends State<joinScreen> {
   }
 }
 
-// 페이지 2
+// 페이지 2 - 비밀번호 설정
 class JoinPwScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordCheckController = TextEditingController();
+
+  // 비밀번호 유효성 검사 함수
+  bool isPasswordValid(String password) {
+    // 비밀번호는 대문자, 소문자, 특수문자를 포함하고 8글자 이상이어야 함
+    final RegExp regex =
+        RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$');
+    return regex.hasMatch(password);
+  }
+
+  // 비밀번호 확인 검사 함수
+  bool isPasswordCheck(String password, String passwordcheck) {
+    if (password == passwordcheck) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as User?;
-    print('JoinScreen -> JoinPwSreen : ${user?.username}');
+    // print('JoinScreen -> JoinPwSreen : ${user?.username}');
 
     return Scaffold(
       appBar: AppBar(
@@ -261,7 +307,7 @@ class JoinPwScreen extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: 'n글자 이상',
+                          text: '8글자 이상',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
                             fontSize: 16,
@@ -288,6 +334,7 @@ class JoinPwScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "비밀번호",
+                  obscureText: true, // 비밀번호 숨기기 설정
                   controller: passwordController,
                   onChanged: (value) {
                     print('[회원기입] - 비밀번호 : $value');
@@ -309,7 +356,8 @@ class JoinPwScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "비밀번호 확인",
-                  controller: TextEditingController(),
+                  controller: passwordCheckController,
+                  obscureText: true, // 비밀번호 숨기기 설정
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -327,6 +375,56 @@ class JoinPwScreen extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
+                    // 입력된 비밀번호
+                    String password = passwordController.text;
+                    String passwordCheck = passwordCheckController.text;
+
+                    // 비밀번호 유효성 검사
+                    if (!isPasswordValid(password)) {
+                      // 비밀번호가 유효하지 않을 때 팝업 표시
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('비밀번호가 유효하지 않습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return; // 이후 코드 실행을 중지
+                    }
+
+                    // 비밀번호 확인 검사
+                    if (!isPasswordCheck(password, passwordCheck)) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('비밀번호가 일치하지 않습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return; // 이후 코드 실행 중지
+                    }
+
+                    // 유효성 검사를 실시한 후 다음 화면으로 이동하는 코드
                     User? inputUser = user;
                     inputUser?.password = passwordController.text;
                     Navigator.pushNamed(
@@ -345,10 +443,10 @@ class JoinPwScreen extends StatelessWidget {
   }
 }
 
-// 페이지 3
+// 페이지 3 - 닉네임, 이름 설정
 class JoinNameScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController nickNameController = TextEditingController();
+  final TextEditingController nicknameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +558,7 @@ class JoinNameScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "별명",
-                  controller: nickNameController,
+                  controller: nicknameController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -478,9 +576,33 @@ class JoinNameScreen extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
+                    // 입력된 이름과 별명
+                    String name = nicknameController.text;
+                    String nickname = nicknameController.text;
+                    // 입력된 값이 없다면 다음 함수 실행
+                    if (name == '' || nickname == '') {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('이름 또는 별명을 설정해주세요.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
                     User? inputUser = user;
                     inputUser?.name = nameController.text;
-                    inputUser?.nickName = nickNameController.text;
+                    inputUser?.nickname = nicknameController.text;
                     Navigator.pushNamed(
                       context,
                       '/join/phone',
@@ -497,9 +619,16 @@ class JoinNameScreen extends StatelessWidget {
   }
 }
 
-// 페이지 4
+// 페이지 4 - 연락처 설정
 class JoinPhoneScreen extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController();
+
+  // 전화번호 유효성 검사 함수
+  bool isValidPhoneNumber(String phoneNumber) {
+    // 정규표현식을 사용하여 유효성 검사
+    RegExp regExp = RegExp(r'^\d{11}$');
+    return regExp.hasMatch(phoneNumber);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -565,6 +694,7 @@ class JoinPhoneScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
                   hintText: "01012345678",
+                  keyboardType: TextInputType.number,
                   controller: phoneController,
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
@@ -583,11 +713,33 @@ class JoinPhoneScreen extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
+                    if (!isValidPhoneNumber(phoneController.text)) {
+                      // 유효하지 않은 경우의 처리
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content:
+                                Text('연락처의 형식에 알맞지 않습니다.\n(예시 : 01012341234)'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 팝업 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
                     user?.phone = phoneController.text;
                     Navigator.pushNamed(
                       context,
                       '/join/email',
-                      arguments:user,
+                      arguments: user,
                     );
                   },
                 ),
@@ -600,9 +752,37 @@ class JoinPhoneScreen extends StatelessWidget {
   }
 }
 
-// 페이지 5
+// 페이지 5 - 이메일 설정
 class JoinEmailScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
+
+  // 이메일 유효성 검사 함수
+  bool isValidEmail(String email) {
+    // 정규표현식을 사용하여 유효성 검사
+    RegExp regExp = RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
+    return regExp.hasMatch(email);
+  }
+
+  // 이메일 유효성 검사 실패 팝업
+  void showInvalidEmailPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("알림"),
+          content: Text("올바른 이메일 형식으로 입력해주세요."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -686,6 +866,13 @@ class JoinEmailScreen extends StatelessWidget {
                 child: CustomButton(
                   text: "다음",
                   onTap: () {
+                    // 이메일 유효성 검사 추가
+                    if (!isValidEmail(emailController.text)) {
+                      // 유효하지 않은 경우 팝업 표시
+                      showInvalidEmailPopup(context);
+                      return;
+                    }
+
                     user!.email = emailController.text;
                     Navigator.pushNamed(
                       context,
@@ -703,25 +890,25 @@ class JoinEmailScreen extends StatelessWidget {
   }
 }
 
-// 페이지 6
+// 페이지 6 - 권한 선택 페이지
 class JoinAuthScreen extends StatefulWidget {
   @override
   JoinAuthScreenState createState() => JoinAuthScreenState();
 }
 
 class JoinAuthScreenState extends State<JoinAuthScreen> {
-  String selectedPermission = ''; // 선택된 권한
 
   void selectPermission(String permission) {
     setState(() {
       selectedPermission = permission;
     });
   }
+  String selectedPermission = ''; // 선택된 권한
 
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as User?;
-    final TextEditingController authController = TextEditingController();
+    // final TextEditingController authController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -807,20 +994,21 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                     text: "가입 완료",
                     onTap: () {
                       user!.auth = selectedPermission;
+                      // user!.auth = "1";
 
                       print('User객체 확인 아이디 : ${user.username}');
                       print('User객체 확인 비번 : ${user.password}');
                       print('User객체 확인 실명 : ${user.name}');
-                      print('User객체 확인 닉네임 : ${user.nickName}');
+                      print('User객체 확인 닉네임 : ${user.nickname}');
                       print('User객체 확인 연락처 : ${user.phone}');
                       print('User객체 확인 이메일 : ${user.email}');
                       print('User객체 확인 권한 : ${user.auth}');
 
-                      // Navigator.pushNamed(
-                      //   context,
-                      //   '/join/phone',
-                      //   arguments: inputUser,
-                      // );
+                      Navigator.pushNamed(
+                        context,
+                        '/joincomplete',
+                        arguments: user,
+                      );
                     },
                   ),
                 ),

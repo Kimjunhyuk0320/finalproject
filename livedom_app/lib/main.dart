@@ -20,6 +20,7 @@ import 'package:livedom_app/screens/team/team_update.dart';
 import 'package:livedom_app/screens/user/home_screen.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:livedom_app/provider/user_provider.dart';
+import 'package:livedom_app/screens/user/join_complete_screen.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/screens/user/login_screen.dart';
 import 'package:livedom_app/screens/user/logout_screen.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
         '/join/phone' : (context) => JoinPhoneScreen(),
         '/join/email' : (context) => JoinEmailScreen(),
         '/join/auth' : (context) => JoinAuthScreen(),
+        '/joincomplete' : (context) => JoinCompleteScreen(),
 
         // mypage
         '/mypage': (context) => MyPageScreen(),

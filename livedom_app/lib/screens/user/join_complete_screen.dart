@@ -1,23 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
+import 'package:livedom_app/model/user.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
-import 'package:livedom_app/screens/user/user_update_screen.dart';
+import 'package:livedom_app/widget/custom_button.dart';
 
-class UserInfoScreen extends StatefulWidget {
-  const UserInfoScreen({Key? key}) : super(key: key);
+import 'package:http/http.dart' as http;
+
+class JoinCompleteScreen extends StatefulWidget {
+  const JoinCompleteScreen({Key? key});
 
   @override
-  State<UserInfoScreen> createState() => _UserInfoScreenState();
+  _JoinCompleteScreenState createState() => _JoinCompleteScreenState();
 }
 
-class _UserInfoScreenState extends State<UserInfoScreen> {
+class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
+  Future<void> registerUser(User user) async {
+    final String apiUrl = 'http://10.0.2.2:8080/users';
+
+    try {
+      // Create a MultipartRequest
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+
+      // Add form fields
+      request.fields['username'] = user.username!;
+      request.fields['password'] = user.password!;
+      request.fields['name'] = user.name!;
+      request.fields['nickname'] = user.nickname!;
+      request.fields['phone'] = user.phone!;
+      request.fields['email'] = user.email!;
+      request.fields['auth'] = user.auth.toString();
+
+      // Send the request
+      var response = await request.send();
+
+      // Read and print the server response
+      var resBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        // 회원가입 성공
+        print('회원가입 성공');
+        print('서버 응답: $resBody');
+      } else {
+        // 회원가입 실패
+        print('회원가입 실패: ${response.reasonPhrase}');
+        print('서버 응답: $resBody');
+      }
+    } catch (e) {
+      print('오류: $e');
+    }
+  }
+  // - 계속 회원가입이 실패했던 이유
+  // 서버는 http.MultipartRequest를 받도록 설정되어 있었는데
+  // http.post로 요청했기 때문에
+
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as User?;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('내정보'),
@@ -28,18 +69,19 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SizedBox(height: MediaQuery.of(context).padding.top + 15),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text(
-            //       "",
-            //       style: pSemiBold20.copyWith(
-            //         fontSize: 18,
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            SizedBox(height: MediaQuery.of(context).padding.top + 15),
+            if (user != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  Text('아이디: ${user.username}'),
+                  Text('이름: ${user.name}'),
+                  Text('닉네임: ${user.nickname}'),
+                  Text('전화번호: ${user.phone}'),
+                  Text('이메일: ${user.email}'),
+                  Text('권한: ${user.auth}'),
+              ],
+            ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -197,13 +239,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  'koogc0724',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+
+
+          if (user != null)
+            Text(
+              '${user.username}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            
                               ],
                             ),
                           ),
@@ -380,7 +427,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => UserUpdateScreen(),
+                                builder: (context) => joinScreen(),
                               ),
                             );
                           },
@@ -491,3 +538,5 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+
+

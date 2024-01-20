@@ -9,19 +9,22 @@ class CustomTextField extends StatelessWidget {
   final Widget prefix;
   final Widget sufix;
   final Color? borderColor;
-  final void Function(String)? onChanged;   // [추가]
+  final void Function(String)? onChanged;       // 변화를 감지할 때 사용
+  final bool obscureText;                       // 비밀번호와 같이 사용자에게 보여지면 안될 때 사용
+  final TextInputType keyboardType;
 
-  const CustomTextField(
-    {
-      super.key,
-      required this.hintText,
-      required this.controller,
-      required this.prefix,
-      required this.sufix,
-      this.borderColor,
-      this.onChanged,   // [추가]
-    }
-  );
+  // 선택적 매개변수에 기본값 false 설정
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    required this.controller,
+    required this.prefix,
+    required this.sufix,
+    this.borderColor,
+    this.onChanged,
+    this.obscureText = false,                   // 참일 때 입력창에 보여지지 않음.
+    this.keyboardType = TextInputType.text,     // 평소에는 일반 키보드가 나온다.
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,8 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
         style: pSemiBold18.copyWith(
           fontSize: 14,
         ),
