@@ -17,6 +17,7 @@ import 'package:livedom_app/screens/team/team_list.dart';
 import 'package:livedom_app/screens/team/team_read.dart';
 import 'package:livedom_app/screens/team/team_read_app.dart';
 import 'package:livedom_app/screens/team/team_update.dart';
+import 'package:livedom_app/screens/user/bottem_nav.dart';
 import 'package:livedom_app/screens/user/home_screen.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:livedom_app/provider/user_provider.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
       routes: {
         //  user
         '/': (context) => HomeScreen(),
+        '/main': (context) => MainScreen(),
         '/login': (context) => LoginScreen(),
         '/logout': (context) => LogoutScreen(),
         '/join/id' : (context) => joinScreen(),
