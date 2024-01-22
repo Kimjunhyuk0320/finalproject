@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joeun.midproject.dto.Comment;
 import com.joeun.midproject.dto.Ticket;
 import com.joeun.midproject.dto.Users;
 import com.joeun.midproject.mapper.FacilityRentalMapper;
@@ -178,18 +180,23 @@ public class UserApiController {
     }
 
     @PutMapping("/viewUp")
-    public ResponseEntity<String> viewUp(String parentTable, int parentNo) {
+    public ResponseEntity<String> viewUp(@RequestBody Comment comment) {
+        System.out.println(comment.toString());
         int result = 0;
         try {
-            switch (parentTable) {
+            switch (comment.getParentTable()) {
                 case "team_recruitments":
-                result = teamMapper.viewUp(parentNo);
+                    result = teamMapper.viewUp(comment);
                     break;
                 default:
                     break;
             }
-            if(result != 0) return new ResponseEntity<>("수정 성공", HttpStatus.OK);
-            else return new ResponseEntity<>("수정 실패", HttpStatus.OK);
+            if (result != 0) {
+                System.out.println(result);
+                return new ResponseEntity<>("수정 성공", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("수정 실패", HttpStatus.OK);
+            }
         } catch (Exception e) {
             // 예외 처리 로직
             return new ResponseEntity<>("서버 오류", HttpStatus.INTERNAL_SERVER_ERROR);

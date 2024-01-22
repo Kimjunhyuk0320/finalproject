@@ -1,8 +1,7 @@
+
 import 'dart:convert';
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:livedom_app/model/team.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
@@ -33,13 +32,12 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      final context = this.context;
-      final user = Provider.of<TempUserProvider>(
-        context,
-        listen: false,
-      );
+    viewUp();
+  }
+  Future<void> viewUp() async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
       final Map team = ModalRoute.of(context)?.settings.arguments as Map;
+      print('팀 데이터는 다음과 같습니다 : ${team}');
       var headers = {
         'Content-Type': 'application/json',
       };
@@ -49,12 +47,14 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
           'parentNo': team['teamNo'],
         },
       );
-      http.put(
+      print(team['teamNo']);
+      await http.put(
         Uri.parse('http://10.0.2.2:8080/api/user/viewUp'),
         headers: headers,
         body: body,
       );
     });
+
   }
 
   @override

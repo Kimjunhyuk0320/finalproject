@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.joeun.midproject.dto.Comment;
 import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.PageInfo;
 import com.joeun.midproject.dto.Team;
@@ -39,6 +40,6 @@ public interface TeamMapper {
 
   public int maxPk();
 
-  public int viewUp(int parentNo);
+  public int viewUp(Comment comment);
   
 }

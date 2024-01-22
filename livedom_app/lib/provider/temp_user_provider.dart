@@ -1,8 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:http/http.dart' as http;
 
 class TempUserProvider extends ChangeNotifier {
   // 로그인 정보
