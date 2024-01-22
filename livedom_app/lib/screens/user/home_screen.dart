@@ -120,6 +120,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pushNamed(context, "/mypage/ticketSaleList");
                 },
               ),
+              ElevatedButton(
+                child: Text("마이페이지 - 대관 모집 현황"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  elevation: 5
+                ),
+                onPressed: () async {
+                  Navigator.pushNamed(context, "/mypage/rental/state");
+                },
+              ),
+              ElevatedButton(
+                child: Text("마이페이지 - 신청한 대관 내역"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  elevation: 5
+                ),
+                onPressed: () async {
+                  Navigator.pushNamed(context, "/mypage/rental/myApp");
+                },
+              ),
             ],
           )
         ),

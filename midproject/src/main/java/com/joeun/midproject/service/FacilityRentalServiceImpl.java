@@ -60,7 +60,6 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
     public FacilityRental select(int frNo) throws Exception {
         FacilityRental facilityRental = facilityRentalMapper.select(frNo);
         if(facilityRental!=null){
-            facilityRentalMapper.viewsUp(frNo);
             Files files = new Files();
             files.setParentNo(facilityRental.getFrNo());
             files.setParentTable("facility_rental");

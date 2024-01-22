@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
   @Autowired
   private TeamMapper teamMapper;
@@ -32,49 +32,41 @@ public class TeamServiceImpl implements TeamService{
   public int insert(Team team) {
 
     int result = teamMapper.insert(team);
-    if(result>0){
+    if (result > 0) {
       return teamMapper.maxPk();
-    }else return 0;
+    } else
+      return 0;
   }
 
   @Override
   public int update(Team team) {
 
     int result = teamMapper.update(team);
-    if(result>0){
+    if (result > 0) {
       return team.getTeamNo();
-    }else return 0;
+    } else
+      return 0;
   }
-  
+
   @Override
   public int delete(Team team) {
     team.setRecStatus(teamMapper.read(team).getRecStatus());
     int result = teamMapper.delete(team);
-  
-    if(result>0){
+
+    if (result > 0) {
       return team.getTeamNo();
-    }else return 0;
+    } else
+      return 0;
   }
-  
+
   @Override
   public Team read(Team team) {
 
-    int resultView = teamMapper.addView(team);
     Team resultTeam = new Team();
 
-    if(resultView>0){
+    resultTeam = teamMapper.read(team);
+    return resultTeam;
 
-      resultTeam = teamMapper.read(team);
-      return resultTeam;
-    }
-    else{
-
-      return resultTeam;
-
-    }
-
-  
-  
   }
 
   @Override
@@ -83,7 +75,7 @@ public class TeamServiceImpl implements TeamService{
     List<Team> listByConfirmedList = teamMapper.listByConfirmedLive(username);
 
     return listByConfirmedList;
-    
+
   }
 
   @Override
@@ -122,6 +114,4 @@ public class TeamServiceImpl implements TeamService{
 
   }
 
-
-  
 }

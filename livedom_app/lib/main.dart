@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
+import 'package:livedom_app/screens/liveBoard/liveboard_insert.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
+import 'package:livedom_app/screens/liveBoard/liveboard_update.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/buy_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/sale_ticket_list.dart';
 import 'package:livedom_app/screens/myPage/liveBoard/ticket_detail.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/myPage/mypageRental/my_rental_app.dart';
+import 'package:livedom_app/screens/myPage/mypageRental/rental_state.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/confirmed_live.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/my_team_app.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state.dart';
 import 'package:livedom_app/screens/myPage/mypageTeam/team_state_read.dart';
+import 'package:livedom_app/screens/rental/rental_insert.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/rental/rental_read_page.dart';
+import 'package:livedom_app/screens/rental/rental_update.dart';
 import 'package:livedom_app/screens/team/team_insert.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
 import 'package:livedom_app/screens/team/team_read.dart';
@@ -91,14 +97,20 @@ class MyApp extends StatelessWidget {
         // liveboard
         '/liveboard': (context) => LiveBoardListScreen(),
         '/liveboard/read': (context) => LiveBoardReadScreen(),
+        '/liveboard/update': (context) => LiveBoardUpdateScreen(),
+        '/liveboard/insert': (context) => LiveBoardInsertScreen(),
         '/mypage/team/state': (context) => TeamStateScreen(),
         '/mypage/team/state/read': (context) => TeamStateReadScreen(),
         '/mypage/team/myApp': (context) => MyTeamAppScreen(),
         '/mypage/team/confirmedLive': (context) => ConfirmedLiveScreen(),
+        '/mypage/rental/state': (context) => RentalStateScreen(),
+        '/mypage/rental/myApp': (context) => MyRentalAppScreen(),
 
         // rental
         '/rental': (context) => RentalListScreen(),
         '/rental/read': (context) => RentalReadScreen(),
+        '/rental/update': (context) => RentalUpdateScreen(),
+        '/rental/insert': (context) => RentalInsertScreen(),
 
         // team
         '/team': (context) => TeamListScreen(),

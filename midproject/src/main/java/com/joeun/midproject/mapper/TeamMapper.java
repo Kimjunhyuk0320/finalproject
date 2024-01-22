@@ -38,5 +38,7 @@ public interface TeamMapper {
   public int confirmed(Team team);
 
   public int maxPk();
+
+  public int viewUp(int parentNo);
   
 }

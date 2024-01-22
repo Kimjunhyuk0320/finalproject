@@ -73,6 +73,9 @@ dependencies:
   carousel_slider: ^4.2.1
   flutter_native_splash: ^2.3.9
 
+  # 이미지 피커(삽입)
+  image_picker: ^1.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

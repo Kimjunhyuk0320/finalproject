@@ -219,4 +219,8 @@ FROM ${table}
     WHERE team_no = #{teamNo}
   </update>
 
+  <update id="viewUp">
+  UPDATE `team_recruitments` SET views = views + 1 WHERE team_no = #{parentNo}
+  </update>
+
 </mapper>
