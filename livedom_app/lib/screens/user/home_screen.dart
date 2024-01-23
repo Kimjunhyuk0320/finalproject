@@ -120,6 +120,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pushNamed(context, "/mypage/ticketSaleList");
                 },
               ),
+              ElevatedButton(
+                child: Text("홈 화면"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  elevation: 5
+                ),
+                onPressed: () async {
+                  Navigator.pushNamed(context, "/main");
+                },
+              ),
             ],
           )
         ),
