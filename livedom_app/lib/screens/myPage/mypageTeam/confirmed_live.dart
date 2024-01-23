@@ -30,7 +30,7 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
 
   Widget SetStateByDate(String liveDate) {
     int now = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
-    int parsedLiveDate = int.parse(liveDate.replaceAll('/', ''));
+    int parsedLiveDate = int.parse(liveDate.replaceAll('/homeview', ''));
 
     if (now - parsedLiveDate < 0) {
       //공연예정

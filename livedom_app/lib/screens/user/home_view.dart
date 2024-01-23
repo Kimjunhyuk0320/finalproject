@@ -6,10 +6,13 @@ import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/user/home_screen.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -19,6 +22,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  // UserProvider 참조
+  // final AuthProvider _authProvider = Get.find<AuthProvider>();
+
   final List<String> slideList = [
     'assets/images/newJS.png',
     'assets/images/aespa.jpg',
@@ -27,6 +33,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // 현재 로그인한 사용자 정보 가져오기
+    // final String username = _authProvider.;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -54,11 +62,19 @@ class _HomeViewState extends State<HomeView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Hi kyocha_nnnnnnn!",
-                              style: pRegular14.copyWith(
-                                fontSize: 12,
-                              ),
+                            Consumer<AuthProvider>(
+                              builder: (context, authProvider, child) {
+                                if (authProvider.currentUser != null) {
+                                  return Text(
+                                    '환영합니다, ${authProvider.currentUser!.username}님!',
+                                    style: pRegular14.copyWith(
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                } else {
+                                  return Text('로그인이 필요합니다.');
+                                }
+                              },
                             ),
                             const SizedBox(height: 1),
                             Text(

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
+import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class UserUpdateScreen extends StatefulWidget {
   const UserUpdateScreen({Key? key}) : super(key: key);
@@ -15,12 +19,118 @@ class UserUpdateScreen extends StatefulWidget {
 }
 
 class _UserUpdateScreenState extends State<UserUpdateScreen> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordCheckController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nickNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // AuthProvider에서 사용자 정보를 가져와서 컨트롤러에 설정
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.getUserInfo();
+    final currentUser = authProvider.currentUser;
+
+    if (currentUser != null) {
+      // usernameController.text = currentUser.username ?? '';
+      usernameController.text = currentUser.username ?? '';
+      nameController.text = currentUser.name ?? '';
+      nickNameController.text = currentUser.nickname ?? '';
+      phoneController.text = currentUser.phone ?? '';
+      emailController.text = currentUser.email ?? '';
+      print("currentUser.auth : ${currentUser.auth}");
+
+      // 초기에 페이지에 들어갈 때 권한을 설정하는 코드
+      if(currentUser.auth == "ROLE_USER") {
+        selectedPermission = "ROLE_USER";
+      } else if (currentUser.auth == "ROLE_BAND") {
+        selectedPermission = "ROLE_BAND";
+      } else {
+        selectedPermission = "ROLE_CLUB";
+      }
+    }
+  }
+
+  // 유저 정보 수정
+  Future<void> userUpdate() async {
+    // 각 컨트롤러에서 현재 입력된 값을 가져옴
+    String username = usernameController.text;
+    String password = passwordController.text;
+    String passwordCheck = passwordCheckController.text;
+    String name = nameController.text;
+    String nickname = nickNameController.text;
+    String phone = phoneController.text;
+    String email = emailController.text;
+    String auth = selectedPermission;
+
+    // 비밀번호 유효성 검사 함수
+    bool isPasswordValid(String password) {
+      // 비밀번호는 대문자, 소문자, 특수문자를 포함하고 8글자 이상이어야 함
+      final RegExp regex =
+          RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$');
+      return regex.hasMatch(password);
+    }
+
+    // 비밀번호 확인 검사 함수
+    bool isPasswordCheck(String password, String passwordcheck) {
+      if (password == passwordcheck) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // 문자열로 들어오는 권한을 권한에 따라 각각 0, 1, 2로 바꾸어줌.
+    if (auth == '유저권한') {
+      auth = '0';
+    } else if (auth == '클럽권한') {
+      auth = '1';
+    } else {
+      auth = '2';
+    }
+
+    var headersList = {
+      'Accept': '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
+    };
+    var url = Uri.parse('http://10.0.2.2:8080/users');
+
+    var body = {
+      'username': username,
+      'password': password,
+      'name': name,
+      'nickname': nickname,
+      'email': email,
+      'phone': phone,
+      'auth': auth,
+    };
+
+    var req = http.MultipartRequest('PUT', url);
+    req.headers.addAll(headersList);
+    req.fields.addAll(body);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(resBody);
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
   String selectedPermission = ''; // 선택된 권한
 
   void selectPermission(String permission) {
     setState(
       () {
         selectedPermission = permission;
+        print('selectedPermission : ${selectedPermission}');
       },
     );
   }
@@ -158,54 +268,57 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                     children: [
                       const SizedBox(height: 30),
                       CustomTextWithoutPrefixField(
+                        readOnly: true,
                         hintText: "아이디", // 인풋의 힌트가 여기에 담긴다.
-                        controller: TextEditingController(
-                            text: "아이디"), // 유저 정보가 여기에 들어가게 될 것이다.
+                        controller: usernameController,
                         title: "아이디", // 인풋이 뭔지 설명하는 위쪽 텍스트
+                        sufix: const SizedBox(),
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextWithoutPrefixField(
+                        obscureText: true,
+                        hintText: "비밀번호", // 인풋의 힌트가 여기에 담긴다.
+                        controller: passwordController,
+                        title: "비밀번호", // 인풋이 뭔지 설명하는 위쪽 텍스트
+                        sufix: const SizedBox(),
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextWithoutPrefixField(
+                        obscureText: true,
+                        hintText: "비밀번호 확인", // 인풋의 힌트가 여기에 담긴다.
+                        controller: passwordCheckController,
+                        title: "비밀번호 확인", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
                       const SizedBox(height: 20),
                       CustomTextWithoutPrefixField(
                         hintText: "이름", // 인풋의 힌트가 여기에 담긴다.
-                        controller: TextEditingController(
-                            text: "이름"), // 유저 정보가 여기에 들어가게 될 것이다.
+                        controller: nameController,
                         title: "이름", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
                       const SizedBox(height: 20),
                       CustomTextWithoutPrefixField(
+                        hintText: "닉네임", // 인풋의 힌트가 여기에 담긴다.
+                        controller: nickNameController,
+                        title: "닉네임", // 인풋이 뭔지 설명하는 위쪽 텍스트
+                        sufix: const SizedBox(),
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextWithoutPrefixField(
                         hintText: "연락처",
-                        controller: TextEditingController(text: "연락처"),
+                        controller: phoneController,
                         title: "연락처",
                         sufix: const SizedBox(),
                       ),
                       const SizedBox(height: 20),
                       CustomTextWithoutPrefixField(
                         hintText: "이메일",
-                        controller: TextEditingController(text: "이메일"),
+                        controller: emailController,
                         title: "이메일",
                         sufix: const SizedBox(),
                       ),
                       const SizedBox(height: 20),
-                      // CustomTextWithoutPrefixField(
-                      //   hintText: "권한",
-                      //   controller:
-                      //       TextEditingController(text: "$selectedPermission"),
-                      //   title: "권한",
-                      //   sufix: const SizedBox(),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // CustomTextWithoutPrefixField(
-                      //   hintText: "연락처",
-                      //   controller: TextEditingController(text: "연락처"),
-                      //   title: "연락처",
-                      //   sufix: const Icon(
-                      //     Icons.keyboard_arrow_down,
-                      //     color: ConstColors.greyColor,
-                      //     size: 18,
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 30),
                       const Text(
                         "권한",
                         style: TextStyle(
@@ -222,62 +335,19 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                         children: [
                           PermissionButton(
                             permission: '유저권한',
-                            isSelected: selectedPermission == '유저권한',
-                            onSelect: () => selectPermission('유저권한'),
+                            isSelected: selectedPermission == 'ROLE_USER',
+                            onSelect: () => selectPermission('ROLE_USER'),
                           ),
                           PermissionButton(
                             permission: '밴드권한',
-                            isSelected: selectedPermission == '밴드권한',
-                            onSelect: () => selectPermission('밴드권한'),
+                            isSelected: selectedPermission == 'ROLE_BAND',
+                            onSelect: () => selectPermission('ROLE_BAND'),
                           ),
                           PermissionButton(
                             permission: '클럽권한',
-                            isSelected: selectedPermission == '클럽권한',
-                            onSelect: () => selectPermission('클럽권한'),
+                            isSelected: selectedPermission == 'ROLE_CLUB',
+                            onSelect: () => selectPermission('ROLE_CLUB'),
                           ),
-                          // const SizedBox(height: 30),
-                          // Text(
-                          //   selectedPermission.isEmpty
-                          //       ? '권한을 선택하지 않았습니다.'
-                          //       : '"$selectedPermission"을 선택하였습니다',
-                          //   style: const TextStyle(
-                          //     fontSize: 20,
-                          //     fontWeight: FontWeight.bold,
-                          //   ),
-                          // ),
-                          // const SizedBox(height: 70),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 30),
-                          //   child: ElevatedButton(
-                          //     onPressed: () {
-                          //       Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //             builder: (context) => UserInfoScreen()),
-                          //       );
-                          //     },
-                          //     style: ElevatedButton.styleFrom(
-                          //       backgroundColor: Colors.black,
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(15.0),
-                          //       ),
-                          //     ),
-                          //     child: Container(
-                          //       width: 320.0,
-                          //       height: 60.0,
-                          //       child: const Center(
-                          //         child: Text(
-                          //           '회원가입 완료',
-                          //           style: TextStyle(
-                          //             color: Colors.white,
-                          //             fontSize: 20.0,
-                          //             fontWeight: FontWeight.w700,
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -289,7 +359,10 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
             CustomButton(
               text: "정보 수정",
               onTap: () {
+                _showModalBottomSheet(context);
+                userUpdate();
                 Navigator.pop(context);
+                print("유저정보 업데이트 관련1");
               },
             ),
             const SizedBox(height: 20),
@@ -342,3 +415,44 @@ class PermissionButton extends StatelessWidget {
     );
   }
 }
+
+// 비밀번호를 통한 정보 수정
+void _showModalBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200, // 원하는 높이 설정
+          child: Column(
+            children: [
+              ListTile(
+                title: Text('Option 1'),
+                onTap: () {
+                  // 원하는 동작 수행
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Option 2'),
+                onTap: () {
+                  // 원하는 동작 수행
+                  Navigator.pop(context);
+                },
+              ),
+              // 추가적인 아이템들을 여기에 추가할 수 있습니다.
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+// 비밀번호가 일치할 때 정보수정이 되도록 변경
+
+// 아이디, 닉네임 중복검사
+
+// 유저 프로필 사진
+
+// 카카오 로그인
+
+// 쉐어드 프리퍼런스

@@ -5,8 +5,11 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/screens/user/user_update_screen.dart';
+import 'package:provider/provider.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key? key}) : super(key: key);
@@ -18,12 +21,23 @@ class UserInfoScreen extends StatefulWidget {
 class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
+    // AuthProvider에 접근
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    // AuthProvider에서 현재 유저 정보 가져오기
+    Users? currentUser = authProvider.currentUser;
+    print("currentUser : ${currentUser}");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('내정보'),
         centerTitle: true,
       ),
       body: Padding(
+        // child: Consumer<AuthProvider>(
+        //   builder: (context, authProvider, child) {
+        //     final user = UserProvider.user;
+        //   }
+        // )
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +198,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -198,7 +212,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  'koogc0724',
+                                  currentUser?.username ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -214,7 +228,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -228,7 +242,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  '구교찬',
+                                  currentUser?.name ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -244,7 +258,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -258,7 +272,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  'kyocha_nnnnnnn',
+                                  currentUser?.nickname ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -274,7 +288,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -288,7 +302,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  '밴드 권한',
+                                  currentUser?.auth ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -317,7 +331,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -331,7 +345,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  '01023250724',
+                                  currentUser?.phone ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -347,7 +361,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -361,7 +375,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  'example@mail.com',
+                                  currentUser?.email ?? '로그인 필요',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,

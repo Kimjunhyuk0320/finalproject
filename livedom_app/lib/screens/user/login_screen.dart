@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/user/home_view.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,10 +21,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
+  // Future<void> login() async {
+  //   try {
+  //     // Provider에서 로그인 처리
+  //     await Provider.of<UserProvider>(context, listen: false)
+  //         .login(usernameController.text, passwordController.text);
 
+  //     // 이후 로그인 성공 후의 동작을 여기에 추가하면 됩니다.
+  //     // 예: Navigator.push(...)
+  //   } catch (error) {
+  //     print('로그인 실패: $error');
+  //   }
+  // }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 30),
                     CustomTextField(
                       hintText: "아이디",
-                      controller: TextEditingController(),
+                      controller: usernameController,
+                      onChanged: (value) {
+                        print('[회원기입] - 아이디 : $value');
+                        usernameController.text = value;
+                      },
                       prefix: const Padding(
                         padding: EdgeInsets.only(
                             left: 22, right: 30, top: 20, bottom: 20),
@@ -64,7 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
                     CustomTextField(
                       hintText: "비밀번호",
-                      controller: TextEditingController(),
+                      obscureText: true,
+                      controller: passwordController,
+                      onChanged: (value) {
+                        print('[회원기입] - 비밀번호 : $value');
+                        passwordController.text = value;
+                      },
                       prefix: const Padding(
                         padding: EdgeInsets.only(
                             left: 22, right: 14, top: 12, bottom: 12),
@@ -82,15 +105,53 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 30),
                     InkWell(
-                      onTap: () {
-                        // Container를 눌렀을 때 수행할 동작을 여기에 작성
-                        // 예: 다른 페이지로 이동하는 코드
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const joinScreen(),
-                          ),
-                        );
+                      onTap: () async {
+                        String username = usernameController.text;
+                        String password = passwordController.text;
+
+                        print('사용자 이름: $username');
+                        print('비밀번호: $password');
+
+                        try {
+                          // Provider에서 로그인 처리
+                          bool loginStatus = await Provider.of<AuthProvider>(context,
+                                  listen: false)
+                              .login(username, password);
+
+                          if( loginStatus ) {
+                            // 로그인 성공 시 페이지 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeView(),
+                              ),
+                            );
+                          }
+                          // 로그인 실패 : 아이디 및 비번 불일치 등
+                          else {
+                            // 로그인 실패 시 알림창 띄우기
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('로그인 실패'),
+                                  content: const Text('아이디와 비밀번호를 확인해주세요'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // 알림창 닫기
+                                      },
+                                      child: Text('확인'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                          }
+                        } catch (error) {
+                          print('로그인 실패: $error');
+                        }
                       },
                       child: Container(
                         width: 360.0,
@@ -148,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             15.0), // 숫자를 조절하여 원하는 둥근 정도를 지정
                       ),
                       child: Row(
-                        mainAxisAlignment:MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // 이미지 추가
@@ -185,44 +246,51 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 130),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        String username = '사용자 이름';
+                        String password = '비밀번호';
+
+                        // Provider를 사용하여 로그인 메서드를 호출합니다.
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .login(username, password);
                         // Container를 눌렀을 때 수행할 동작을 여기에 작성
                         // 예: 다른 페이지로 이동하는 코드
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomeView(),
+                            builder: (context) => const joinScreen(),
                           ),
                         );
                       },
                       child: const Center(
-                          child: Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '아직 회원이 아니신가요? ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
-                                height: 0,
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '아직 회원이 아니신가요? ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w500,
+                                  height: 0,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: '회원가입',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                height: 0,
+                              TextSpan(
+                                text: '회원가입',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                  height: 0,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      )),
+                      ),
                     ),
                   ],
                 ),

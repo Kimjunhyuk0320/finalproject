@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
-import 'package:livedom_app/model/user.dart';
+import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 
@@ -159,7 +159,7 @@ class _joinScreenState extends State<joinScreen> {
                       showInvalidUsernamePopup(context);
                       return;
                     }
-                    User inputUser = User();
+                    Users inputUser = Users();
                     inputUser.username = usernameController.text;
                     Navigator.pushNamed(
                       context,
@@ -201,7 +201,7 @@ class JoinPwScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
     // print('JoinScreen -> JoinPwSreen : ${user?.username}');
 
     return Scaffold(
@@ -425,7 +425,7 @@ class JoinPwScreen extends StatelessWidget {
                     }
 
                     // 유효성 검사를 실시한 후 다음 화면으로 이동하는 코드
-                    User? inputUser = user;
+                    Users? inputUser = user;
                     inputUser?.password = passwordController.text;
                     Navigator.pushNamed(
                       context,
@@ -450,7 +450,7 @@ class JoinNameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -600,7 +600,7 @@ class JoinNameScreen extends StatelessWidget {
                       );
                       return;
                     }
-                    User? inputUser = user;
+                    Users? inputUser = user;
                     inputUser?.name = nameController.text;
                     inputUser?.nickname = nicknameController.text;
                     Navigator.pushNamed(
@@ -632,7 +632,7 @@ class JoinPhoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -786,7 +786,7 @@ class JoinEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -897,17 +897,17 @@ class JoinAuthScreen extends StatefulWidget {
 }
 
 class JoinAuthScreenState extends State<JoinAuthScreen> {
-
   void selectPermission(String permission) {
     setState(() {
       selectedPermission = permission;
     });
   }
+
   String selectedPermission = ''; // 선택된 권한
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
     // final TextEditingController authController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
@@ -993,16 +993,24 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                   child: CustomButton(
                     text: "가입 완료",
                     onTap: () {
-                      user!.auth = selectedPermission;
-                      // user!.auth = "1";
+                      // user!.auth = selectedPermission;
+                      if (user != null) {
+                        if (selectedPermission == "유저권한") {
+                          user.auth = '0';
+                        } else if (selectedPermission == "클럽권한") {
+                          user.auth = '1';
+                        } else if (selectedPermission == "밴드권한") {
+                          user.auth = '2';
+                        }
 
-                      print('User객체 확인 아이디 : ${user.username}');
-                      print('User객체 확인 비번 : ${user.password}');
-                      print('User객체 확인 실명 : ${user.name}');
-                      print('User객체 확인 닉네임 : ${user.nickname}');
-                      print('User객체 확인 연락처 : ${user.phone}');
-                      print('User객체 확인 이메일 : ${user.email}');
-                      print('User객체 확인 권한 : ${user.auth}');
+                        print('User객체 확인 아이디 : ${user.username}');
+                        print('User객체 확인 비번 : ${user.password}');
+                        print('User객체 확인 실명 : ${user.name}');
+                        print('User객체 확인 닉네임 : ${user.nickname}');
+                        print('User객체 확인 연락처 : ${user.phone}');
+                        print('User객체 확인 이메일 : ${user.email}');
+                        print('User객체 확인 권한 : ${user.auth}');
+                      }
 
                       Navigator.pushNamed(
                         context,

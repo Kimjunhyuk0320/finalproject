@@ -71,13 +71,18 @@ class CustomTextWithoutPrefixField extends StatelessWidget {
   final TextEditingController controller;
   final Widget? sufix;
   final Color? borderColor;
+  final bool obscureText;
+  final bool readOnly;
+  
   const CustomTextWithoutPrefixField(
       {super.key,
       required this.hintText,
       required this.controller,
       this.borderColor,
       this.sufix,
-      required this.title});
+      required this.title, 
+      this.obscureText = false,
+      this.readOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +100,8 @@ class CustomTextWithoutPrefixField extends StatelessWidget {
         SizedBox(
           height: 56,
           child: TextFormField(
+            readOnly: readOnly,
+            obscureText: obscureText,
             controller: controller,
             style: pSemiBold18.copyWith(
               fontSize: 14,

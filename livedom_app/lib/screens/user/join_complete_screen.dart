@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
-import 'package:livedom_app/model/user.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
+import 'package:livedom_app/screens/user/home_view.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
+import 'package:livedom_app/screens/user/login_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 
 import 'package:http/http.dart' as http;
@@ -16,7 +19,7 @@ class JoinCompleteScreen extends StatefulWidget {
 }
 
 class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
-  Future<void> registerUser(User user) async {
+  Future<void> registerUser(Users user) async {
     final String apiUrl = 'http://10.0.2.2:8080/users';
 
     try {
@@ -55,9 +58,23 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
   // 서버는 http.MultipartRequest를 받도록 설정되어 있었는데
   // http.post로 요청했기 때문에
 
+  // 번호에 따른 권한 출력을 위한 함수
+  String getAuthName(String authValue) {
+    switch (authValue) {
+      case '0':
+        return '유저권한';
+      case '1':
+        return '클럽권한';
+      case '2':
+        return '밴드권한';
+      default:
+        return '알 수 없는 권한';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments as User?;
+    final user = ModalRoute.of(context)!.settings.arguments as Users?;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,18 +87,18 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top + 15),
-            if (user != null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                  Text('아이디: ${user.username}'),
-                  Text('이름: ${user.name}'),
-                  Text('닉네임: ${user.nickname}'),
-                  Text('전화번호: ${user.phone}'),
-                  Text('이메일: ${user.email}'),
-                  Text('권한: ${user.auth}'),
-              ],
-            ),
+            // if (user != null)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text('아이디: ${user.username}'),
+            //       Text('이름: ${user.name}'),
+            //       Text('닉네임: ${user.nickname}'),
+            //       Text('전화번호: ${user.phone}'),
+            //       Text('이메일: ${user.email}'),
+            //       Text('권한: ${user.auth}'),
+            //     ],
+            //   ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -226,7 +243,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -240,17 +257,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
 
-
-          if (user != null)
-            Text(
-              '${user.username}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            
+                                if (user != null)
+                                  Text(
+                                    '${user.username}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -261,7 +275,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -274,13 +288,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  '구교찬',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                if (user != null)
+                                  Text(
+                                    '${user.name}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -291,7 +306,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -304,13 +319,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  'kyocha_nnnnnnn',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                if (user != null)
+                                  Text(
+                                    '${user.nickname}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -321,7 +337,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -334,13 +350,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  '밴드 권한',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                if (user != null)
+                                  Text(
+                                    '${getAuthName(user.auth!)}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -364,18 +381,19 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '연락처',
-                                  style: TextStyle(
-                                    color: ConstColors.greyColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal,
+                                if (user != null)
+                                  Text(
+                                    '${user.phone}',
+                                    style: TextStyle(
+                                      color: ConstColors.greyColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                   ),
-                                ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
                                   '01023250724',
@@ -394,7 +412,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             vertical: 20.0, horizontal: 20.0),
                         child: Container(
                           // color: Colors.green,
-                          child: const Center(
+                          child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -407,13 +425,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  'example@mail.com',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                if (user != null)
+                                  Text(
+                                    '${user.email}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -421,13 +440,18 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                       ),
                       const SizedBox(height: 20),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 0),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            if (user != null) {
+                              registerUser(user);
+                            } else {
+                              print('사용자 정보가 없습니다.');
+                            }
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => joinScreen(),
+                                builder: (context) => LoginScreen(),
                               ),
                             );
                           },
@@ -442,7 +466,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             height: 50.0,
                             child: const Center(
                               child: Text(
-                                '정보 수정',
+                                '가입 완료',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18.0,
@@ -466,6 +490,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
   }
 }
 
+// row 커스텀
 Widget row(String image, String text, VoidCallback onTap) {
   return GestureDetector(
     onTap: () {
@@ -538,5 +563,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-

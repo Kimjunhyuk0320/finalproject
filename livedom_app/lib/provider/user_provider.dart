@@ -13,7 +13,19 @@ class UserProvider extends ChangeNotifier{
   // getter
   // get : getter 메소드를 정의하는 키워드
   User get userInfo => _userInfo;   //전역변수
-  bool get isLogin => _loginStat;//전역번수
+  bool get isLogin => _loginStat;   //전역번수
+
+  String? username;
+  String? password;
+
+  void loginUser(String username, String password) {
+    this.username = username;
+    this.password = password;
+
+    // 로그인 정보 변경을 알립니다.
+    notifyListeners();
+  }
+
 
   Future<void> loginCheck() async{
     // 비로그인
