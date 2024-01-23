@@ -36,9 +36,52 @@ class _TeamListScreenState extends State<TeamListScreen> {
     });
   }
 
+  int selectedIndex = 2;
+  Widget buildTextButton(int buttonIndex, String buttonText) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          selectedIndex = buttonIndex;
+          _page = 1;
+          _teamList.clear();
+        });
+        getTeamList();
+        print(_teamList);
+      },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            side: BorderSide(
+              color: selectedIndex == buttonIndex
+                  ? Colors.blue
+                  : Colors.transparent,
+            ),
+          ),
+        ),
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed) ||
+                states.contains(MaterialState.hovered)) {
+              return Colors.transparent;
+            }
+            return Colors.transparent;
+          },
+        ),
+      ),
+      child: Text(
+        buttonText,
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
   Future getTeamList() async {
+    print(selectedIndex);
     var teamListURL =
-        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}&keyword=${_keywordController.text}';
+        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}&order=${selectedIndex}&keyword=${_keywordController.text}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -175,6 +218,25 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 ),
               ),
               Container(
+                margin: EdgeInsets.only(bottom: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildTextButton(0, '인기순'),
+                    buildTextButton(1, '공연임박순'),
+                    buildTextButton(2, '최신순'),
+                  ],
+                ),
+                width: MediaQuery.of(context).size.width * 0.56,
+                height: 35,
+              ),
+              Container(
                 alignment: Alignment.centerRight,
                 child: Container(
                   width: 90.0,
@@ -260,6 +322,29 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                 Text('장소 : ${item['address']}'),
                                 Text(
                                     '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 20,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: Border.all(
+                                      color: item['confirmed'] == 1
+                                          ? Colors.red
+                                          : Colors.green,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    item['confirmed'] == 1 ? '마감' : '모집중',
+                                    style: TextStyle(
+                                      color: item['confirmed'] == 1
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontSize: 12.0,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

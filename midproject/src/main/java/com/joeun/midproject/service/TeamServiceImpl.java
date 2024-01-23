@@ -1,5 +1,6 @@
 package com.joeun.midproject.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,8 +94,14 @@ public class TeamServiceImpl implements TeamService {
     pageInfo.setSearchType(page.getSearchType());
     pageInfo.setTable("team_recruitments");
     page.setTotal(teamMapper.totalCount(pageInfo));
+    log.info("Counting 성공");
 
-    List<Team> teamList = teamMapper.pageList(page);
+    List<Team> teamList = new ArrayList<>();
+try {
+   teamList = teamMapper.pageList(page);
+} catch (Exception e) {
+  e.printStackTrace();
+}
 
     log.info(page.toString());
 

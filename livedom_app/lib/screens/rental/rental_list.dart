@@ -12,7 +12,7 @@ class RentalListScreen extends StatefulWidget {
 }
 
 class _RentalListScreenState extends State<RentalListScreen> {
-  int selectedIndex = 0;
+  int selectedIndex = 2;
 
   final ScrollController _controller = ScrollController();
 
@@ -52,9 +52,11 @@ class _RentalListScreenState extends State<RentalListScreen> {
 
   Future fetch() async {
     print('fetch...');
+    print('${_page} and ${selectedIndex}');
     // 여기에 네트워크 요청 등을 처리하면 됩니다.
     // 이 예제에서는 간단히 items에 추가하는 형태로 작성했습니다.
-    final url = Uri.parse('http://10.0.2.2:8080/api/fr?page${_page}');
+    final url = Uri.parse(
+        'http://10.0.2.2:8080/api/fr?page${_page}&order=${selectedIndex}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {
@@ -84,7 +86,8 @@ class _RentalListScreenState extends State<RentalListScreen> {
             account: item['account'],
             views: item['views'],
             confirmed: item['confirmed'],
-            thumbnail: item['thumbnail']['fileNo'],
+            thumbnail:
+                item['thumbnail'] == null ? 0 : item['thumbnail']['fileNo'],
             isCaching: false,
           );
         }));
@@ -99,6 +102,9 @@ class _RentalListScreenState extends State<RentalListScreen> {
       onPressed: () {
         setState(() {
           selectedIndex = buttonIndex;
+          _page = 1;
+          items.clear();
+          fetch();
         });
       },
       style: ButtonStyle(
@@ -197,7 +203,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     buildTextButton(0, '인기순'),
-                    buildTextButton(1, '공연임박순'),
+                    buildTextButton(1, '일자임박순'),
                     buildTextButton(2, '최신순'),
                   ],
                 ),
@@ -230,12 +236,19 @@ class _RentalListScreenState extends State<RentalListScreen> {
                             },
                             child: Row(
                               children: [
-                                Image.network(
-                                  'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
-                                  width: 120,
-                                  height: 180,
-                                  fit: BoxFit.cover,
-                                ),
+                                item.thumbnail == 0
+                                    ? Image.asset(
+                                        'assets/images/defaultRentalImg.jpeg',
+                                        width: 120,
+                                        height: 180,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                        width: 120,
+                                        height: 180,
+                                        fit: BoxFit.cover,
+                                      ),
                                 Padding(
                                   padding: EdgeInsets.only(left: 16.0),
                                   child: Column(

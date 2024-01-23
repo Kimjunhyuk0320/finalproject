@@ -12,7 +12,7 @@ class LiveBoardListScreen extends StatefulWidget {
 }
 
 class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
-  int selectedIndex = 0;
+  int selectedIndex = 2;
 
   final ScrollController _controller = ScrollController();
 
@@ -57,7 +57,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
     // 여기에 네트워크 요청 등을 처리하면 됩니다.
     // 이 예제에서는 간단히 items에 추가하는 형태로 작성했습니다.
     final url = Uri.parse(
-        'http://10.0.2.2:8080/api/liveBoard/liveBoardPageList?page=${_page}');
+        'http://10.0.2.2:8080/api/liveBoard/liveBoardPageList?page=${_page}&order=${selectedIndex}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {
@@ -87,7 +87,8 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
             maxTickets: item['maxTickets'],
             updDate: item['updDate'],
             soldOut: item['soldOut'], // 수정 부분
-            thumbnail: item['thumbnail']['fileNo'], // 수정 부분
+            thumbnail:
+                item['thumbnail'] == null ? 0 : item['thumbnail']['fileNo'],
             ticketLeft: item['ticketLeft'],
             isCaching: false,
           );
@@ -103,6 +104,9 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
       onPressed: () {
         setState(() {
           selectedIndex = buttonIndex;
+          _page = 1;
+          items.clear();
+          fetch();
         });
       },
       style: ButtonStyle(
@@ -234,12 +238,19 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                             },
                             child: Row(
                               children: [
-                                Image.network(
-                                  'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
-                                  width: 120,
-                                  height: 180,
-                                  fit: BoxFit.cover,
-                                ),
+                                item.thumbnail == 0
+                                    ? Image.asset(
+                                        'assets/images/defaultRentalImg.jpeg',
+                                        width: 120,
+                                        height: 180,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                                        width: 120,
+                                        height: 180,
+                                        fit: BoxFit.cover,
+                                      ),
                                 Padding(
                                   padding: EdgeInsets.only(left: 16.0),
                                   child: Column(

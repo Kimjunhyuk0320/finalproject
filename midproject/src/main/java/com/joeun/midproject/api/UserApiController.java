@@ -188,6 +188,14 @@ public class UserApiController {
                 case "team_recruitments":
                     result = teamMapper.viewUp(comment);
                     break;
+
+                case "facility_rental":
+                    result = facilityRentalMapper.viewsUp(comment);
+                    break;
+
+                case "live_board":
+                    result = liveBoardMapper.viewsUp(comment);
+                    break;
                 default:
                     break;
             }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.joeun.midproject.dto.Comment;
 import com.joeun.midproject.dto.LiveBoard;
 import com.joeun.midproject.dto.Page;
 import com.joeun.midproject.dto.Team;
@@ -37,6 +38,7 @@ public interface LiveBoardMapper {
     
     // 게시글 번호(기본키) 최댓값
     public int maxPk();
- 
+    //조회수 1 상승
+    public int viewsUp(Comment comment);
 
 }

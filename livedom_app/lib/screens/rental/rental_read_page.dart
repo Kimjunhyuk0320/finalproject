@@ -36,6 +36,28 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
         });
       }
     });
+    viewUp();
+  }
+
+  Future<void> viewUp() async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      final Rental rental = ModalRoute.of(context)?.settings.arguments as Rental;
+      print('대관 데이터는 다음과 같습니다 : ${rental}');
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var body = json.encode(
+        {
+          'parentTable': 'facility_rental',
+          'parentNo': rental.boardNo,
+        },
+      );
+      await http.put(
+        Uri.parse('http://10.0.2.2:8080/api/user/viewUp'),
+        headers: headers,
+        body: body,
+      );
+    });
   }
 
   String truncateText(String text, int length) {

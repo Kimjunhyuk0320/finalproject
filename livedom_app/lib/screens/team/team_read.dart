@@ -16,6 +16,7 @@ class TeamReadScreen extends StatefulWidget {
 }
 
 class _TeamReadScreenState extends State<TeamReadScreen> {
+  
   Future<String> delete(teamNo) async {
     final url = 'http://10.0.2.2:8080/api/team/${teamNo}';
     final parsedUrl = Uri.parse(url);

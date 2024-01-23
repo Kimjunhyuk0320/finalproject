@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
@@ -30,6 +32,29 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
         });
       }
+    });
+    viewUp();
+  }
+
+  Future<void> viewUp() async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      final LiveBoard liveBoard =
+          ModalRoute.of(context)?.settings.arguments as LiveBoard;
+      print('공연 데이터는 다음과 같습니다 : ${liveBoard}');
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var body = json.encode(
+        {
+          'parentTable': 'live_board',
+          'parentNo': liveBoard.boardNo,
+        },
+      );
+      await http.put(
+        Uri.parse('http://10.0.2.2:8080/api/user/viewUp'),
+        headers: headers,
+        body: body,
+      );
     });
   }
 
