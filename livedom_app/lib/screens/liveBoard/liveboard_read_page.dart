@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
+import 'package:flutter_html/flutter_html.dart';
 
 class LiveBoardReadScreen extends StatefulWidget {
   @override
@@ -12,11 +13,19 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   
   int _count = 1;
   int selectedIndex = 0;
+  // 말 줄이기 함수
+  String truncateText(String text, int length) {
+    if (text.length <= length) {
+      return text;
+    } else {
+      return '${text.substring(0, length)}...';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final LiveBoard item =
         ModalRoute.of(context)!.settings.arguments as LiveBoard;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -267,10 +276,66 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
               children: [
                 Visibility(
                   visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
-                  child: Text(
-                    item.content ?? '',
-                    style: TextStyle(fontSize: 18),
+                  child: Html(
+                    data: item.content,
+                     extensions: [
+                     TagExtension(
+                        tagsToExtend: {"img"},
+                        builder: (context) {
+                          final originalSrc = context.attributes['src'];
+                          
+                          // Check if the original source starts with "/file"
+                          if (originalSrc != null && originalSrc.startsWith("/file")) {
+                            // If it starts with "/file", add the prefix
+                            final newSrc = 'http://10.0.2.2:8080$originalSrc';
+                            return Image.network(newSrc);
+                          }else if(originalSrc != null && originalSrc.startsWith("//")){
+                            final newSrc = 'http:$originalSrc';
+                            return Image.network(newSrc);
+                          } else {
+                            // If it doesn't start with "/file", use the original source
+                            return Image.network(originalSrc!);
+                          }
+                        },
+                      ),
+
+                    ],
+                    style:{
+                       "body": Style(
+                        lineHeight: LineHeight(0),
+                        whiteSpace: WhiteSpace.normal,
+                        margin: Margins.all(1.0),
+                        padding: HtmlPaddings.all(1.0)
+                      ),
+                       "p": Style(
+                        lineHeight: LineHeight(1.3),
+                        margin: Margins.all(1.0),
+                        padding: HtmlPaddings.all(1.0)
+                      ),
+                       "h1": Style(
+                        lineHeight: LineHeight(1.3),
+                      ),
+                       "h2": Style(
+                        lineHeight: LineHeight(1.3),
+                      ),
+                       "h3": Style(
+                        lineHeight: LineHeight(1.3),
+                      ),
+                       "div": Style(
+                        lineHeight: LineHeight(1.3),
+                        margin: Margins.all(1.0),
+                        padding: HtmlPaddings.all(1.0)
+                      ),
+                      "img": Style(
+                        width: Width(MediaQuery.of(context).size.width * 0.9),
+                        display: Display.inlineBlock,
+                        margin: Margins.all(1.0),
+                        padding: HtmlPaddings.all(1.0)
+                      ),
+
+                    },
                   ),
+                  
                 ),
                 Visibility(
                   visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
@@ -338,10 +403,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            item.title ?? '제목 없음',
+                                            truncateText(item.title ?? '제목 없음', 10),
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 30.0,
+                                              fontSize: 25.0,
                                               fontWeight: FontWeight.bold,
                                             ),
                                             textAlign: TextAlign.left,
@@ -350,7 +415,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             '티켓을 구매합니다',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 20.0,
+                                              fontSize: 16.0,
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
