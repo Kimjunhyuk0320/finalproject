@@ -97,13 +97,14 @@ public class TeamServiceImpl implements TeamService {
     log.info("Counting 성공");
 
     List<Team> teamList = new ArrayList<>();
-try {
-   teamList = teamMapper.pageList(page);
-} catch (Exception e) {
-  e.printStackTrace();
-}
-
+    try {
+      teamList = teamMapper.pageList(page);
+      page.setNextCount(teamMapper.nextPageListCount(page));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     log.info(page.toString());
+
 
     return teamList;
 

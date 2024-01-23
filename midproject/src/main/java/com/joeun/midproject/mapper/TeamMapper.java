@@ -34,6 +34,8 @@ public interface TeamMapper {
 
   public List<Team> pageList(Page page);
 
+  public int nextPageListCount(Page page);
+
   public int totalCount(PageInfo pageInfo);
 
   public int confirmed(Team team);

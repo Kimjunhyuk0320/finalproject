@@ -14,6 +14,9 @@ class _TeamListScreenState extends State<TeamListScreen> {
   //팀 리스트 state
   List _teamList = [];
 
+  //다음 데이터 갯수
+  int _nextCount = 0;
+
   var _pageObject = {};
 
   //페이지 정보 state
@@ -30,7 +33,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
     super.initState();
     getTeamList();
     _infContoller.addListener(() async {
-      if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
+      if (_infContoller.position.maxScrollExtent <= _infContoller.offset +400) {
         getTeamList();
       }
     });
@@ -87,6 +90,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
     var teamListResponse = await http.get(parsedURI);
 
     if (teamListResponse.statusCode == 200) {
+      setState(() {
       //UTF - 8 디코딩
       var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
 
@@ -95,14 +99,15 @@ class _TeamListScreenState extends State<TeamListScreen> {
 
       final List tempTeamList = teamListJSON['data'];
       _pageObject = teamListJSON['page'];
+      _nextCount = teamListJSON['page']['nextCount'];
       if (_pageObject['page'] > _pageObject['last']) {
         return;
       }
 
-      setState(() {
         _page++;
         _teamList.addAll(tempTeamList);
       });
+      print('다음 데이터 갯수 : ${_pageObject['nextCount']}');
     }
   }
 
@@ -353,18 +358,24 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     } else if (_pageObject['last'] != null &&
                         _page > 2 &&
                         _pageObject['last'] > _page) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 20.0),
+                        decoration: BoxDecoration(
+                          color: Colors.black12,
+                            border: Border.all(
+                              width: 1.0,
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(18.0)),
+                        height: 130.0,
+                        child: Container(),
                       );
                     } else {
                       // 기본적인 위젯 반환
                       return Container();
                     }
                   },
-                  itemCount: _teamList.length + 1,
+                  itemCount: _teamList.length + _nextCount,
                 ),
               ),
             ],
