@@ -4,15 +4,15 @@ import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 
-class joinScreen extends StatefulWidget {
-  const joinScreen({super.key});
+class JoinScreen extends StatefulWidget {
+  const JoinScreen({super.key});
 
   @override
-  State<joinScreen> createState() => _joinScreenState();
+  State<JoinScreen> createState() => _JoinScreenState();
 }
 
 // 페이지 1 - 아이디 설정
-class _joinScreenState extends State<joinScreen> {
+class _JoinScreenState extends State<JoinScreen> {
   final TextEditingController usernameController = TextEditingController();
 
   // 아이디 유효성 검사 함수
