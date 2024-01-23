@@ -20,7 +20,13 @@ class _RentalListScreenState extends State<RentalListScreen> {
 
   int _page = 1;
 
+  //스켈레톤 UI용 다음 데이터 갯수
+  int _nextCount = 0;
+
   Map<String, dynamic> _pageObj = {'last': 10};
+
+  //데이터 중복 호출 방지 스위치
+  bool isFetching = false;
 
   @override
   void initState() {
@@ -34,7 +40,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
       // _controller.position.maxScrollExtent : 스크롤 위치의 최댓값
       // _controller.position.offset          : 현재 스크롤 위치
 
-      if (_controller.position.maxScrollExtent < _controller.offset + 10) {
+      if (_controller.position.maxScrollExtent < _controller.offset + 2100) {
         // 데이터 요청 (다음 페이지)
         fetch();
       }
@@ -51,6 +57,10 @@ class _RentalListScreenState extends State<RentalListScreen> {
   }
 
   Future fetch() async {
+    if (isFetching) return;
+    setState(() {
+      isFetching = true;
+    });
     print('fetch...');
     print('${_page} and ${selectedIndex}');
     // 여기에 네트워크 요청 등을 처리하면 됩니다.
@@ -69,6 +79,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
         final List<dynamic> list = result['data'];
         print('page : $page');
         _pageObj = page;
+        _nextCount = page['nextCount'];
 
         items.addAll(list.map<Rental>((item) {
           return Rental(
@@ -95,6 +106,9 @@ class _RentalListScreenState extends State<RentalListScreen> {
         _page++;
       });
     }
+    setState(() {
+      isFetching = false;
+    });
   }
 
   Widget buildTextButton(int buttonIndex, String buttonText) {
@@ -348,15 +362,25 @@ class _RentalListScreenState extends State<RentalListScreen> {
                   }
                   // index: 20
                   else if ((_page - 1) > 0 && (_page - 1) < _pageObj['last']!) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40.0),
-                      child: Center(
-                        child: CircularProgressIndicator(),
+                    return Container(
+                      margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 180.0,
+                          ),
+                          Divider(
+                            color: Colors.grey, // 원하는 색상으로 변경
+                            thickness: 0.5, // 원하는 두께로 변경
+                            height: 40.0, // 위아래 여백 조절
+                          ),
+                        ],
                       ),
                     );
                   }
                 },
-                itemCount: items.length + 1,
+                itemCount:
+                    items.length + _nextCount,
               ),
             ],
           ),

@@ -107,7 +107,7 @@ public class Page {
         this.index = (this.page - 1) * this.rows;
 
         // 다음 인덱스 번호
-        this.nextIndex = this.index + 1;
+        this.nextIndex = (this.page) * this.rows;
 
     }
 }

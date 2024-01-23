@@ -19,6 +19,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     FROM facility_rental
     </select>
 
+    <select id="nextPageListCount">
+  
+   SELECT COUNT(*)
+   FROM (
+    SELECT *
+  FROM facility_rental
+    LIMIT #{nextIndex}, #{rows}
+    ) as l
+  </select>
+
     <select id="pageFrList" resultType="FacilityRental">
   
   SELECT *

@@ -18,6 +18,9 @@ public interface FacilityRentalMapper {
     //페이지네이션 게시글 조회 카운트
     public int pageFrListTotalCount(Page page) throws Exception;
 
+    //스켈레톤 UI용 다음 데이터 갯수
+    public int nextPageListCount(Page page) throws Exception;
+
     //페이지네이션 게시글 조회
     public List<FacilityRental> pageFrList(Page page) throws Exception;
     
