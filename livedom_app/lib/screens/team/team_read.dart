@@ -1,7 +1,7 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:livedom_app/model/team.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
@@ -16,7 +16,6 @@ class TeamReadScreen extends StatefulWidget {
 }
 
 class _TeamReadScreenState extends State<TeamReadScreen> {
-  
   Future<String> delete(teamNo) async {
     final url = 'http://10.0.2.2:8080/api/team/${teamNo}';
     final parsedUrl = Uri.parse(url);
@@ -35,6 +34,7 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
     super.initState();
     viewUp();
   }
+
   Future<void> viewUp() async {
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       final Map team = ModalRoute.of(context)?.settings.arguments as Map;
@@ -55,7 +55,6 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
         body: body,
       );
     });
-
   }
 
   @override
@@ -322,9 +321,62 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                       children: [
                         Visibility(
                           visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
-                          child: Text(
-                            team['content'] ?? '',
-                            style: TextStyle(fontSize: 18),
+                          child: Html(
+                            data: team['content'],
+                            extensions: [
+                              TagExtension(
+                                tagsToExtend: {"img"},
+                                builder: (context) {
+                                  final originalSrc = context.attributes['src'];
+
+                                  // Check if the original source starts with "/file"
+                                  if (originalSrc != null &&
+                                      originalSrc.startsWith("/file")) {
+                                    // If it starts with "/file", add the prefix
+                                    final newSrc =
+                                        'http://10.0.2.2:8080$originalSrc';
+                                    return Image.network(newSrc);
+                                  } else if (originalSrc != null &&
+                                      originalSrc.startsWith("//")) {
+                                    final newSrc = 'http:$originalSrc';
+                                    return Image.network(newSrc);
+                                  } else {
+                                    // If it doesn't start with "/file", use the original source
+                                    return Image.network(originalSrc!);
+                                  }
+                                },
+                              ),
+                            ],
+                            style: {
+                              "body": Style(
+                                  lineHeight: LineHeight(0),
+                                  whiteSpace: WhiteSpace.normal,
+                                  margin: Margins.all(1.0),
+                                  padding: HtmlPaddings.all(1.0)),
+                              "p": Style(
+                                  lineHeight: LineHeight(1.3),
+                                  margin: Margins.all(1.0),
+                                  padding: HtmlPaddings.all(1.0)),
+                              "h1": Style(
+                                lineHeight: LineHeight(1.3),
+                              ),
+                              "h2": Style(
+                                lineHeight: LineHeight(1.3),
+                              ),
+                              "h3": Style(
+                                lineHeight: LineHeight(1.3),
+                              ),
+                              "div": Style(
+                                  lineHeight: LineHeight(1.3),
+                                  margin: Margins.all(1.0),
+                                  padding: HtmlPaddings.all(1.0)),
+                              "img": Style(
+                                  width: Width(
+                                      MediaQuery.of(context).size.width * 0.9),
+                                  display: Display.inlineBlock,
+                                  margin: Margins.all(1.0),
+                                  padding: HtmlPaddings.all(1.0)),
+                            },
                           ),
                         ),
                         Visibility(

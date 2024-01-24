@@ -51,7 +51,7 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
       'username': user.userInfo['username'],
       'title': _titleController.text,
       'writer': user.userInfo['nickname'],
-      'content': _contentController.text,
+      'content': await htmlEditorController.getText(),
       'location': _location,
       'address': _addressController.text,
       'liveDate': _dateController.text,
@@ -726,7 +726,7 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                               hint: 'Your text here...', // 에디터에 표시될 힌트
                             ),
                             otherOptions: OtherOptions(
-                              height: 400, // 에디터의 높이 설정
+                              height: 1400, // 에디터의 높이 설정
                             ),
                             htmlToolbarOptions: HtmlToolbarOptions(
                               customToolbarButtons: [
@@ -746,7 +746,7 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                                       // 파일을 저장합니다.
                                       // 서버에서 받은 이미지 URL을 에디터에 삽입합니다.
                                       htmlEditorController.insertHtml(
-                                          '<img src="http://10.0.2.2:8080/api/file/img/${imageUrl}" width="350" height="350"/>');
+                                          '<img src="http://localhost:8080/api/file/img/${imageUrl}" width="35" height="35"/>');
                                       print(imageUrl);
                                       htmlEditorController.getText().then((value) => print(value));
 

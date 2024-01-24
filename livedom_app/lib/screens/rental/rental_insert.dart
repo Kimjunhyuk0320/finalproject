@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class RentalInsertScreen extends StatefulWidget {
 }
 
 class _RentalInsertScreenState extends State<RentalInsertScreen> {
+  HtmlEditorController htmlEditorController = HtmlEditorController();
   final TextEditingController _titleController =
       TextEditingController(text: '');
   String _capacity = '1';
@@ -51,6 +53,25 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
     }
   }
 
+  Future<String> uploadImageToServer(File image) async {
+    try {
+      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var req = http.MultipartRequest('POST', parsedUrl);
+      req.files.add(await http.MultipartFile.fromPath('file', image.path));
+      var res = await req.send();
+
+      if (res.statusCode == 200) {
+        var resData = res.stream.bytesToString();
+        return resData;
+      } else {
+        return '0';
+      }
+    } catch (e) {
+      print(e);
+      return '0';
+    }
+  }
+
   Future<String> submit(user) async {
     print('submit함수 진입');
     final url = 'http://10.0.2.2:8080/api/fr';
@@ -67,7 +88,7 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
     multiReq.fields['writer'] = user.userInfo['nickname'];
     multiReq.fields['username'] = user.userInfo['username'];
     multiReq.fields['phone'] = user.userInfo['phone'];
-    multiReq.fields['content'] = _contentController.text;
+    multiReq.fields['content'] = await htmlEditorController.getText();
     multiReq.fields['location'] = _location;
     multiReq.fields['address'] = _addressController.text;
     multiReq.fields['liveDate'] = _dateController.text;
@@ -82,7 +103,7 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
       if (result.statusCode == 200) {
         return 'done';
       } else {
-      print(result);
+        print(result);
         return 'dont';
       }
     } catch (e) {
@@ -528,24 +549,57 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _contentController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
+                          HtmlEditor(
+                            controller: htmlEditorController, // HTML 에디터 컨트롤러
+                            htmlEditorOptions: HtmlEditorOptions(
+                              hint: 'Your text here...', // 에디터에 표시될 힌트
+                            ),
+                            otherOptions: OtherOptions(
+                              height: 400, // 에디터의 높이 설정
+                            ),
+                            htmlToolbarOptions: HtmlToolbarOptions(
+                              customToolbarButtons: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    print('이미지 업로드 콜백 실행');
+                                    final picker = ImagePicker();
+                                    final pickedFile = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    if (pickedFile != null) {
+                                      // Upload the selected image to your server
+                                      // Use the appropriate method to upload the image to your server
+                                      // and get the image URL
+                                      String imageUrl =
+                                          await uploadImageToServer(
+                                              File(pickedFile.path));
+                                      // 파일을 저장합니다.
+                                      // 서버에서 받은 이미지 URL을 에디터에 삽입합니다.
+                                      htmlEditorController.insertHtml(
+                                          '<img src="http://localhost:8080/api/file/img/${imageUrl}" width="35" height="35"/>');
+                                      print(imageUrl);
+                                      htmlEditorController
+                                          .getText()
+                                          .then((value) => print(value));
+                                    }
+                                  },
+                                  child: Icon(Icons.image),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                  ),
+                                )
+                              ],
+                              toolbarType: ToolbarType.nativeGrid,
+                              // 툴바 옵션 설정
+                              defaultToolbarButtons: [
+                                StyleButtons(),
+                                FontButtons(),
+                                ColorButtons(),
+                                ParagraphButtons(),
+                                InsertButtons(
+                                  picture: false,
                                 ),
-                                border: InputBorder.none,
-                              ),
+                                OtherButtons(),
+                              ],
                             ),
                           ),
                         ],

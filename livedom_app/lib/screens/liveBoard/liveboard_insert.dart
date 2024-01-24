@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:livedom_app/model/rental.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class LiveBoardInsertScreen extends StatefulWidget {
   const LiveBoardInsertScreen({super.key});
@@ -17,6 +19,7 @@ class LiveBoardInsertScreen extends StatefulWidget {
 }
 
 class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
+  HtmlEditorController htmlEditorController = HtmlEditorController();
   final TextEditingController _titleController =
       TextEditingController(text: '');
   final TextEditingController _dateController = TextEditingController(
@@ -34,8 +37,7 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
       TextEditingController(text: '');
   final TextEditingController _contentController =
       TextEditingController(text: '');
-  final TextEditingController _crewController =
-      TextEditingController(text: '');
+  final TextEditingController _crewController = TextEditingController(text: '');
   final TextEditingController _maxTicketsController =
       TextEditingController(text: '');
 
@@ -49,6 +51,25 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
       setState(() {
         _image = File(pickedFile.path);
       });
+    }
+  }
+
+  Future<String> uploadImageToServer(File image) async {
+    try {
+      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var req = http.MultipartRequest('POST', parsedUrl);
+      req.files.add(await http.MultipartFile.fromPath('file', image.path));
+      var res = await req.send();
+
+      if (res.statusCode == 200) {
+        var resData = res.stream.bytesToString();
+        return resData;
+      } else {
+        return '0';
+      }
+    } catch (e) {
+      print(e);
+      return '0';
     }
   }
 
@@ -67,7 +88,7 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
     multiReq.fields['title'] = _titleController.text;
     multiReq.fields['writer'] = user.userInfo['nickname'];
     multiReq.fields['username'] = user.userInfo['username'];
-    multiReq.fields['content'] = _contentController.text;
+    multiReq.fields['content'] = await htmlEditorController.getText();
     multiReq.fields['crew'] = _crewController.text;
     multiReq.fields['location'] = _location;
     multiReq.fields['address'] = _addressController.text;
@@ -212,78 +233,79 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-
                         //여기 모팀수
-Container(
-                      alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '지역',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerRight,
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 10.0),
-                            child: DropdownButton<String>(
-                              underline: Container(),
-                              value: _location,
-                              items: <String>[
-                                '경기',
-                                '서울',
-                                '부산',
-                                '경남',
-                                '인천',
-                                '경북',
-                                '대구',
-                                '충남',
-                                '전남',
-                                '전북',
-                                '충북',
-                                '강원',
-                                '대전',
-                                '광주',
-                                '울산',
-                                '제주',
-                                '세종',
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.27,
-                                    child: Text(
-                                      '${value}',
-                                      textAlign: TextAlign.right,
-                                    ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '지역',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  value: value,
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _location = newValue!;
-                                });
-                              },
-                            ),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 0.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 10.0),
+                                child: DropdownButton<String>(
+                                  underline: Container(),
+                                  value: _location,
+                                  items: <String>[
+                                    '경기',
+                                    '서울',
+                                    '부산',
+                                    '경남',
+                                    '인천',
+                                    '경북',
+                                    '대구',
+                                    '충남',
+                                    '전남',
+                                    '전북',
+                                    '충북',
+                                    '강원',
+                                    '대전',
+                                    '광주',
+                                    '울산',
+                                    '제주',
+                                    '세종',
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.27,
+                                        child: Text(
+                                          '${value}',
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                      value: value,
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _location = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                        
+                        ),
+
                         Container(
                           width: MediaQuery.of(context).size.width * 0.4,
                           child: Column(
@@ -405,7 +427,7 @@ Container(
                                       _stTimeController.text =
                                           '${result!.hour.toString().length == 1 ? '0' + result!.hour.toString() : result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0' + result!.minute.toString() : result!.minute.toString()}';
                                     });
-                                    print('스타트타임'+_stTimeController.text);
+                                    print('스타트타임' + _stTimeController.text);
                                   },
                                   child: Row(
                                     children: [
@@ -475,7 +497,7 @@ Container(
                                       _endTimeController.text =
                                           '${result!.hour.toString().length == 1 ? '0' + result!.hour.toString() : result!.hour.toString()}:${result!.minute.toString().length == 1 ? '0' + result!.minute.toString() : result!.minute.toString()}';
                                     });
-                                    print('엔드타임'+_endTimeController.text);
+                                    print('엔드타임' + _endTimeController.text);
                                   },
                                   child: Row(
                                     children: [
@@ -511,7 +533,6 @@ Container(
                         ),
                       ],
                     ),
-                    
                     Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -628,15 +649,15 @@ Container(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '썸네일',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '썸네일',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
                         _image == null
                             ? Container()
                             : Image.file(
@@ -671,24 +692,57 @@ Container(
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _contentController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
+                          HtmlEditor(
+                            controller: htmlEditorController, // HTML 에디터 컨트롤러
+                            htmlEditorOptions: HtmlEditorOptions(
+                              hint: 'Your text here...', // 에디터에 표시될 힌트
+                            ),
+                            otherOptions: OtherOptions(
+                              height: 400, // 에디터의 높이 설정
+                            ),
+                            htmlToolbarOptions: HtmlToolbarOptions(
+                              customToolbarButtons: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    print('이미지 업로드 콜백 실행');
+                                    final picker = ImagePicker();
+                                    final pickedFile = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    if (pickedFile != null) {
+                                      // Upload the selected image to your server
+                                      // Use the appropriate method to upload the image to your server
+                                      // and get the image URL
+                                      String imageUrl =
+                                          await uploadImageToServer(
+                                              File(pickedFile.path));
+                                      // 파일을 저장합니다.
+                                      // 서버에서 받은 이미지 URL을 에디터에 삽입합니다.
+                                      htmlEditorController.insertHtml(
+                                          '<img src="http://localhost:8080/api/file/img/${imageUrl}" width="35" height="35"/>');
+                                      print(imageUrl);
+                                      htmlEditorController
+                                          .getText()
+                                          .then((value) => print(value));
+                                    }
+                                  },
+                                  child: Icon(Icons.image),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                  ),
+                                )
+                              ],
+                              toolbarType: ToolbarType.nativeGrid,
+                              // 툴바 옵션 설정
+                              defaultToolbarButtons: [
+                                StyleButtons(),
+                                FontButtons(),
+                                ColorButtons(),
+                                ParagraphButtons(),
+                                InsertButtons(
+                                  picture: false,
                                 ),
-                                border: InputBorder.none,
-                              ),
+                                OtherButtons(),
+                              ],
                             ),
                           ),
                         ],

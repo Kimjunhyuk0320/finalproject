@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -120,7 +121,62 @@ class _TeamStateReadScreenState extends State<TeamStateReadScreen> {
                     padding: EdgeInsets.all(20.0),
                     alignment: Alignment.topLeft,
                     width: MediaQuery.of(context).size.width * 8,
-                    child: Text(teamApp['content']),
+                    child: Html(
+                      data: teamApp['content'],
+                      extensions: [
+                        TagExtension(
+                          tagsToExtend: {"img"},
+                          builder: (context) {
+                            final originalSrc = context.attributes['src'];
+
+                            // Check if the original source starts with "/file"
+                            if (originalSrc != null &&
+                                originalSrc.startsWith("/file")) {
+                              // If it starts with "/file", add the prefix
+                              final newSrc = 'http://10.0.2.2:8080$originalSrc';
+                              return Image.network(newSrc);
+                            } else if (originalSrc != null &&
+                                originalSrc.startsWith("//")) {
+                              final newSrc = 'http:$originalSrc';
+                              return Image.network(newSrc);
+                            } else {
+                              // If it doesn't start with "/file", use the original source
+                              return Image.network(originalSrc!);
+                            }
+                          },
+                        ),
+                      ],
+                      style: {
+                        "body": Style(
+                            lineHeight: LineHeight(0),
+                            whiteSpace: WhiteSpace.normal,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "p": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "h1": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h2": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h3": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "div": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "img": Style(
+                            width:
+                                Width(MediaQuery.of(context).size.width * 0.9),
+                            display: Display.inlineBlock,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                      },
+                    ),
                   ),
                 ],
               ),
