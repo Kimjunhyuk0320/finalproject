@@ -52,6 +52,7 @@ public class HomeApiController {
     public ResponseEntity<Map<String, List<?>>> searchPro(Page page) {
         try {
             page.setRows(4);
+            page.setOrder(2);
             List<LiveBoard> liveBoardList = liveBoardService.liveBoardPageList(page);
             List<FacilityRental> frList = facilityRentalService.pageFrList(page);
             List<Team> teamList = teamService.pageList(page);
@@ -64,6 +65,7 @@ public class HomeApiController {
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
         } catch (Exception e) {
             // 예외 처리 로직
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

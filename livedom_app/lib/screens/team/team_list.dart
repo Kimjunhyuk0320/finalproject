@@ -311,7 +311,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '  ${item['title']}',
+                                  '${item['title'].substring(0,14)}...',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.0,
