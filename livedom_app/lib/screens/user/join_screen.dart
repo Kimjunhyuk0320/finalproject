@@ -1,8 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/screens/user/home_view.dart';
+import 'package:livedom_app/screens/user/login_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({super.key});
@@ -20,27 +26,6 @@ class _JoinScreenState extends State<JoinScreen> {
     // 정규표현식을 사용하여 유효성 검사
     RegExp regExp = RegExp(r'^[a-zA-Z0-9]+$');
     return regExp.hasMatch(username);
-  }
-
-  // 아이디 유효성 검사 실패 팝업
-  void showInvalidUsernamePopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("유효하지 않은 아이디 형식"),
-          content: Text("아이디는 영문과 숫자로만 작성 가능합니다."),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("확인"),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -75,7 +60,7 @@ class _JoinScreenState extends State<JoinScreen> {
               const Padding(
                 padding: EdgeInsets.only(left: 40),
                 child: Text(
-                  '아이디는 7글자 이상으로 설정해주세요',
+                  '아이디는 5글자 이상으로 설정해주세요',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 15.0,
@@ -109,27 +94,11 @@ class _JoinScreenState extends State<JoinScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
                   text: "다음",
-                  onTap: () {
+                  onTap: () async {
                     // 입력된 아이디
                     String username = usernameController.text;
-                    if (username.length <= 7) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('알림'),
-                            content: Text('아이디를 7글자 이상으로 설정해주세요.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // 팝업 닫기
-                                },
-                                child: Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                    if (username.length <= 5) {
+                      showCustomAlertUsernameLenthDialog(context);
                       return;
                     }
                     // 입력된 값이 없다면 다음 함수 실행
@@ -159,13 +128,32 @@ class _JoinScreenState extends State<JoinScreen> {
                       showInvalidUsernamePopup(context);
                       return;
                     }
-                    Users inputUser = Users();
-                    inputUser.username = usernameController.text;
-                    Navigator.pushNamed(
-                      context,
-                      '/join/pw',
-                      arguments: inputUser,
-                    );
+
+                    // 프로바이더에 저장된 아이디 중복검사
+                    try {
+                      String loginStatus = await Provider.of<AuthProvider>(
+                              context,
+                              listen: false)
+                          .getLoginIdDup(username);
+
+                      if (loginStatus == 'N') {
+                        // 회원 아이디가 없는 경우
+                        showCustomAlertDialog(context);
+                      }
+                      // 회원 아이디가 없는 경우
+                      else {
+                        // 로그인 실패 시 알림창 띄우기
+                        Users inputUser = Users();
+                        inputUser.username = usernameController.text;
+                        Navigator.pushNamed(
+                          context,
+                          '/join/pw',
+                          arguments: inputUser,
+                        );
+                      }
+                    } catch (error) {
+                      print('로그인 실패: $error');
+                    }
                   },
                 ),
               ),
@@ -173,6 +161,246 @@ class _JoinScreenState extends State<JoinScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // 아이디 유효성 검사 실패 팝업
+  void showInvalidUsernamePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    "특수문자 포함 :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "영문과 숫자로만 설정할 수 있어요",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // 아이디 글자수 알림창
+  void showCustomAlertUsernameLenthDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    "글자수 5글자 미만 :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "5글자 이상으로 설정해주세요.",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // 아이디 중복 알림창
+  void showCustomAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    "아이디 중복 :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "다른 아이디로 설정해주세요.",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -338,7 +566,7 @@ class JoinPwScreen extends StatelessWidget {
                   controller: passwordController,
                   onChanged: (value) {
                     print('[회원기입] - 비밀번호 : $value');
-                    // passwordController.text = value;
+                    passwordController.text = value;
                   },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
@@ -357,6 +585,10 @@ class JoinPwScreen extends StatelessWidget {
                 child: CustomTextField(
                   hintText: "비밀번호 확인",
                   controller: passwordCheckController,
+                  onChanged: (value) {
+                    print('[회원기입] - 비밀번호 확인 : $value');
+                    passwordCheckController.text = value;
+                  },
                   obscureText: true, // 비밀번호 숨기기 설정
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
@@ -382,45 +614,14 @@ class JoinPwScreen extends StatelessWidget {
                     // 비밀번호 유효성 검사
                     if (!isPasswordValid(password)) {
                       // 비밀번호가 유효하지 않을 때 팝업 표시
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('알림'),
-                            content: Text('비밀번호가 유효하지 않습니다.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // 팝업 닫기
-                                },
-                                child: Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      showInvalidUsernamePopup(context);
                       return; // 이후 코드 실행을 중지
                     }
 
                     // 비밀번호 확인 검사
                     if (!isPasswordCheck(password, passwordCheck)) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('알림'),
-                            content: Text('비밀번호가 일치하지 않습니다.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // 팝업 닫기
-                                },
-                                child: Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      // 두 비밀번호가 일치하지 않을 때 팝업 표시
+                      showPasswordCheckPopup(context);
                       return; // 이후 코드 실행 중지
                     }
 
@@ -439,6 +640,166 @@ class JoinPwScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // 비밀번호 유효성 검사 팝업
+  void showInvalidUsernamePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 15.0),
+                  Text(
+                    "유효하지 않는 비밀번호 :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "대문자와 소문자, 특수문자를 포함하여 \n설정해주세요.",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // 비밀번호 불일치 검사 팝업
+  void showPasswordCheckPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    "아이디가 중복되었네요 :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "다른 아이디로 설정해주세요.",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -542,6 +903,10 @@ class JoinNameScreen extends StatelessWidget {
                 child: CustomTextField(
                   hintText: "이름",
                   controller: nameController,
+                  onChanged: (value) {
+                    print('[회원기입] - 이름 : $value');
+                    nameController.text = value;
+                  },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -559,6 +924,10 @@ class JoinNameScreen extends StatelessWidget {
                 child: CustomTextField(
                   hintText: "별명",
                   controller: nicknameController,
+                  onChanged: (value) {
+                    print('[회원기입] - 닉네임 : $value');
+                    nicknameController.text = value;
+                  },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -575,39 +944,43 @@ class JoinNameScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
                   text: "다음",
-                  onTap: () {
+                  onTap: () async {
                     // 입력된 이름과 별명
                     String name = nicknameController.text;
                     String nickname = nicknameController.text;
                     // 입력된 값이 없다면 다음 함수 실행
                     if (name == '' || nickname == '') {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('알림'),
-                            content: Text('이름 또는 별명을 설정해주세요.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // 팝업 닫기
-                                },
-                                child: Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      showCustomAlertDialog(
+                          context, "필수가입항목 :(", "필수가입항목을 작성해주세요.");
                       return;
                     }
-                    Users? inputUser = user;
-                    inputUser?.name = nameController.text;
-                    inputUser?.nickname = nicknameController.text;
-                    Navigator.pushNamed(
-                      context,
-                      '/join/phone',
-                      arguments: inputUser,
-                    );
+                    // 프로바이더에 저장된 닉네임 중복검사
+                    try {
+                      String loginStatus = await Provider.of<AuthProvider>(
+                              context,
+                              listen: false)
+                          .getNicknameDup(nickname);
+
+                      if (loginStatus == 'Y') {
+                        // Provider에 정의해둔 User객체에 넣어줌.
+                        Users? inputUser = user;
+                        inputUser?.name = nameController.text;
+                        inputUser?.nickname = nicknameController.text;
+                        Navigator.pushNamed(
+                          context,
+                          '/join/phone',
+                          arguments: inputUser,
+                        );
+                      }
+                      // 닉네임 중복이 되지 않는 경우
+                      else {
+                        // 닉네임이 있는 경우
+                        showCustomAlertDialog(
+                            context, "별명 중복 :(", "다른 별명을 작성해주세요.");
+                      }
+                    } catch (error) {
+                      print('로그인 실패: $error');
+                    }
                   },
                 ),
               ),
@@ -615,6 +988,87 @@ class JoinNameScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // 통합 알림창
+  void showCustomAlertDialog(
+      BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -696,6 +1150,10 @@ class JoinPhoneScreen extends StatelessWidget {
                   hintText: "01012345678",
                   keyboardType: TextInputType.number,
                   controller: phoneController,
+                  onChanged: (value) {
+                    print('[회원기입] - 연락처 : $value');
+                    phoneController.text = value;
+                  },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -712,35 +1170,42 @@ class JoinPhoneScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
                   text: "다음",
-                  onTap: () {
+                  onTap: () async {
+                    String phone = phoneController.text;
+                    // 연락처 유효성 검사
                     if (!isValidPhoneNumber(phoneController.text)) {
                       // 유효하지 않은 경우의 처리
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('알림'),
-                            content:
-                                Text('연락처의 형식에 알맞지 않습니다.\n(예시 : 01012341234)'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // 팝업 닫기
-                                },
-                                child: Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      showCustomAlertDialog(context, "연락처 형식 :(",
+                          "연락처의 형식에 알맞지 않습니다.\n(예시 : 01012341234)");
                       return;
                     }
-                    user?.phone = phoneController.text;
-                    Navigator.pushNamed(
-                      context,
-                      '/join/email',
-                      arguments: user,
-                    );
+                    // 연락처 중복검사
+                    // 프로바이더에 저장된 닉네임 중복검사
+                    try {
+                      String loginStatus = await Provider.of<AuthProvider>(
+                              context,
+                              listen: false)
+                          .getNicknameDup(phone);
+
+                      if (loginStatus == 'N') {
+                        // Provider에 정의해둔 User객체에 넣어줌.
+                        print("sadofuhsdlkfh");
+                        showCustomAlertDialog(
+                            context, "연락처 중복 :(", "다른 연락처를 작성해주세요.");
+                      }
+                      // 연락처 중복이 되지 않는 경우
+                      else {
+                        // 연락처이 있는 경우
+                        user?.phone = phoneController.text;
+                        Navigator.pushNamed(
+                          context,
+                          '/join/email',
+                          arguments: user,
+                        );
+                      }
+                    } catch (error) {
+                      print('로그인 실패: $error');
+                    }
                   },
                 ),
               ),
@@ -748,6 +1213,87 @@ class JoinPhoneScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // 통합 알림창
+  void showCustomAlertDialog(
+      BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -761,27 +1307,6 @@ class JoinEmailScreen extends StatelessWidget {
     // 정규표현식을 사용하여 유효성 검사
     RegExp regExp = RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
     return regExp.hasMatch(email);
-  }
-
-  // 이메일 유효성 검사 실패 팝업
-  void showInvalidEmailPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("알림"),
-          content: Text("올바른 이메일 형식으로 입력해주세요."),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("확인"),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -847,8 +1372,12 @@ class JoinEmailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomTextField(
-                  hintText: "example.mail.com",
+                  hintText: "example@mail.com",
                   controller: emailController,
+                  onChanged: (value) {
+                    print('[회원기입] - 이름 : $value');
+                    emailController.text = value;
+                  },
                   prefix: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 20, bottom: 20),
                     child: Icon(
@@ -869,7 +1398,8 @@ class JoinEmailScreen extends StatelessWidget {
                     // 이메일 유효성 검사 추가
                     if (!isValidEmail(emailController.text)) {
                       // 유효하지 않은 경우 팝업 표시
-                      showInvalidEmailPopup(context);
+                      showCustomAlertDialog(
+                          context, "이메일 형식 :(", "올바른 이메일 형식으로 입력해주세요.");
                       return;
                     }
 
@@ -886,6 +1416,87 @@ class JoinEmailScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // 통합 알림창
+  void showCustomAlertDialog(
+      BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -993,7 +1604,12 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                   child: CustomButton(
                     text: "가입 완료",
                     onTap: () {
-                      // user!.auth = selectedPermission;
+                      if (selectedPermission == '') {
+                        showCustomAlertDialog(
+                            context, "권한 설정 :(", "선택한 권한이 없습니다.");
+                        return;
+                      }
+
                       if (user != null) {
                         if (selectedPermission == "유저권한") {
                           user.auth = '0';
@@ -1012,10 +1628,12 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                         print('User객체 확인 권한 : ${user.auth}');
                       }
 
-                      Navigator.pushNamed(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        '/joincomplete',
-                        arguments: user,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
+                        (route) => false, // 이전 페이지가 없도록 설정
                       );
                     },
                   ),
@@ -1025,6 +1643,87 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // 통합 알림창
+  void showCustomAlertDialog(
+      BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent, // 배경을 투명하게 설정
+              //   borderRadius: BorderRadius.circular(16.0),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.3),
+              //       spreadRadius: 2,
+              //       blurRadius: 8,
+              //       offset: Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     primary: Colors.black,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //   ),
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  //     child: Text(
+                  //       '확인',
+                  //       style: TextStyle(
+                  //         fontSize: 18.0,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

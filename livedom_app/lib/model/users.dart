@@ -47,7 +47,7 @@ class Users {
     email = json['email'];
     auth = json['auth'];
   }
-    
+
   // JSON 데이터를 객체로 변환
   factory Users.fromJson(Map<String, dynamic> json) {
     return Users(
@@ -70,7 +70,6 @@ class AuthProvider with ChangeNotifier {
   Users? get currentUser => _currentUser;
 
   late String _authentication;
-
 
   // 로그인 요청 메서드
   Future<bool> login(String username, String password) async {
@@ -118,6 +117,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 로그아웃 메서드
   void logout() {
     _currentUser = null;
     notifyListeners();
@@ -141,8 +141,7 @@ class AuthProvider with ChangeNotifier {
     var headersList = {
       'Accept': '*/*',
       'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-      'Authorization':
-          _authentication
+      'Authorization': _authentication
     };
     var url = Uri.parse('http://10.0.2.2:8080/users/info');
 
@@ -168,6 +167,80 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     } else {
       print(res.reasonPhrase);
+    }
+  }
+
+  // 아이디 중복검사 함수
+  Future<String> getLoginIdDup(String username) async {
+    var headersList = {
+      'Accept': '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
+    };
+    var url = Uri.parse(
+        'http://10.0.2.2:8080/api/user/getLoginIdDup?username=$username');
+
+    var req = http.Request('GET', url);
+    req.headers.addAll(headersList);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print('resBody : ${resBody}');
+      return resBody;
+    } else {
+      throw Exception('Failed to check duplicate ID: ${res.reasonPhrase}');
+    }
+  }
+
+  // 닉네임 중복검사 함수
+  Future<String> getNicknameDup(String nickname) async {
+    var headersList = {
+      'Accept': '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
+    };
+    var url = Uri.parse(
+        'http://10.0.2.2:8080/api/user/getNicknameDup?nickname=$nickname');
+
+    var req = http.Request('GET', url);
+    req.headers.addAll(headersList);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(resBody);
+      return resBody;
+    } else {
+      throw Exception(
+          'Failed to check duplicate nickname: ${res.reasonPhrase}');
+    }
+  }
+
+  // 연락처 중복검사 함수
+  Future<String> getPhoneDup(String phone) async {
+    var headersList = {
+      'Accept': '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+      'Authorization':
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3MDM0MTAyODMsInVubyI6IjMiLCJ1aWQiOiJ0ZXN0Iiwicm9sIjpbIlJPTEVfVVNFUiJdfQ.KfCN0e75DORBg140Oe2yJ9AjevY1s5DdgVxRtZQMDH5rxzqA2NO2A1RuwJKmuH0hnuUNGYpEtWivz_9CQrclpA',
+      'Content-Type': 'application/json'
+    };
+    var url =
+        Uri.parse('http://localhost:8080/api/user/getPhoneDup?phone=$phone');
+
+    var req = http.Request('GET', url);
+    req.headers.addAll(headersList);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(resBody);
+      return resBody;
+    } else {
+      return "N";
+      // throw Exception('Failed to check duplicate phone: ${res.reasonPhrase}');
     }
   }
 }
