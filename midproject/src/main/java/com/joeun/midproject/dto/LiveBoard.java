@@ -24,6 +24,7 @@ public class LiveBoard {
     private int maxTickets;
     private String updDate;
     private int soldOut;
+    private int views;
     private int ticketLeft;
     private Integer fileNo;
     private Files thumbnail;

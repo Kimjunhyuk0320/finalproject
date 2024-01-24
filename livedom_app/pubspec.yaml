@@ -75,6 +75,8 @@ dependencies:
 
   # html 파싱
   flutter_html: 3.0.0-beta.2
+  # 이미지 피커(삽입)
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:

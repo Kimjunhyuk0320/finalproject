@@ -24,6 +24,7 @@ import com.joeun.midproject.mapper.FileMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
+
 @Service
 @Slf4j
 public class FacilityRentalServiceImpl implements FacilityRentalService {
@@ -60,7 +61,6 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
     public FacilityRental select(int frNo) throws Exception {
         FacilityRental facilityRental = facilityRentalMapper.select(frNo);
         if(facilityRental!=null){
-            facilityRentalMapper.viewsUp(frNo);
             Files files = new Files();
             files.setParentNo(facilityRental.getFrNo());
             files.setParentTable("facility_rental");
@@ -457,14 +457,14 @@ public class FacilityRentalServiceImpl implements FacilityRentalService {
         page.setTotal(facilityRentalMapper.pageFrListTotalCount(page));
         List<FacilityRental> pageFrList = facilityRentalMapper.pageFrList
         (page);
-
+        page.setNextCount(facilityRentalMapper.nextPageListCount(page));
         for (FacilityRental facilityRental : pageFrList) {
             Files files = new Files();
             files.setParentNo(facilityRental.getFrNo());
             files.setParentTable("facility_rental");
             facilityRental.setThumbnail(fileMapper.selectThumbnail(files));
         }
-
+        log.info(page.toString());
         return pageFrList;
     }
 }

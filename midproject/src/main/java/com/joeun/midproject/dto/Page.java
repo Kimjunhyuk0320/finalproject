@@ -35,6 +35,9 @@ public class Page {
 
     private int index; // 데이터 순서 번호
 
+    private int nextIndex; // 스켈레톤 UI용 다음 인덱스 수
+    private int nextCount; // 스켈레톤 UI용 데이터 수
+
     //검색조건
     private String keyword;
     private int searchType;
@@ -102,6 +105,9 @@ public class Page {
 
         // 데이터 시작 순서 번호
         this.index = (this.page - 1) * this.rows;
+
+        // 다음 인덱스 번호
+        this.nextIndex = (this.page) * this.rows;
 
     }
 }

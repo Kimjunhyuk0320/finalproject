@@ -12,12 +12,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joeun.midproject.dto.Comment;
 import com.joeun.midproject.dto.Ticket;
 import com.joeun.midproject.dto.Users;
+import com.joeun.midproject.mapper.FacilityRentalMapper;
+import com.joeun.midproject.mapper.LiveBoardMapper;
+import com.joeun.midproject.mapper.TeamMapper;
 import com.joeun.midproject.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +31,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/user")
 public class UserApiController {
+
+    @Autowired
+    private TeamMapper teamMapper;
+
+    @Autowired
+    private LiveBoardMapper liveBoardMapper;
+
+    @Autowired
+    private FacilityRentalMapper facilityRentalMapper;
 
     @Autowired
     private UserService userService;
@@ -37,20 +51,20 @@ public class UserApiController {
      */
     // @GetMapping("/login")
     // public ResponseEntity<Map<String, Object>> login(
-    //         @CookieValue(value = "remember-id", required = false) Cookie cookie) {
-    //     String userId = "";
-    //     boolean rememberId = false;
+    // @CookieValue(value = "remember-id", required = false) Cookie cookie) {
+    // String userId = "";
+    // boolean rememberId = false;
 
-    //     if (cookie != null) {
-    //         userId = cookie.getValue();
-    //         rememberId = true;
-    //     }
+    // if (cookie != null) {
+    // userId = cookie.getValue();
+    // rememberId = true;
+    // }
 
-    //     Map<String, Object> map = new HashMap<>();
-    //     map.put("username", userId);
-    //     map.put("rememberId", rememberId);
+    // Map<String, Object> map = new HashMap<>();
+    // map.put("username", userId);
+    // map.put("rememberId", rememberId);
 
-    //     return new ResponseEntity<>(map, HttpStatus.OK);
+    // return new ResponseEntity<>(map, HttpStatus.OK);
     // }
     @GetMapping("/{username}")
     public ResponseEntity<Users> userInfo(@PathVariable("username") String username) {
@@ -63,10 +77,9 @@ public class UserApiController {
         }
 
     }
-    
 
     @PostMapping()
-    public ResponseEntity<String> joinPro( Users users, HttpServletRequest request) {
+    public ResponseEntity<String> joinPro(Users users, HttpServletRequest request) {
         log.info(users.toString());
         try {
             int result = userService.insert(users, request);
@@ -83,9 +96,9 @@ public class UserApiController {
     }
 
     @PutMapping()
-    public ResponseEntity<String> updatePro( Users users, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> updatePro(Users users, HttpServletRequest request, HttpServletResponse response) {
         try {
-            int result = userService.update(users, request,response);
+            int result = userService.update(users, request, response);
 
             if (result > 0) {
                 return new ResponseEntity<>("수정 성공", HttpStatus.OK);
@@ -165,4 +178,39 @@ public class UserApiController {
 
         return new ResponseEntity<List<Ticket>>(ticketList, HttpStatus.OK);
     }
+
+    @PutMapping("/viewUp")
+    public ResponseEntity<String> viewUp(@RequestBody Comment comment) {
+        System.out.println(comment.toString());
+        int result = 0;
+        try {
+            switch (comment.getParentTable()) {
+                case "team_recruitments":
+                    result = teamMapper.viewUp(comment);
+                    break;
+
+                case "facility_rental":
+                    result = facilityRentalMapper.viewsUp(comment);
+                    break;
+
+                case "live_board":
+                    result = liveBoardMapper.viewsUp(comment);
+                    break;
+                default:
+                    break;
+            }
+            if (result != 0) {
+                System.out.println(result);
+                return new ResponseEntity<>("수정 성공", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("수정 실패", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            // 예외 처리 로직
+            return new ResponseEntity<>("서버 오류", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        // result가 0보다 크다면 수정 성공!
+        // 나머지는 수정 실패 ㅠ
+    }
+
 }

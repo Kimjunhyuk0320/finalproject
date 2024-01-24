@@ -284,6 +284,7 @@ public class LiveBoardServiceImpl implements LiveBoardService{
 
         page.setTotal(liveBoardMapper.liveBoardPageListTotalCount(page));
         List<LiveBoard> liveBoardsPageList = liveBoardMapper.liveBoardPageList(page);
+        page.setNextCount(liveBoardMapper.nextPageListCount(page));
         for(int i = 0; i <liveBoardsPageList.size() ; i++){
             LiveBoard liveBoard = liveBoardsPageList.get(i);
              Files file = new Files();

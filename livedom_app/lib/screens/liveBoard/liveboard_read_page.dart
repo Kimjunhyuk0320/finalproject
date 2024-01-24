@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LiveBoardReadScreen extends StatefulWidget {
   @override
@@ -10,7 +15,6 @@ class LiveBoardReadScreen extends StatefulWidget {
 }
 
 class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
-  
   int _count = 1;
   int selectedIndex = 0;
   // 말 줄이기 함수
@@ -20,6 +24,153 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
     } else {
       return '${text.substring(0, length)}...';
     }
+  }
+
+
+  //이미 캐싱 분기
+  String isCaching = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      LiveBoard liveBoard =
+          ModalRoute.of(context)?.settings.arguments as LiveBoard;
+
+      if (liveBoard != null && liveBoard.isCaching!) {
+        setState(() {
+          isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
+        });
+      }
+    });
+    viewUp();
+  }
+
+  Future<void> viewUp() async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      final LiveBoard liveBoard =
+          ModalRoute.of(context)?.settings.arguments as LiveBoard;
+      print('공연 데이터는 다음과 같습니다 : ${liveBoard}');
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var body = json.encode(
+        {
+          'parentTable': 'live_board',
+          'parentNo': liveBoard.boardNo,
+        },
+      );
+      await http.put(
+        Uri.parse('http://10.0.2.2:8080/api/user/viewUp'),
+        headers: headers,
+        body: body,
+      );
+    });
+  }
+
+  Future<String> delete(int boardNo) async {
+    var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/liveBoard/${boardNo}');
+    try {
+      var result = await http.delete(parsedUrl);
+      if (result.statusCode == 200) {
+        return 'done';
+      }
+      return 'dont';
+    } catch (e) {
+      print(e);
+      return 'dont';
+    }
+  }
+
+  Future deleteConfirm(int boardNo) async {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.18,
+          padding: EdgeInsets.all(
+            20.0,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  '공연 게시글을 삭제하시겠습니까?',
+                  style: TextStyle(
+                    fontSize: 21.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Consumer<TempUserProvider>(
+                    builder: (context, value, child) {
+                      return GestureDetector(
+                        onTap: () async {
+                          //예 선택 시 실행 함수
+                          var result = await delete(boardNo);
+                          if (result == 'done') {
+                            print('삭제완료');
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/liveboard',
+                            );
+                          } else {
+                            print('삭제실패');
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
+                          child: Text(
+                            '예',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      //아니오 선택 시 실행 함수
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 40,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                      child: Text(
+                        '아니오',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -38,7 +189,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   child: ImageFiltered(
                     imageFilter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                     child: Image.network(
-                      'http://10.0.2.2:8080/api/file/img/${item.thumbnail}',
+                      'http://10.0.2.2:8080/api/file/img/${item.thumbnail}${isCaching}',
                       width: 130,
                       height: 190,
                       fit: BoxFit.cover,
@@ -53,7 +204,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   child: Row(
                     children: [
                       Image.network(
-                        'http://10.0.2.2:8080/api/file/img/${item.thumbnail}',
+                        'http://10.0.2.2:8080/api/file/img/${item.thumbnail}${isCaching}',
                         width: 130,
                         height: 190,
                         fit: BoxFit.cover,
@@ -172,26 +323,37 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                       color: Colors.white,
                     ),
                     actions: [
-                      PopupMenuButton(
-                        icon: Icon(Icons.menu, color: Colors.white),
-                        onSelected: (value) {
-                          if (value == 'item1') {
-                            // 'item1'이 선택되었을 때 수행할 작업
-                          } else if (value == 'item2') {
-                            // 'item2'가 선택되었을 때 수행할 작업
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              value: 'item1',
-                              child: Text('게시글 수정'),
-                            ),
-                            PopupMenuItem(
-                              value: 'item2',
-                              child: Text('게시글 삭제'),
-                            ),
-                          ];
+                      Consumer<TempUserProvider>(
+                        builder: (context, value, child) {
+                          return value.userInfo['username'] == item.username
+                              ? PopupMenuButton(
+                                  icon: Icon(Icons.menu, color: Colors.white),
+                                  onSelected: (value) {
+                                    if (value == 'item1') {
+                                      // 'item1'이 선택되었을 때 수행할 작업
+                                      Navigator.pushNamed(
+                                          context, '/liveboard/update',
+                                          arguments: item);
+                                    } else if (value == 'item2') {
+                                      // 'item2'가 선택되었을 때 수행할 작업
+                                      deleteConfirm(item.boardNo!);
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return [
+                                      PopupMenuItem(
+                                        value: 'item1',
+                                        child: Text('게시글 수정'),
+                                      ),
+                                      if (item.ticketLeft == 0)
+                                        PopupMenuItem(
+                                          value: 'item2',
+                                          child: Text('게시글 삭제'),
+                                        ),
+                                    ];
+                                  },
+                                )
+                              : Container();
                         },
                       ),
                     ],
@@ -202,72 +364,82 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             // 탭바
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 13),
               child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey, // 테두리 색상 설정
-                    width: 1.0, // 테두리 두께 설정
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey, // 테두리 색상 설정
+                      width: 1.0, // 테두리 두께 설정
+                    ),
                   ),
+                ),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = 0;
+                        });
+                      },
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: selectedIndex == 0
+                                  ? Colors.black
+                                  : Colors.transparent,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '공연정보',
+                          style: TextStyle(
+                            color:
+                                selectedIndex == 0 ? Colors.black : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = 1;
+                        });
+                      },
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: selectedIndex == 1
+                                  ? Colors.black
+                                  : Colors.transparent,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '공연후기',
+                          style: TextStyle(
+                            color:
+                                selectedIndex == 1 ? Colors.black : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 0;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: selectedIndex == 0 ? Colors.black : Colors.transparent,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      '공연정보',
-                      style: TextStyle(
-                        color: selectedIndex == 0 ? Colors.black : Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 1;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: selectedIndex == 1 ? Colors.black : Colors.transparent,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      '공연후기',
-                      style: TextStyle(
-                        color: selectedIndex == 1 ? Colors.black : Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            ),
             ),
             // 탭바뷰
             Container(
@@ -343,10 +515,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                 ),
               ],
             ),
-          ),
-
-          
-          SizedBox(height: 60,)
+            ),
+            SizedBox(
+              height: 60,
+            )
           ],
         ),
       ),
@@ -431,7 +603,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 15,),
+                            SizedBox(
+                              height: 15,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -446,7 +620,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
-                                    SizedBox(height: 15.0,),
+                                    SizedBox(
+                                      height: 15.0,
+                                    ),
                                     Text(
                                       '선택한 티켓',
                                       style: TextStyle(
@@ -468,7 +644,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
-                                    SizedBox(height: 10.0,),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
                                     Row(
                                       children: [
                                         Text(
@@ -479,7 +657,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                           ),
                                           textAlign: TextAlign.left,
                                         ),
-                                        SizedBox(width: 30.0,),
+                                        SizedBox(
+                                          width: 30.0,
+                                        ),
                                         Container(
                                           height: 35.0,
                                           width: 35.0,
@@ -499,8 +679,8 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 10.0,
                                                   vertical: 10.0),
-                                              textStyle: TextStyle(
-                                                  fontSize: 16.0),
+                                              textStyle:
+                                                  TextStyle(fontSize: 16.0),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(12.0),
@@ -509,7 +689,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             child: Text('+'),
                                           ),
                                         ),
-                                        SizedBox(width: 5.0,),
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
                                         Container(
                                           height: 35.0,
                                           width: 35.0,
@@ -529,8 +711,8 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 10.0,
                                                   vertical: 10.0),
-                                              textStyle: TextStyle(
-                                                  fontSize: 16.0),
+                                              textStyle:
+                                                  TextStyle(fontSize: 16.0),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(12.0),
@@ -545,24 +727,22 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Container(
                               height: 55.0,
                               width: 300.0,
                               child: ElevatedButton(
-                                onPressed: () {
-                                },
+                                onPressed: () {},
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
                                   foregroundColor: Colors.white,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                      vertical: 10.0),
-                                  textStyle: TextStyle(
-                                      fontSize: 16.0),
+                                      horizontal: 10.0, vertical: 10.0),
+                                  textStyle: TextStyle(fontSize: 16.0),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(15.0),
+                                    borderRadius: BorderRadius.circular(15.0),
                                   ),
                                 ),
                                 child: Text('결제하기'),

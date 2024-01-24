@@ -19,6 +19,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     FROM facility_rental
     </select>
 
+    <select id="nextPageListCount">
+  
+   SELECT COUNT(*)
+   FROM (
+    SELECT *
+  FROM facility_rental
+    LIMIT #{nextIndex}, #{rows}
+    ) as l
+  </select>
+
     <select id="pageFrList" resultType="FacilityRental">
   
   SELECT *
@@ -33,9 +43,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </choose>
     ORDER BY 
         <choose>
-            <when test="order == 0">upd_date DESC</when>
-            <when test="order == 1">title DESC</when>
-            <when test="order == 2">views DESC</when>
+            <when test="order == 0">
+                  CASE WHEN STR_TO_DATE(live_date, '%Y/%m/%d') <![CDATA[ < ]]> CURDATE() THEN 0 ELSE 1 END, views DESC
+            </when>
+            <when test="order == 1">
+                  CASE WHEN STR_TO_DATE(live_date, '%Y/%m/%d') <![CDATA[ < ]]> CURDATE() THEN 0 ELSE 1 END, STR_TO_DATE(live_date, '%Y/%m/%d') DESC
+            </when>
+            <when test="order == 2">upd_date DESC</when>
         </choose>
     LIMIT #{index}, #{rows};
     </select>
@@ -49,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <update id="viewsUp">
         UPDATE facility_rental SET views = (views+1)
-        WHERE fr_no = #{frNo}
+        WHERE fr_no = #{parentNo}
     </update>
 
     <!-- 게시글 등록 -->
