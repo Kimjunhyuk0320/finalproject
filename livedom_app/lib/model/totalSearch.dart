@@ -9,4 +9,3 @@ class TotalSearch {
     this.content,
   });
 }
-
