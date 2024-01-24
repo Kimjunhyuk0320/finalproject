@@ -274,6 +274,7 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                         title: "아이디", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
+
                       const SizedBox(height: 30),
                       CustomTextWithoutPrefixField(
                         obscureText: true,
@@ -290,6 +291,7 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                         title: "비밀번호 확인", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
+                      
                       const SizedBox(height: 20),
                       CustomTextWithoutPrefixField(
                         hintText: "이름", // 인풋의 힌트가 여기에 담긴다.
@@ -359,10 +361,11 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
             CustomButton(
               text: "정보 수정",
               onTap: () {
+                print("정보 수정 버튼을 눌렀습니다.");
                 _showModalBottomSheet(context);
-                userUpdate();
-                Navigator.pop(context);
-                print("유저정보 업데이트 관련1");
+                // 비밀번호와 비밀번호 확인을 모두 입력하였을 때,
+                // userUpdate();
+                // Navigator.pop(context);
               },
             ),
             const SizedBox(height: 20),

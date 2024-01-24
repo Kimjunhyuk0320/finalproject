@@ -14,6 +14,8 @@ import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 
+import 'package:http/http.dart' as http;
+
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -31,10 +33,34 @@ class _HomeViewState extends State<HomeView> {
     'assets/images/SLan.webp',
   ];
 
+  // 통합 검색 서버요청
+  Future<String> totalSearch() async {
+    var headersList = {
+      'Accept': '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
+    };
+    var url = Uri.parse('http://10.0.2.2:8080/api/home/totalSearch?=');
+
+    var req = http.Request('GET', url);
+    req.headers.addAll(headersList);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      print(resBody);
+      return resBody;
+    } else {
+      print(res.reasonPhrase);
+      return "요청이 실패하였습니다.";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 현재 로그인한 사용자 정보 가져오기
     // final String username = _authProvider.;
+    var a = totalSearch();
     return Scaffold(
       appBar: AppBar(
         title: Text(

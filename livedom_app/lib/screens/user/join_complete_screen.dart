@@ -19,6 +19,7 @@ class JoinCompleteScreen extends StatefulWidget {
 }
 
 class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
+
   Future<void> registerUser(Users user) async {
     final String apiUrl = 'http://10.0.2.2:8080/users';
 
@@ -72,13 +73,14 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
     }
   }
 
+  // 모달이 현재 보이는지 여부를 나타내는 플래그
+  bool isModalVisible = false;
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('내정보'),
+        title: const Text('정보확인'),
         centerTitle: true,
       ),
       body: Padding(
@@ -86,7 +88,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).padding.top + 15),
+            // SizedBox(height: MediaQuery.of(context).padding.top + 15),
             // if (user != null)
             //   Row(
             //     mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +106,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                 padding: EdgeInsets.zero,
                 physics: const ClampingScrollPhysics(),
                 children: [
-                  const SizedBox(height: 40),
+                  // const SizedBox(height: 40),
                   Column(
                     children: [
                       Center(
@@ -225,7 +227,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 100),
+                      const SizedBox(height: 10),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -448,11 +450,10 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             } else {
                               print('사용자 정보가 없습니다.');
                             }
-                            Navigator.pushReplacement(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
+                              '/login',
+                              (route) => false, // 이전 페이지가 없도록 설정
                             );
                           },
                           style: ElevatedButton.styleFrom(
