@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
+import 'package:livedom_app/provider/total_search_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_insert.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_read_page.dart';
@@ -52,8 +53,9 @@ void main() {
     MultiProvider(
       providers: [
         // Users안에 있는 Provider
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => TotalSearchProvider()),
         ChangeNotifierProvider(create: (context) => TempUserProvider()),
         // 필요한 만큼의 프로바이더를 추가합니다.
       ],

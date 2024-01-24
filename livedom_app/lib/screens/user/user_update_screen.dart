@@ -113,10 +113,6 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
     var req = http.MultipartRequest('PUT', url);
     req.headers.addAll(headersList);
     req.fields.addAll(body);
-    //아래는 file를 첨부하는 예시입니다.
-    // req.files.add(
-    //   await http.MultipartFile.fromPath('file', _image!.path),
-    // );
 
     var res = await req.send();
     final resBody = await res.stream.bytesToString();
