@@ -1,10 +1,15 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
+import 'package:livedom_app/widget/custom_button.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:path_provider/path_provider.dart';
 
 class TeamInsertScreen extends StatefulWidget {
   const TeamInsertScreen({super.key});
@@ -14,6 +19,10 @@ class TeamInsertScreen extends StatefulWidget {
 }
 
 class _TeamInsertScreenState extends State<TeamInsertScreen> {
+  //서머노트용 컨트롤러
+  HtmlEditorController htmlEditorController = HtmlEditorController();
+
+  //컨트롤러
   final TextEditingController _titleController =
       TextEditingController(text: '');
   String _capacity = '1';
@@ -68,6 +77,25 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
       return 'done';
     } else {
       return 'dont';
+    }
+  }
+
+  Future<String> uploadImageToServer(File image) async {
+    try {
+      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var req = http.MultipartRequest('POST', parsedUrl);
+      req.files.add(await http.MultipartFile.fromPath('file', image.path));
+      var res = await req.send();
+
+      if (res.statusCode == 200) {
+        var resData = res.stream.bytesToString();
+        return resData;
+      } else {
+        return '0';
+      }
+    } catch (e) {
+      print(e);
+      return '0';
     }
   }
 
@@ -389,7 +417,8 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                                     TimeOfDay? result = await showTimePicker(
                                         context: context,
                                         initialTime: TimeOfDay(
-                                          hour: int.parse(_endTimeController.text
+                                          hour: int.parse(_endTimeController
+                                              .text
                                               .split(':')[0]),
                                           minute: int.parse(_endTimeController
                                               .text
@@ -690,24 +719,57 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(18.0)),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.0, horizontal: 0.0),
-                            child: TextField(
-                              controller: _contentController,
-                              decoration: InputDecoration(
-                                hintText: '',
-                                contentPadding: EdgeInsets.only(
-                                  bottom: 0.0,
-                                  left: 10.0,
+                          //html_editor_enhanced
+                          HtmlEditor(
+                            controller: htmlEditorController, // HTML 에디터 컨트롤러
+                            htmlEditorOptions: HtmlEditorOptions(
+                              hint: 'Your text here...', // 에디터에 표시될 힌트
+                            ),
+                            otherOptions: OtherOptions(
+                              height: 400, // 에디터의 높이 설정
+                            ),
+                            htmlToolbarOptions: HtmlToolbarOptions(
+                              customToolbarButtons: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    print('이미지 업로드 콜백 실행');
+                                    final picker = ImagePicker();
+                                    final pickedFile = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    if (pickedFile != null) {
+                                      // Upload the selected image to your server
+                                      // Use the appropriate method to upload the image to your server
+                                      // and get the image URL
+                                      String imageUrl =
+                                          await uploadImageToServer(
+                                              File(pickedFile.path));
+                                      // 파일을 저장합니다.
+                                      // 서버에서 받은 이미지 URL을 에디터에 삽입합니다.
+                                      htmlEditorController.insertHtml(
+                                          '<img src="http://10.0.2.2:8080/api/file/img/${imageUrl}" width="350" height="350"/>');
+                                      print(imageUrl);
+                                      htmlEditorController.getText().then((value) => print(value));
+
+                                    }
+                                  },
+                                  child: Icon(Icons.image),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                  ),
+                                )
+                              ],
+                              toolbarType: ToolbarType.nativeGrid,
+                              // 툴바 옵션 설정
+                              defaultToolbarButtons: [
+                                StyleButtons(),
+                                FontButtons(),
+                                ColorButtons(),
+                                ParagraphButtons(),
+                                InsertButtons(
+                                  picture: false,
                                 ),
-                                border: InputBorder.none,
-                              ),
+                                OtherButtons(),
+                              ],
                             ),
                           ),
                         ],
