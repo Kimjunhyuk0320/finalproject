@@ -33,7 +33,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
     super.initState();
     getTeamList();
     _infContoller.addListener(() async {
-      if (_infContoller.position.maxScrollExtent <= _infContoller.offset +400) {
+      if (_infContoller.position.maxScrollExtent <=
+          _infContoller.offset + 400) {
         getTeamList();
       }
     });
@@ -91,18 +92,18 @@ class _TeamListScreenState extends State<TeamListScreen> {
 
     if (teamListResponse.statusCode == 200) {
       setState(() {
-      //UTF - 8 디코딩
-      var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
+        //UTF - 8 디코딩
+        var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
 
-      //JSON 디코딩
-      var teamListJSON = jsonDecode(teamListDecoded);
+        //JSON 디코딩
+        var teamListJSON = jsonDecode(teamListDecoded);
 
-      final List tempTeamList = teamListJSON['data'];
-      _pageObject = teamListJSON['page'];
-      _nextCount = teamListJSON['page']['nextCount'];
-      if (_pageObject['page'] > _pageObject['last']) {
-        return;
-      }
+        final List tempTeamList = teamListJSON['data'];
+        _pageObject = teamListJSON['page'];
+        _nextCount = teamListJSON['page']['nextCount'];
+        if (_pageObject['page'] > _pageObject['last']) {
+          return;
+        }
 
         _page++;
         _teamList.addAll(tempTeamList);
@@ -311,7 +312,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '${item['title'].substring(0,14)}...',
+                                  '${item['title'].length >= 14 ? (item['title'].substring(0, 14)+"...") : (item['title'])}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.0,
@@ -361,7 +362,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                       return Container(
                         margin: EdgeInsets.only(bottom: 20.0),
                         decoration: BoxDecoration(
-                          color: Colors.black12,
+                            color: Colors.black12,
                             border: Border.all(
                               width: 1.0,
                               color: Colors.black12,

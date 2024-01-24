@@ -12,6 +12,7 @@ import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:provider/provider.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -207,49 +208,72 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Container(
-                          width: 360.0,
-                          height: 60.0,
-                          decoration: BoxDecoration(
-                            color: Colors.yellow,
-                            borderRadius: BorderRadius.circular(
-                                15.0), // 숫자를 조절하여 원하는 둥근 정도를 지정
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // 이미지 추가
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const ShapeDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      DefaultImages.kakaoLogo,
+                        Consumer<UserProvider>(
+                          builder: (context, user, child) {
+                            return GestureDetector(
+                              onTap: () async {
+                                print('카카오로그인 진입');
+                                var user = context.read<UserProvider>();
+
+                              // ✔ 로그인 여부 확인
+                              user.loginCheck();
+
+                              // 비로그인 시 ➡ 로그인 요청
+                              if( !await user.isLogin ) {
+                                // 사용자 조건 : 카카오톡 설치 여부
+                                await isKakaoTalkInstalled() ? user.kakoTalkLogin() : user.kakoLogin();
+                              }
+                              else {
+                                // 이미 로그인된 상태 ➡ 로그인 화면
+                                Navigator.pushReplacementNamed(context, "/logout");
+                              }
+                              },
+                              child: Container(
+                                width: 360.0,
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow,
+                                  borderRadius: BorderRadius.circular(
+                                      15.0), // 숫자를 조절하여 원하는 둥근 정도를 지정
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // 이미지 추가
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: const ShapeDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            DefaultImages.kakaoLogo,
+                                          ),
+                                          fit: BoxFit.fill,
+                                        ),
+                                        shape: OvalBorder(),
+                                      ),
                                     ),
-                                    fit: BoxFit.fill,
-                                  ),
-                                  shape: OvalBorder(),
+
+                                    // 간격을 주기 위한 SizedBox
+                                    SizedBox(width: 8.0),
+
+                                    // 텍스트 추가
+                                    Center(
+                                      child: Text(
+                                        '카카오 로그인',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-
-                              // 간격을 주기 위한 SizedBox
-                              SizedBox(width: 8.0),
-
-                              // 텍스트 추가
-                              Center(
-                                child: Text(
-                                  '카카오 로그인',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17.0,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 130),
                         GestureDetector(
