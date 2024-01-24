@@ -174,11 +174,31 @@ FROM ${table}
          GROUP BY t.team_no
     ORDER BY 
     <choose>
-      <when test="order == 0">t.upd_date DESC</when>
-      <when test="order == 1">t.title DESC</when>
-      <when test="order == 2">t.views DESC</when>
+      <when test="order == 0">
+      <![CDATA[
+      CASE WHEN STR_TO_DATE(live_date, '%Y-%m-%d') < CURDATE() THEN 0
+      ELSE 1
+      END,
+      views DESC
+      ]]>
+      </when>
+      <when test="order == 1">
+      CASE WHEN STR_TO_DATE(live_date, '%Y/%m/%d') <![CDATA[ < ]]> CURDATE() THEN 0 ELSE 1 END, STR_TO_DATE(live_date, '%Y/%m/%d') DESC
+</when>
+      <when test="order == 2">t.upd_date DESC</when>
     </choose>
     LIMIT #{index}, #{rows};
+  </select>
+
+  <select id="nextPageListCount" >
+  
+  SELECT COUNT(*)
+   FROM (SELECT t.team_no FROM
+   team_recruitments AS t LEFT JOIN team_applications AS a
+    ON (t.team_no = a.team_no AND a.deposit_status = 1)
+         GROUP BY t.team_no
+    LIMIT #{nextIndex}, #{rows}
+    ) as l
   </select>
 
   <select id="listByConfirmedLive2TotalCount">
@@ -217,6 +237,10 @@ FROM ${table}
   <update id="confirmed">
     UPDATE `team_recruitments` SET confirmed = 1
     WHERE team_no = #{teamNo}
+  </update>
+
+  <update id="viewUp">
+  UPDATE `team_recruitments` SET views = views + 1 WHERE team_no = #{parentNo}
   </update>
 
 </mapper>

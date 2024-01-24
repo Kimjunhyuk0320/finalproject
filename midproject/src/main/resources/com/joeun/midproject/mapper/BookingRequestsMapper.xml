@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="rentalList" resultType="BookingRequests">
         SELECT b.br_no AS brNo,
+        f.fr_no AS frNo,
         b.phone AS phone,
         u.name AS name,
         b.deposit_status AS depositStatus,
@@ -56,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 유저 예약 목록 -->
     <select id="rreqList" resultType="BookingRequests">
         SELECT
+        f.fr_no AS frNo,
         b.br_no AS brNo,
         f.title AS frTitle,
         f.phone AS frPhone,

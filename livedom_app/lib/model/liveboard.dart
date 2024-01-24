@@ -16,6 +16,7 @@ class LiveBoard {
   String? updDate;
   int? soldOut;
   int? thumbnail;
+  bool? isCaching;
 
   LiveBoard({
     required this.boardNo,
@@ -34,6 +35,7 @@ class LiveBoard {
     required this.soldOut,
     required this.thumbnail,
     required this.ticketLeft,
+    required this.isCaching,
   });
   
 }

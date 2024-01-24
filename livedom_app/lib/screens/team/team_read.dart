@@ -1,6 +1,10 @@
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:livedom_app/model/team.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
+import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,22 +16,71 @@ class TeamReadScreen extends StatefulWidget {
 }
 
 class _TeamReadScreenState extends State<TeamReadScreen> {
-
+  
   Future<String> delete(teamNo) async {
     final url = 'http://10.0.2.2:8080/api/team/${teamNo}';
     final parsedUrl = Uri.parse(url);
     var response = await http.delete(parsedUrl);
-    if(response.statusCode ==200){
-    return 'done';
-    }else{
+    if (response.statusCode == 200) {
+      return 'done';
+    } else {
       return 'dont';
     }
+  }
+
+  int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    viewUp();
+  }
+  Future<void> viewUp() async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      final Map team = ModalRoute.of(context)?.settings.arguments as Map;
+      print('팀 데이터는 다음과 같습니다 : ${team}');
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var body = json.encode(
+        {
+          'parentTable': 'team_recruitments',
+          'parentNo': team['teamNo'],
+        },
+      );
+      print(team['teamNo']);
+      await http.put(
+        Uri.parse('http://10.0.2.2:8080/api/user/viewUp'),
+        headers: headers,
+        body: body,
+      );
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
     final Map team = ModalRoute.of(context)?.settings.arguments as Map;
-
+    final Team commentData = Team(
+      boardNo: team['teamNo'],
+      title: team['title'],
+      writer: team['writer'],
+      username: team['username'],
+      content: team['content'],
+      location: team['location'],
+      address: team['address'],
+      liveDate: team['liveDate'],
+      liveStTime: team['liveStTime'],
+      liveEndTime: team['liveEndTime'],
+      price: team['price'],
+      capacity: team['capacity'],
+      account: team['account'],
+      account1: team['account1'],
+      account2: team['account2'],
+      views: team['views'],
+      confirmed: team['confirmed'],
+      updDate: team['updDate'],
+    );
     final String _confirmed = team['confirmed'] == 1 ? '마감' : '모집중';
     final _confirmedColor = team['confirmed'] == 1 ? Colors.red : Colors.green;
 
@@ -91,15 +144,20 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                                             onSelected: (value) async {
                                               // 메뉴 아이템을 클릭했을 때의 동작을 정의합니다.
                                               if (value == '수정하기') {
-                                                Navigator.pushNamed(context, '/team/update',arguments: team);
+                                                Navigator.pushNamed(
+                                                    context, '/team/update',
+                                                    arguments: team);
                                               } else if (value == '삭제하기') {
-                                                var result = await delete(team['teamNo']);
-                                                if (result == 'done'){
-                                                  Navigator.pushReplacementNamed(context, '/team');
-                                                }else{
+                                                var result = await delete(
+                                                    team['teamNo']);
+                                                if (result == 'done') {
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context, '/team');
+                                                } else {
                                                   print('삭제 실패');
                                                 }
-                                              }else{
+                                              } else {
                                                 return;
                                               }
                                             },
@@ -182,11 +240,101 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 13),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey, // 테두리 색상 설정
+                            width: 1.0, // 테두리 두께 설정
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = 0;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: selectedIndex == 0
+                                        ? Colors.black
+                                        : Colors.transparent,
+                                    width: 1.0,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                '공연정보',
+                                style: TextStyle(
+                                  color: selectedIndex == 0
+                                      ? Colors.black
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = 1;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: selectedIndex == 1
+                                        ? Colors.black
+                                        : Colors.transparent,
+                                    width: 1.0,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                '공연후기',
+                                style: TextStyle(
+                                  color: selectedIndex == 1
+                                      ? Colors.black
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // 탭바뷰
                   Container(
-                    padding: EdgeInsets.all(20.0),
-                    alignment: Alignment.topLeft,
-                    width: MediaQuery.of(context).size.width * 8,
-                    child: Text(team['content']),
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Visibility(
+                          visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
+                          child: Text(
+                            team['content'] ?? '',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        Visibility(
+                          visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
+                          child: CommentScreen(
+                              item: commentData,
+                              parentTable: 'team_recruitments'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -195,192 +343,203 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
           Positioned(
             bottom: 30,
             left: MediaQuery.of(context).size.width * 0.15,
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
-                        vertical: 20.0,
-                      ),
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24.0),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 10.0),
-                            alignment: Alignment.centerLeft,
-                            height: 130,
+            child: team['confirmed'] == 1
+                ? Container()
+                : GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 30.0,
+                              vertical: 20.0,
+                            ),
+                            height: MediaQuery.of(context).size.height * 0.4,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24.0),
-                              image: DecorationImage(
-                                image:
-                                    AssetImage('images/teamAppBtnPopImg.png'),
-                                fit: BoxFit.cover,
-                              ),
+                              color: Colors.white,
                             ),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  team['writer'],
-                                  style: TextStyle(
-                                    fontSize: 48.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                Container(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  alignment: Alignment.centerLeft,
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24.0),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          'images/teamAppBtnPopImg.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        team['writer'],
+                                        style: TextStyle(
+                                          fontSize: 48.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        '팀에 참가합니다.',
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  '팀에 참가합니다.',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.white,
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                Container(
+                                  height: 60,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                              left: 20.0,
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    60) /
+                                                2,
+                                            child: Text(
+                                              '모집 팀 수',
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                              left: 20.0,
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    60) /
+                                                2,
+                                            child: Text(
+                                              '${team['recStatus']}/${team['capacity']}',
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                              left: 20.0,
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    60) /
+                                                2,
+                                            child: Text(
+                                              '1/N 가격',
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                              left: 20.0,
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    60) /
+                                                2,
+                                            child: Text(
+                                              '${(team['price'] / team['capacity']).round()}원',
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      Navigator.pushNamed(
+                                          context, '/team/read/app',
+                                          arguments: {
+                                            'teamNo': team['teamNo']
+                                          });
+                                    });
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 40,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(14.0),
+                                    ),
+                                    child: Text(
+                                      '요청하기',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          Container(
-                            height: 60,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        left: 20.0,
-                                      ),
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                                  60) /
-                                              2,
-                                      child: Text(
-                                        '모집 팀 수',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        left: 20.0,
-                                      ),
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                                  60) /
-                                              2,
-                                      child: Text(
-                                        '${team['recStatus']}/${team['capacity']}',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        left: 20.0,
-                                      ),
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                                  60) /
-                                              2,
-                                      child: Text(
-                                        '1/N 가격',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        left: 20.0,
-                                      ),
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                                  60) /
-                                              2,
-                                      child: Text(
-                                        '${(team['price'] / team['capacity']).round()}원',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                Navigator.pushNamed(context, '/team/read/app',
-                                    arguments: {'teamNo': team['teamNo']});
-                              });
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 40,
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(14.0),
-                              ),
-                              child: Text(
-                                '요청하기',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 10.0,
                       ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(14.0),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '참가하기',
-                  style: TextStyle(
-                    color: Color.fromRGBO(244, 244, 244, 1),
-                    fontSize: 20.0,
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '참가하기',
+                        style: TextStyle(
+                          color: Color.fromRGBO(244, 244, 244, 1),
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         ],
       ),
