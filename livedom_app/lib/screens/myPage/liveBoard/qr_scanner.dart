@@ -103,7 +103,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   Future<String?> useTicket() async {
     print('티켓사용 티켓 번호 : ${ticket!.ticketNo}');
     final url =
-        Uri.parse('http://10.0.2.2:8080/api/qr/use?ticketNo=${ticket!.ticketNo}');
+        Uri.parse('http://13.125.19.111/api/qr/use?ticketNo=${ticket!.ticketNo}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var result = utf8.decode(response.bodyBytes);
@@ -344,7 +344,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Future fetch(String data) async {
     print('fetch...');
-    final url = Uri.parse('http://10.0.2.2:8080/api$data');
+    final url = Uri.parse('http://13.125.19.111/api$data');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {

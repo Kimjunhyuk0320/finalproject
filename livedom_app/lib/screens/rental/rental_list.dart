@@ -66,7 +66,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
     // 여기에 네트워크 요청 등을 처리하면 됩니다.
     // 이 예제에서는 간단히 items에 추가하는 형태로 작성했습니다.
     final url = Uri.parse(
-        'http://10.0.2.2:8080/api/fr?page${_page}&order=${selectedIndex}');
+        'http://13.125.19.111/api/fr?page${_page}&order=${selectedIndex}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {
@@ -270,7 +270,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
-                                      'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                      'http://13.125.19.111/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
                                       width: 120,
                                       height: 180,
                                       fit: BoxFit.cover,

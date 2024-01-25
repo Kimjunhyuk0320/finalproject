@@ -55,7 +55,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
 
   Future<String> uploadImageToServer(File image) async {
     try {
-      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var parsedUrl = Uri.parse('http://13.125.19.111/api/file/upload');
       var req = http.MultipartRequest('POST', parsedUrl);
       req.files.add(await http.MultipartFile.fromPath('file', image.path));
       var res = await req.send();
@@ -74,7 +74,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
 
   Future<String> submit(rental, user) async {
     print('submit함수 진입');
-    final url = 'http://10.0.2.2:8080/api/fr';
+    final url = 'http://13.125.19.111/api/fr';
     final parsedUrl = Uri.parse(url);
     final multiReq = http.MultipartRequest('PUT', parsedUrl);
 
@@ -223,7 +223,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
                         ),
                         _image == null
                             ? Image.network(
-                                'http://10.0.2.2:8080/api/file/${rental.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                'http://13.125.19.111/api/file/${rental.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
                                 width: 200.0,
                                 height: 280.0,
                                 fit: BoxFit.cover,
@@ -697,7 +697,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
                                             _contentController.text;
                                         if (_image != null) {
                                           var data = await http.get(Uri.parse(
-                                              'http://10.0.2.2:8080/api/fr/${rental.boardNo}'));
+                                              'http://13.125.19.111/api/fr/${rental.boardNo}'));
                                           var decodedData = json.decode(
                                               utf8.decode(data.bodyBytes));
                                           var fileNo = decodedData['thumbnail']

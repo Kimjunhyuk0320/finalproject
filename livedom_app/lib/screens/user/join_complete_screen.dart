@@ -21,7 +21,7 @@ class JoinCompleteScreen extends StatefulWidget {
 class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
 
   Future<void> registerUser(Users user) async {
-    final String apiUrl = 'http://10.0.2.2:8080/users';
+    final String apiUrl = 'http://13.125.19.111/users';
 
     try {
       // Create a MultipartRequest

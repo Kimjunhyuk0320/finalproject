@@ -60,7 +60,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
 
   Future<String> uploadImageToServer(File image) async {
     try {
-      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var parsedUrl = Uri.parse('http://13.125.19.111/api/file/upload');
       var req = http.MultipartRequest('POST', parsedUrl);
       req.files.add(await http.MultipartFile.fromPath('file', image.path));
       var res = await req.send();
@@ -79,7 +79,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
 
   Future<String> submit(boardNo, user) async {
     print('submit함수 진입');
-    final url = 'http://10.0.2.2:8080/api/liveBoard/update';
+    final url = 'http://13.125.19.111/api/liveBoard/update';
     final parsedUrl = Uri.parse(url);
     final multiReq = http.MultipartRequest('PUT', parsedUrl);
 
@@ -682,7 +682,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
                         ),
                         _image == null
                             ? Image.network(
-                                'http://10.0.2.2:8080/api/file/${liveboard.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                'http://13.125.19.111/api/file/${liveboard.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
                                 width: 200.0,
                                 height: 280.0,
                                 fit: BoxFit.cover,
@@ -838,7 +838,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
                                         liveboard.maxTickets = int.parse(
                                             _maxTicketsController.text);
                                         var response = await http.get(Uri.parse(
-                                            'http://10.0.2.2:8080/api/liveBoard/${liveboard.boardNo}'));
+                                            'http://13.125.19.111/api/liveBoard/${liveboard.boardNo}'));
                                         var parsedResponse = json.decode(
                                             utf8.decode(response.bodyBytes));
                                         liveboard.thumbnail =

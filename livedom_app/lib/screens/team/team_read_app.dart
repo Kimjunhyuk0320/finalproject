@@ -25,7 +25,7 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
       TextEditingController(text: '');
 
   Future<String> submit(teamNo, user) async {
-    final String url = 'http://10.0.2.2:8080/api/team/app';
+    final String url = 'http://13.125.19.111/api/team/app';
     final parsedUrl = Uri.parse(url);
     final header = {'Content-Type': 'application/json'};
     final data = {
@@ -53,7 +53,7 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
 
   Future<String> uploadImageToServer(File image) async {
     try {
-      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var parsedUrl = Uri.parse('http://13.125.19.111/api/file/upload');
       var req = http.MultipartRequest('POST', parsedUrl);
       req.files.add(await http.MultipartFile.fromPath('file', image.path));
       var res = await req.send();

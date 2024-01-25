@@ -100,7 +100,7 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
       'Accept': '*/*',
       'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
     };
-    var url = Uri.parse('http://10.0.2.2:8080/users');
+    var url = Uri.parse('http://13.125.19.111/users');
 
     var body = {
       'username': username,

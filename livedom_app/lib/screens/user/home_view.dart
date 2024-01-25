@@ -376,7 +376,7 @@ class _HomeViewState extends State<HomeView> {
                                                     fit: BoxFit.cover,
                                                   )
                                                 : Image.network(
-                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                                                    'http://13.125.19.111/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
                                                     width: 120,
                                                     height: 180,
                                                     fit: BoxFit.cover,
@@ -602,7 +602,7 @@ class _HomeViewState extends State<HomeView> {
                                                     fit: BoxFit.cover,
                                                   )
                                                 : Image.network(
-                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                                    'http://13.125.19.111/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
                                                     width: 120,
                                                     height: 180,
                                                     fit: BoxFit.cover,

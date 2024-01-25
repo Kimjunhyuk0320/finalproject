@@ -85,7 +85,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
   Future getTeamList() async {
     print(selectedIndex);
     var teamListURL =
-        'http://10.0.2.2:8080/api/team?page=${_page}&rows=${_rows}&order=${selectedIndex}&keyword=${_keywordController.text}';
+        'http://13.125.19.111/api/team?page=${_page}&rows=${_rows}&order=${selectedIndex}&keyword=${_keywordController.text}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);

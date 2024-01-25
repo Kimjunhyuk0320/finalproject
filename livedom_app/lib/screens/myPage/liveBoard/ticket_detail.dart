@@ -97,7 +97,7 @@ class _TicketDetailState extends State<TicketDetail> {
             ),
             SizedBox(height: 10,),
             FutureBuilder(
-              future: loadImage('http://10.0.2.2:8080/api/qr/img?qrNo=${item.qrNo}'),
+              future: loadImage('http://13.125.19.111/api/qr/img?qrNo=${item.qrNo}'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // 로딩 중이라면 반짝이는 스켈레톤 UI 표시

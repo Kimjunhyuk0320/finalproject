@@ -42,7 +42,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
 
   Future<String> submit(team, user) async {
     print('submit함수 진입');
-    final url = 'http://10.0.2.2:8080/api/team';
+    final url = 'http://13.125.19.111/api/team';
     final parsedUrl = Uri.parse(url);
     final body = json.encode({
       'title': _titleController.text,
@@ -102,7 +102,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
 
   Future<String> uploadImageToServer(File image) async {
     try {
-      var parsedUrl = Uri.parse('http://10.0.2.2:8080/api/file/upload');
+      var parsedUrl = Uri.parse('http://13.125.19.111/api/file/upload');
       var req = http.MultipartRequest('POST', parsedUrl);
       req.files.add(await http.MultipartFile.fromPath('file', image.path));
       var res = await req.send();

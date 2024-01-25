@@ -32,7 +32,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
 
   Future fetch() async {
     print('fetch...');
-    final url = Uri.parse('http://10.0.2.2:8080/api/user/listByUserName?username=${user['username']}');
+    final url = Uri.parse('http://13.125.19.111/api/user/listByUserName?username=${user['username']}');
     final response = await http.get(url);
      if( response.statusCode == 200 ) {
       setState(() {

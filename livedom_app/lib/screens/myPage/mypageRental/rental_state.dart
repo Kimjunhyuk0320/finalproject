@@ -29,7 +29,7 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
 
   Future getTeamAppList(user) async {
     var teamListURL =
-        'http://10.0.2.2:8080/api/booking/rr?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
+        'http://13.125.19.111/api/booking/rr?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -392,7 +392,7 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
                         print('대관신청 승인을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://10.0.2.2:8080/api/booking/accept';
+                            'http://13.125.19.111/api/booking/accept';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -504,7 +504,7 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
                         print('대관신청 거절을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://10.0.2.2:8080/api/booking/denied';
+                            'http://13.125.19.111/api/booking/denied';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -616,7 +616,7 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
                         print('대관 확정을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://10.0.2.2:8080/api/booking/confirm';
+                            'http://13.125.19.111/api/booking/confirm';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -945,7 +945,7 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
                         },
                         onTap: () async {
                           var parsedUrl = Uri.parse(
-                              'http://10.0.2.2:8080/api/fr/${_rentalList[index]['frNo']}');
+                              'http://13.125.19.111/api/fr/${_rentalList[index]['frNo']}');
                           var response = await http.get(parsedUrl);
                           var decodedResponse =
                               json.decode(utf8.decode(response.bodyBytes));
