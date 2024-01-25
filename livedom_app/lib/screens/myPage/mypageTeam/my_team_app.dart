@@ -632,23 +632,34 @@ class _MyTeamAppScreenState extends State<MyTeamAppScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.45,
                 decoration: BoxDecoration(
+                  
                   image: DecorationImage(
                     image: AssetImage('images/teamListBanner.png'),
                     fit: BoxFit.cover,
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child: Align(
-                  alignment: FractionalOffset(0.5, 0.1),
-                  child: Text(
-                    '팀 모집 현황',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34.0,
-                      fontWeight: FontWeight.bold,
+                child:                 SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '팀 모집 현황',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w900),
+                      textAlign: TextAlign.center,
                     ),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.white, // 뒤로가기 버튼 색상
+                    ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
                   ),
                 ),
               ),

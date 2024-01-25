@@ -6,6 +6,7 @@ import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/screens/user/user_update_screen.dart';
