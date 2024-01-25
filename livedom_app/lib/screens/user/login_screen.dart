@@ -5,8 +5,10 @@ import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
+import 'package:livedom_app/screens/user/bottem_nav.dart';
 import 'package:livedom_app/screens/user/home_view.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
@@ -128,34 +130,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               if (loginStatus) {
                                 // 로그인 성공 시 페이지 이동
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const HomeView(),
+                                    builder: (context) => const MainScreen(),
                                   ),
                                 );
                               }
                               // 로그인 실패 : 아이디 및 비번 불일치 등
                               else {
                                 // 로그인 실패 시 알림창 띄우기
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('로그인 실패'),
-                                      content: const Text('아이디와 비밀번호를 확인해주세요'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // 알림창 닫기
-                                          },
-                                          child: Text('확인'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                showCustomAlertDialog(context,"로그인 오류 :(" , "아이디와 비밀번호를 확인해주세요.");
                               }
                             } catch (error) {
                               print('로그인 실패: $error');
@@ -331,7 +316,55 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+          // 통합 알림창
       ),
     );
   }
+}
+
+// 통합 알림창
+void showCustomAlertDialog(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error,
+                  color: Colors.white,
+                  size: 50.0,
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  content,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20.0),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

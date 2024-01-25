@@ -148,6 +148,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
         buttonText,
         style: TextStyle(
           color: Colors.black,
+          fontSize: 11,
         ),
       ),
     );
@@ -166,19 +167,28 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                     height: 350,
                     width: double.infinity,
                     child: Image.asset(
-                      'images/sample.jpg',
+                      'images/tiketBigImg.jpg',
                       fit: BoxFit.cover,
                     ),
                   ),
                   Positioned(
-                    left: 16,
-                    bottom: 30,
+                    left: 30,
+                    bottom: 20,
                     child: Text(
-                      '내용이 여기에\n오게 됩니다.',
+                      'LIVE DOM ',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 35,
+                        fontWeight: FontWeight.w700,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0), // 그림자의 위치 조절
+                            blurRadius: 3.0, // 그림자의 흐림 정도
+                            color:
+                                Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -186,8 +196,9 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                     top: true,
                     child: AppBar(
                       title: const Text(
-                        'LiveDom',
-                        style: TextStyle(color: Colors.white),
+                        '티켓팅',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w900),
                         textAlign: TextAlign.center,
                       ),
                       leading: IconButton(
@@ -203,6 +214,17 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/adver.png'), // 이미지 경로를 수정해주세요
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -227,18 +249,18 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                 height: 35,
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 itemBuilder: (context, index) {
                   // index: 0~19
                   if (index < items.length) {
                     final item = items[index];
                     return Container(
-                      margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                       child: Column(
                         children: [
                           GestureDetector(
@@ -386,8 +408,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                     );
                   }
                 },
-                itemCount:
-                    items.length + _nextCount,
+                itemCount: items.length + _nextCount,
               ),
             ],
           ),

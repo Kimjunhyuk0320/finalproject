@@ -136,7 +136,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.45,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/teamListBanner.png'),
@@ -259,41 +259,10 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
                 width: MediaQuery.of(context).size.width * 0.56,
-                height: 35,
+                height: 40,
               ),
-              Container(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  width: 90.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(
-                      18.0,
-                    ),
-                  ),
-                  margin: EdgeInsets.only(
-                    right: 10.0,
-                  ),
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/team/insert');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          '글쓰기',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(Icons.edit)
-                      ],
-                    ),
-                  ),
-                ),
+              SizedBox(
+                height: 10.0,
               ),
               Container(
                 child: ListView.builder(
@@ -401,6 +370,18 @@ class _TeamListScreenState extends State<TeamListScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/team/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: Colors.white, // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
       ),
     );
   }

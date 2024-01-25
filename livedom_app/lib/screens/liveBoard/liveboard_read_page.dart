@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
@@ -25,7 +27,43 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       return '${text.substring(0, length)}...';
     }
   }
-
+  // 티켓 매수 얼마인지 요청
+  Future<String> getTicketNum(int boardNo,String name, String phone,int ticketCount) async {
+    print('티켓 수량 $ticketCount');
+    final url = Uri.parse('http://10.0.2.2:8080/api/liveBoard/ticketNum');
+    final response = await http.post(url,body: {
+      "boardNo" : '$boardNo',
+      "name" : name,
+      "phone" : phone,
+      "count" : '$ticketCount'
+    });
+    if (response.statusCode == 200) {
+      var res = utf8.decode(response.bodyBytes);
+      print('테스트입니다 : ${res}');
+      return res;
+    }
+      return 'ERROR';
+    
+  }
+  // 티켓 매수 얼마인지 요청
+  Future<String> ticketPurchase(int boardNo,String name, String phone,int ticketCount) async {
+    print('티켓 수량122 $ticketCount');
+   
+    final url = Uri.parse('http://10.0.2.2:8080/api/liveBoard/purchase');
+    final response = await http.post(url,body: {
+      "boardNo" : '$boardNo',
+      "name" : name,
+      "phone" : phone,
+      "count" : '$ticketCount'
+    });
+    if (response.statusCode == 200) {
+      var res = utf8.decode(response.bodyBytes);
+      print('테스트입니다2222 : ${res}');
+      return res;
+    }
+      return 'ERROR';
+    
+  }
 
   //이미 캐싱 분기
   String isCaching = '';
@@ -734,12 +772,167 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                               height: 55.0,
                               width: 300.0,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                                  final name = authProvider.currentUser?.name;
+                                  final phone = authProvider.currentUser?.phone;
+                                  getTicketNum(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
+                                    .then((String response) {
+                                      if (response == 'SUCCESS') {
+                                         ticketPurchase(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
+                                         .then((String response) {
+                                          if(response == 'SUCCESS'){
+                                             showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
+                                                    content: 
+                                                    Column(
+                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
+                                                      children: [
+                                                        // 큰 아이콘
+                                                        Icon(
+                                                          Icons.check_circle_outline_rounded,
+                                                          color: Colors.blue, // 파란색
+                                                          size: 50.0, // 아이콘 크기 조절
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        // 텍스트
+                                                        Text(
+                                                          '티켓 구매 성공',
+                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
+                                                        ),
+                                                      ],
+                                                    )
+                                                  );
+                                              },
+                                            );
+                                          }else if(response =='TEMPTICKETFAIL'){
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
+                                                    content: 
+                                                    Column(
+                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
+                                                      children: [
+                                                        // 큰 아이콘
+                                                        Icon(
+                                                          Icons.close,
+                                                          color: Colors.red, 
+                                                          size: 50.0, // 아이콘 크기 조절
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        // 텍스트
+                                                        Text(
+                                                          '임시 티켓 삭제 실패',
+                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
+                                                        ),
+                                                      ],
+                                                    )
+                                                  );
+                                              },
+                                            );
+                                          }else{
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return  AlertDialog(
+                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
+                                                    content: 
+                                                    Column(
+                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
+                                                      children: [
+                                                        // 큰 아이콘
+                                                        Icon(
+                                                          Icons.close,
+                                                          color: Colors.red, 
+                                                          size: 50.0, // 아이콘 크기 조절
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        // 텍스트
+                                                        Text(
+                                                          '임시 티켓 삭제 실패',
+                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
+                                                        ),
+                                                      ],
+                                                    )
+                                                  );
+                                              },
+                                            );
+                                          }
+                                         }
+                                        );
+                                      } else if (response == 'OVERCOUNT') {
+                                        // 티켓 수 초과 모달 표시
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('오류'),
+                                              content: Text('잔여 티켓 수보다 구매 티켓 수가 많습니다.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('확인'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else if (response == 'ZERO') {
+                                        // 티켓 수 초과 모달 표시
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('오류'),
+                                              content: Text('매진되었습니다.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('확인'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }else{
+                                        // 서버에러
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('오류'),
+                                              content: Text('서버 오류 입니다.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('확인'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                    })
+                                    .catchError((error) {
+                                      // 오류 처리
+                                      print('오류: $error');
+                                    });
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
                                   foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 10.0),
+                                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                                   textStyle: TextStyle(fontSize: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),

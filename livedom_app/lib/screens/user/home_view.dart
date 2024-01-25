@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,8 @@ import 'package:provider/provider.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../../provider/auth_provider.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -25,9 +28,11 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  // UserProvider 참조
-  // final AuthProvider _authProvider = Get.find<AuthProvider>();
+  // FlutterSecureStorage : 안전한 저장소
+  final storage = const FlutterSecureStorage();
+  String jwtToken = "";
 
+  // 통함검색 이미지슬라이드 사진 리스트
   final List<String> slideList = [
     'assets/images/newJS.png',
     'assets/images/aespa.jpg',
@@ -63,6 +68,54 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    loadJwtToken();
+  }
+
+  /**
+  * 💍 저장된 JWT 토큰 읽어오기
+  */
+  Future<void> loadJwtToken() async {
+    // 저장된 JWT 토큰 읽기
+    String? token = await storage.read(key: 'jwtToken');
+    // 저장된 토큰이 없으면 ➡ 로그인 화면으로
+    if (token == null || token == '') {
+      print('미리 저장된 jwt 토큰 없음');
+      print('로그인 화면으로 이동...');
+      Navigator.pushReplacementNamed(context, '/login');
+      return;
+    }
+    print('테스트');
+    // 저장된 토큰이 있으면 ➡ 서버로 사용자 정보 요청
+    setState(() {
+
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      authProvider.getUserInfo();
+      
+      jwtToken = token ?? "";
+
+    });
+
+  }
+
+  Future<void> saveJwtToken(String token) async {
+    await storage.write(key: 'jwtToken', value: token);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // 기존에 데이터가 없을 때만 getTotalSearch 메서드를 호출합니다.
+    if (Provider.of<TotalSearchProvider>(context).liveBoardList.isEmpty) {
+      Provider.of<TotalSearchProvider>(context).getTotalSearch(' ');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // 현재 로그인한 사용자 정보 가져오기
     TotalSearchProvider totalSearchProvider =
@@ -81,7 +134,10 @@ class _HomeViewState extends State<HomeView> {
             fontWeight: FontWeight.w900,
           ),
         ),
+
         centerTitle: true,
+        leading: null,
+
       ),
       body: Consumer<TotalSearchProvider>(
         builder: (context, totalSearchProvider, child) {
@@ -183,7 +239,7 @@ class _HomeViewState extends State<HomeView> {
                                   DefaultImages.h5,
                                   "클럽 대관",
                                   () {
-                                    Navigator.pushNamed(context, "/liveboard");
+                                    Navigator.pushNamed(context, "/rental");
                                   },
                                 ),
                                 icon(
@@ -197,7 +253,7 @@ class _HomeViewState extends State<HomeView> {
                                   DefaultImages.h6,
                                   "티켓팅",
                                   () {
-                                    Navigator.pushNamed(context, "/rental");
+                                    Navigator.pushNamed(context, "/liveboard");
                                   },
                                 ),
                                 icon(
@@ -251,6 +307,453 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          Divider(
+                              color: ConstColors.iconColor.withOpacity(0.2)),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "티켓 조회",
+                                style: pSemiBold18.copyWith(
+                                  fontSize: 14,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/liveboard');
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "더보기",
+                                      style: pBold.copyWith(
+                                        fontSize: 14,
+                                        color: ConstColors.greyColor,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: ConstColors.primaryColor,
+                                      size: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                            itemBuilder: (context, index) {
+                              // index: 0~19
+                              if (index <
+                                  totalSearchProvider.liveBoardList.length) {
+                                final item =
+                                    totalSearchProvider.liveBoardList[index];
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          // 터치 이벤트 핸들링
+                                          Navigator.pushNamed(
+                                            context,
+                                            "/liveboard/read",
+                                            arguments: item,
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            item.thumbnail == 0
+                                                ? Image.asset(
+                                                    'assets/images/defaultRentalImg.jpeg',
+                                                    width: 120,
+                                                    height: 180,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.network(
+                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                                                    width: 120,
+                                                    height: 180,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      item.soldOut == 0
+                                                          ? Container(
+                                                              width: 50,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                              child: Text(
+                                                                '판매중',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                              ),
+                                                            )
+                                                          : Container(
+                                                              width: 50,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                              ),
+                                                              child: Text(
+                                                                '매진',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                            ),
+                                                      SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      Text(
+                                                        truncateText(item.title,
+                                                            10), // 최대 길이를 설정 (예: 20)
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.crew, 12),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.address, 11),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30.0,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            truncateText(
+                                                                item.liveDate,
+                                                                17),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                          Text(
+                                                            truncateText(
+                                                                item.liveTime,
+                                                                17),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                          Text(
+                                                            truncateText(
+                                                                item.location,
+                                                                17),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey, // 원하는 색상으로 변경
+                                        thickness: 0.5, // 원하는 두께로 변경
+                                        height: 40.0, // 위아래 여백 조절
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              // index: 20
+                              else if ((_page - 1) > 0 &&
+                                  (_page - 1) < _pageObj['last']!) {
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 180.0,
+                                      ),
+                                      Divider(
+                                        color: Colors.grey, // 원하는 색상으로 변경
+                                        thickness: 0.5, // 원하는 두께로 변경
+                                        height: 40.0, // 위아래 여백 조절
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                            itemCount:
+                                totalSearchProvider.liveBoardList.length +
+                                    _nextCount,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "클럽 대관 조회",
+                                style: pSemiBold18.copyWith(
+                                  fontSize: 14,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/rental');
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "더보기",
+                                      style: pBold.copyWith(
+                                        fontSize: 14,
+                                        color: ConstColors.greyColor,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: ConstColors.primaryColor,
+                                      size: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                            itemBuilder: (context, index) {
+                              // index: 0~19
+                              if (index < frList.length) {
+                                final item = frList[index];
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          // 터치 이벤트 핸들링
+                                          Navigator.pushNamed(
+                                            context,
+                                            "/rental/read",
+                                            arguments: item,
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            item.thumbnail == 0
+                                                ? Image.asset(
+                                                    'assets/images/defaultRentalImg.jpeg',
+                                                    width: 120,
+                                                    height: 180,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.network(
+                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                                    width: 120,
+                                                    height: 180,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      item.confirmed == 0
+                                                          ? Container(
+                                                              width: 50,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                              child: const Text(
+                                                                '모집중',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                              ),
+                                                            )
+                                                          : Container(
+                                                              width: 60,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                              ),
+                                                              child: const Text(
+                                                                '모집종료',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                            ),
+                                                      const SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      Text(
+                                                        truncateText(item.title,
+                                                            11), // 최대 길이를 설정 (예: 20)
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.writer, 12),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.address, 11),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 30.0,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            truncateText(
+                                                                item.liveDate,
+                                                                17),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                          Text(
+                                                            truncateText(
+                                                                item.location,
+                                                                17),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey, // 원하는 색상으로 변경
+                                        thickness: 0.5, // 원하는 두께로 변경
+                                        height: 40.0, // 위아래 여백 조절
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              // index: 20
+                              else if ((_page - 1) > 0 &&
+                                  (_page - 1) < _pageObj['last']!) {
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 180.0,
+                                      ),
+                                      Divider(
+                                        color: Colors.grey, // 원하는 색상으로 변경
+                                        thickness: 0.5, // 원하는 두께로 변경
+                                        height: 40.0, // 위아래 여백 조절
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                            itemCount: frList.length + _nextCount,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -292,8 +795,10 @@ class _HomeViewState extends State<HomeView> {
                                 physics: NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.all(8),
                                 itemBuilder: (context, index) {
-                                  if (index < totalSearchProvider.teamList.length) {
-                                    final item = totalSearchProvider.teamList[index];
+                                  if (index <
+                                      totalSearchProvider.teamList.length) {
+                                    final item =
+                                        totalSearchProvider.teamList[index];
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.pushNamed(
@@ -395,462 +900,11 @@ class _HomeViewState extends State<HomeView> {
                                     return Container();
                                   }
                                 },
-                                itemCount: totalSearchProvider.teamList.length + _nextCount,
-                              ),
-                              Divider(
-                                  color:
-                                      ConstColors.iconColor.withOpacity(0.2)),
-                              const SizedBox(height: 10),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "티켓 조회",
-                                style: pSemiBold18.copyWith(
-                                  fontSize: 14,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/liveboard');
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "더보기",
-                                      style: pBold.copyWith(
-                                        fontSize: 14,
-                                        color: ConstColors.greyColor,
-                                      ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: ConstColors.primaryColor,
-                                      size: 15,
-                                    ),
-                                  ],
-                                ),
+                                itemCount: totalSearchProvider.teamList.length +
+                                    _nextCount,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                            itemBuilder: (context, index) {
-                              // index: 0~19
-                              if (index < totalSearchProvider.liveBoardList.length) {
-                                final item = totalSearchProvider.liveBoardList[index];
-                                return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          // 터치 이벤트 핸들링
-                                          Navigator.pushNamed(
-                                            context,
-                                            "/liveboard/read",
-                                            arguments: item,
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            item.thumbnail == 0
-                                                ? Image.asset(
-                                                    'assets/images/defaultRentalImg.jpeg',
-                                                    width: 120,
-                                                    height: 180,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Image.network(
-                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
-                                                    width: 120,
-                                                    height: 180,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 16.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      item.soldOut == 0
-                                                          ? Container(
-                                                              width: 50,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                ),
-                                                              ),
-                                                              child: Text(
-                                                                '판매중',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .grey),
-                                                              ),
-                                                            )
-                                                          : Container(
-                                                              width: 50,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                              ),
-                                                              child: Text(
-                                                                '매진',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red),
-                                                              ),
-                                                            ),
-                                                      SizedBox(
-                                                        height: 10.0,
-                                                      ),
-                                                      Text(
-                                                        truncateText(item.title,
-                                                            17), // 최대 길이를 설정 (예: 20)
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.crew, 17),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.address, 17),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30.0,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            truncateText(
-                                                                item.liveDate,
-                                                                17),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                          Text(
-                                                            truncateText(
-                                                                item.liveTime,
-                                                                17),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                          Text(
-                                                            truncateText(
-                                                                item.location,
-                                                                17),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Divider(
-                                        color: Colors.grey, // 원하는 색상으로 변경
-                                        thickness: 0.5, // 원하는 두께로 변경
-                                        height: 40.0, // 위아래 여백 조절
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                              // index: 20
-                              else if ((_page - 1) > 0 &&
-                                  (_page - 1) < _pageObj['last']!) {
-                                return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 180.0,
-                                      ),
-                                      Divider(
-                                        color: Colors.grey, // 원하는 색상으로 변경
-                                        thickness: 0.5, // 원하는 두께로 변경
-                                        height: 40.0, // 위아래 여백 조절
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            itemCount: totalSearchProvider.liveBoardList.length + _nextCount,
-                          ),
-                          Divider(
-                              color: ConstColors.iconColor.withOpacity(0.2)),
-                          SizedBox(
-                            height: 25,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "클럽 대관 조회",
-                                style: pSemiBold18.copyWith(
-                                  fontSize: 14,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/rental');
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "더보기",
-                                      style: pBold.copyWith(
-                                        fontSize: 14,
-                                        color: ConstColors.greyColor,
-                                      ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: ConstColors.primaryColor,
-                                      size: 15,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                            itemBuilder: (context, index) {
-                              // index: 0~19
-                              if (index < frList.length) {
-                                final item = frList[index];
-                                return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          // 터치 이벤트 핸들링
-                                          Navigator.pushNamed(
-                                            context,
-                                            "/rental/read",
-                                            arguments: item,
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            item.thumbnail == 0
-                                                ? Image.asset(
-                                                    'assets/images/defaultRentalImg.jpeg',
-                                                    width: 120,
-                                                    height: 180,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Image.network(
-                                                    'http://10.0.2.2:8080/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
-                                                    width: 120,
-                                                    height: 180,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 16.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      item.confirmed == 0
-                                                          ? Container(
-                                                              width: 50,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                ),
-                                                              ),
-                                                              child: Text(
-                                                                '모집중',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .grey),
-                                                              ),
-                                                            )
-                                                          : Container(
-                                                              width: 60,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                              ),
-                                                              child: Text(
-                                                                '모집종료',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red),
-                                                              ),
-                                                            ),
-                                                      SizedBox(
-                                                        height: 10.0,
-                                                      ),
-                                                      Text(
-                                                        truncateText(item.title,
-                                                            17), // 최대 길이를 설정 (예: 20)
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.writer, 17),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.address, 17),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30.0,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            truncateText(
-                                                                item.liveDate,
-                                                                17),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                          Text(
-                                                            truncateText(
-                                                                item.location,
-                                                                17),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Divider(
-                                        color: Colors.grey, // 원하는 색상으로 변경
-                                        thickness: 0.5, // 원하는 두께로 변경
-                                        height: 40.0, // 위아래 여백 조절
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                              // index: 20
-                              else if ((_page - 1) > 0 &&
-                                  (_page - 1) < _pageObj['last']!) {
-                                return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 180.0,
-                                      ),
-                                      Divider(
-                                        color: Colors.grey, // 원하는 색상으로 변경
-                                        thickness: 0.5, // 원하는 두께로 변경
-                                        height: 40.0, // 위아래 여백 조절
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            itemCount: frList.length + _nextCount,
-                          ),
-                          Divider(
-                              color: ConstColors.iconColor.withOpacity(0.2)),
                         ],
                       ),
                     ],
@@ -1020,7 +1074,7 @@ class _BottomSheetScreenState extends State<_BottomSheetScreen> {
                           print('Search keyword: $keyword');
                           await totalSearchProvider.getTotalSearch(keyword);
                           Navigator.pushAndRemoveUntil(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => HomeView(),
                             ),
