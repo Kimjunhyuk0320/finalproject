@@ -115,7 +115,23 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(''),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: 10.0,
+                                    right: 65.0,
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Colors.white,
+                                    size: 30.0,
+                                  ),
+                                  alignment: FractionalOffset(0, 0.15),
+                                ),
+                              ),
                               Text(
                                 '팀 모집글 조회',
                                 style: TextStyle(

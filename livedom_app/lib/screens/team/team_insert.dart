@@ -108,16 +108,33 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
             top: 30,
             left: 0,
             right: 0,
-            child: Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                '팀 모집글 작성',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.black,
+                      size: 30.0,
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '팀 모집글 작성',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(),
+              ],
             ),
           ),
           Container(
@@ -777,7 +794,133 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 100.0,
+                      height: 30.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              padding: EdgeInsets.all(
+                                20.0,
+                              ),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '팀 모집글을 등록하시겠습니까?',
+                                      style: TextStyle(
+                                        fontSize: 21.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Consumer<TempUserProvider>(
+                                        builder: (context, value, child) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              //예 선택 시 실행 함수
+                                              var user = context
+                                                  .read<TempUserProvider>();
+                                              var result = await submit(user);
+                                              if (result == 'done') {
+                                                print('등록완료');
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/team',
+                                                );
+                                              } else {
+                                                print('등록실패');
+                                              }
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              height: 40,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(14.0),
+                                              ),
+                                              child: Text(
+                                                '예',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          //아니오 선택 시 실행 함수
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '아니오',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: 20.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '작성완료',
+                          style: TextStyle(
+                            color: Color.fromRGBO(244, 244, 244, 1),
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -785,117 +928,6 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                height: MediaQuery.of(context).size.height * 0.18,
-                padding: EdgeInsets.all(
-                  20.0,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '팀 모집글을 등록하시겠습니까?',
-                        style: TextStyle(
-                          fontSize: 21.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Consumer<TempUserProvider>(
-                          builder: (context, value, child) {
-                            return GestureDetector(
-                              onTap: () async {
-                                //예 선택 시 실행 함수
-                                var user = context.read<TempUserProvider>();
-                                var result = await submit(user);
-                                if (result == 'done') {
-                                  print('등록완료');
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    '/team',
-                                  );
-                                } else {
-                                  print('등록실패');
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 40,
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(14.0),
-                                ),
-                                child: Text(
-                                  '예',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            //아니오 선택 시 실행 함수
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(14.0),
-                            ),
-                            child: Text(
-                              '아니오',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            vertical: 10.0,
-          ),
-          width: MediaQuery.of(context).size.width * 0.7,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            '작성완료',
-            style: TextStyle(
-              color: Color.fromRGBO(244, 244, 244, 1),
-              fontSize: 20.0,
-            ),
-          ),
-        ),
       ),
     );
   }

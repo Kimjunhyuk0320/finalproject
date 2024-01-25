@@ -345,7 +345,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         value: 'item1',
                                         child: Text('게시글 수정'),
                                       ),
-                                      if (item.ticketLeft == 0)
+                                      if (item.ticketLeft == item.maxTickets)
                                         PopupMenuItem(
                                           value: 'item2',
                                           child: Text('게시글 삭제'),

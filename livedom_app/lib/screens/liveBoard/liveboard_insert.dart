@@ -127,16 +127,33 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
             top: 30,
             left: 0,
             right: 0,
-            child: Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                '공연 게시글 작성',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.black,
+                      size: 30.0,
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '공연 게시글 작성',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(),
+              ],
             ),
           ),
           Container(
@@ -698,7 +715,7 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
                               hint: 'Your text here...', // 에디터에 표시될 힌트
                             ),
                             otherOptions: OtherOptions(
-                              height: 400, // 에디터의 높이 설정
+                              height: 1400, // 에디터의 높이 설정
                             ),
                             htmlToolbarOptions: HtmlToolbarOptions(
                               customToolbarButtons: [
@@ -749,128 +766,134 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 100.0,
+                      height: 50.0,
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 30,
-            left: MediaQuery.of(context).size.width * 0.15,
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.18,
-                      padding: EdgeInsets.all(
-                        20.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              '공연 게시글 작성을 완료하시겠습니까?',
-                              style: TextStyle(
-                                fontSize: 21.0,
-                                fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              padding: EdgeInsets.all(
+                                20.0,
                               ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Consumer<TempUserProvider>(
-                                builder: (context, value, child) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      //예 선택 시 실행 함수
-                                      var user =
-                                          context.read<TempUserProvider>();
-                                      var result = await submit(user);
-                                      if (result == 'done') {
-                                        print('등록완료');
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          '/liveboard',
-                                        );
-                                      } else {
-                                        print('등록실패');
-                                      }
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '공연 게시글 작성을 완료하시겠습니까?',
+                                      style: TextStyle(
+                                        fontSize: 21.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      child: Text(
-                                        '예',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.white,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Consumer<TempUserProvider>(
+                                        builder: (context, value, child) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              //예 선택 시 실행 함수
+                                              var user = context
+                                                  .read<TempUserProvider>();
+                                              var result = await submit(user);
+                                              if (result == 'done') {
+                                                print('등록완료');
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/liveboard',
+                                                );
+                                              } else {
+                                                print('등록실패');
+                                              }
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              height: 40,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(14.0),
+                                              ),
+                                              child: Text(
+                                                '예',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          //아니오 선택 시 실행 함수
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '아니오',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  //아니오 선택 시 실행 함수
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 40,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(14.0),
+                                    ],
                                   ),
-                                  child: Text(
-                                    '아니오',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.only(
+                          bottom: 50.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '작성완료',
+                          style: TextStyle(
+                            color: Color.fromRGBO(244, 244, 244, 1),
+                            fontSize: 20.0,
                           ),
-                        ],
+                        ),
                       ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(14.0),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '작성완료',
-                  style: TextStyle(
-                    color: Color.fromRGBO(244, 244, 244, 1),
-                    fontSize: 20.0,
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
