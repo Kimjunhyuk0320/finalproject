@@ -48,8 +48,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 티켓 구매시 티켓 테이블에 등록 -->
     <insert id="insert">
-        INSERT INTO ticket_purchases( ticket_no, board_no, reservation_no, name,  phone, refund )
-        VALUES ( #{ticketNo}, #{boardNo}, #{reservationNo}, #{name}, #{phone}, 0 )
+        INSERT INTO ticket_purchases(board_no, reservation_no, name,  phone, refund )
+        VALUES ( #{boardNo}, #{reservationNo}, #{name}, #{phone}, 0 )
     </insert>
 
     <!-- 티켓 pk 최댓값 찾기 -->
