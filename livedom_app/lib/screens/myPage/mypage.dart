@@ -107,7 +107,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/userinfo");
                                   },
                                 ),
@@ -138,7 +138,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/userupdate");
                                   },
                                 ),
@@ -177,7 +177,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/mypage/ticketList");
                                   },
                                 ),
@@ -192,7 +192,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         Provider.of<AuthProvider>(context,
                                             listen: false);
                                     authProvider.logout();
-                                    Navigator.pushNamed(context, "/");
+                                    Navigator.pushReplacementNamed(context, "/");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -258,7 +258,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         minimumSize: Size(140, 110),
                                         elevation: 5),
                                     onPressed: () async {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                           context, "/userinfo");
                                     },
                                   ),
@@ -289,7 +289,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         minimumSize: Size(140, 110),
                                         elevation: 5),
                                     onPressed: () async {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                           context, "/userupdate");
                                     },
                                   ),
@@ -328,7 +328,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         minimumSize: Size(140, 110),
                                         elevation: 5),
                                     onPressed: () async {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                           context, "/mypage/ticketSaleList");
                                     },
                                   ),
@@ -433,7 +433,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         minimumSize: Size(140, 110),
                                         elevation: 5),
                                     onPressed: () async {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                           context, "/mypage/ticketList");
                                     },
                                   ),
@@ -494,7 +494,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                           Provider.of<AuthProvider>(context,
                                               listen: false);
                                       authProvider.logout();
-                                      Navigator.pushNamed(context, "/");
+                                      Navigator.pushReplacementNamed(context, "/");
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -559,7 +559,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/userinfo");
                                   },
                                 ),
@@ -589,7 +589,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/userupdate");
                                   },
                                 ),
@@ -627,7 +627,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/mypage/ticketList");
                                   },
                                 ),
@@ -658,7 +658,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                         context, "/mypage/ticketSaleList");
                                   },
                                 ),
@@ -719,7 +719,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         Provider.of<AuthProvider>(context,
                                             listen: false);
                                     authProvider.logout();
-                                    Navigator.pushNamed(context, "/");
+                                    Navigator.pushReplacementNamed(context, "/");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,

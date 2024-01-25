@@ -134,7 +134,10 @@ class _HomeViewState extends State<HomeView> {
             fontWeight: FontWeight.w900,
           ),
         ),
+
         centerTitle: true,
+        leading: null,
+
       ),
       body: Consumer<TotalSearchProvider>(
         builder: (context, totalSearchProvider, child) {

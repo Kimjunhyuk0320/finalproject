@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               if (loginStatus) {
                                 // 로그인 성공 시 페이지 이동
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const MainScreen(),

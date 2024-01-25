@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 5
                 ),
                 onPressed: () async {
-                  Navigator.pushNamed(context, "/login");
+                  Navigator.pushReplacementNamed(context, "/login");
                 },
               ),
               ElevatedButton(

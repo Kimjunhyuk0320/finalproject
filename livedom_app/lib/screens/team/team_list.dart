@@ -153,13 +153,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
                           color: Colors.white, fontWeight: FontWeight.w900),
                       textAlign: TextAlign.center,
                     ),
-                    leading: IconButton(
-                      icon: Icon(Icons.arrow_back_ios_new),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // 뒤로가기 기능
-                      },
-                      color: Colors.white, // 뒤로가기 버튼 색상
-                    ),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     centerTitle: true,

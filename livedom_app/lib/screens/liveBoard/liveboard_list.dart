@@ -164,22 +164,43 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
               Stack(
                 children: [
                   SizedBox(
-                    height: 500,
+                    height: 350,
                     width: double.infinity,
                     child: Image.asset(
-                      'images/main2.jpg',
+                      'images/tiketBigImg.jpg',
                       fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    left: 30,
+                    bottom: 20,
+                    child: Text(
+                      'LIVE DOM ',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.w700,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0), // 그림자의 위치 조절
+                            blurRadius: 3.0, // 그림자의 흐림 정도
+                            color:
+                                Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SafeArea(
                     top: true,
                     child: AppBar(
-                      // title: const Text(
-                      //   '티켓팅',
-                      //   style: TextStyle(
-                      //       color: Colors.black, fontWeight: FontWeight.w900),
-                      //   textAlign: TextAlign.center,
-                      // ),
+                      title: const Text(
+                        '티켓팅',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w900),
+                        textAlign: TextAlign.center,
+                      ),
                       leading: IconButton(
                         icon: Icon(Icons.arrow_back_ios_new),
                         onPressed: () {

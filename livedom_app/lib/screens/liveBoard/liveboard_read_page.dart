@@ -774,12 +774,12 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                                  final username = authProvider.currentUser?.username;
+                                  final name = authProvider.currentUser?.name;
                                   final phone = authProvider.currentUser?.phone;
-                                  getTicketNum(item.boardNo ?? 0, username ?? '구매자명', phone ?? '01011112222', _count)
+                                  getTicketNum(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
                                     .then((String response) {
                                       if (response == 'SUCCESS') {
-                                         ticketPurchase(item.boardNo ?? 0, username ?? '구매자명', phone ?? '01011112222', _count)
+                                         ticketPurchase(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
                                          .then((String response) {
                                           if(response == 'SUCCESS'){
                                              showDialog(
