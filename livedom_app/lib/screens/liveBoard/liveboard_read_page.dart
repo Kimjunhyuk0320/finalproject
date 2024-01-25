@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
@@ -27,56 +28,60 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       return '${text.substring(0, length)}...';
     }
   }
+
   // 티켓 매수 얼마인지 요청
-  Future<String> getTicketNum(int boardNo,String name, String phone,int ticketCount) async {
+  Future<String> getTicketNum(
+      int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량 $ticketCount');
     final url = Uri.parse('http://10.0.2.2:8080/api/liveBoard/ticketNum');
-    final response = await http.post(url,body: {
-      "boardNo" : '$boardNo',
-      "name" : name,
-      "phone" : phone,
-      "count" : '$ticketCount'
+    final response = await http.post(url, body: {
+      "boardNo": '$boardNo',
+      "name": name,
+      "phone": phone,
+      "count": '$ticketCount'
     });
     if (response.statusCode == 200) {
       var res = utf8.decode(response.bodyBytes);
       print('테스트입니다 : ${res}');
       return res;
     }
-      return 'ERROR';
-    
+    return 'ERROR';
   }
+
   // 티켓 매수 얼마인지 요청
-  Future<String> ticketPurchase(int boardNo,String name, String phone,int ticketCount) async {
+  Future<String> ticketPurchase(
+      int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량122 $ticketCount');
-   
+
     final url = Uri.parse('http://10.0.2.2:8080/api/liveBoard/purchase');
-    final response = await http.post(url,body: {
-      "boardNo" : '$boardNo',
-      "name" : name,
-      "phone" : phone,
-      "count" : '$ticketCount'
+    final response = await http.post(url, body: {
+      "boardNo": '$boardNo',
+      "name": name,
+      "phone": phone,
+      "count": '$ticketCount'
     });
     if (response.statusCode == 200) {
       var res = utf8.decode(response.bodyBytes);
       print('테스트입니다2222 : ${res}');
       return res;
     }
-      return 'ERROR';
-    
+    return 'ERROR';
   }
 
   //이미 캐싱 분기
   String isCaching = '';
-
+  int _navIndex = 2;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       LiveBoard liveBoard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
 
       if (liveBoard != null && liveBoard.isCaching!) {
         setState(() {
+          _navIndex = tempIndex;
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
         });
       }
@@ -481,78 +486,74 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
             ),
             // 탭바뷰
             Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Visibility(
-                  visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
-                  child: Html(
-                    data: item.content,
-                     extensions: [
-                     TagExtension(
-                        tagsToExtend: {"img"},
-                        builder: (context) {
-                          final originalSrc = context.attributes['src'];
-                          
-                          // Check if the original source starts with "/file"
-                          if (originalSrc != null && originalSrc.startsWith("/file")) {
-                            // If it starts with "/file", add the prefix
-                            final newSrc = 'http://10.0.2.2:8080$originalSrc';
-                            return Image.network(newSrc);
-                          }else if(originalSrc != null && originalSrc.startsWith("//")){
-                            final newSrc = 'http:$originalSrc';
-                            return Image.network(newSrc);
-                          } else {
-                            // If it doesn't start with "/file", use the original source
-                            return Image.network(originalSrc!);
-                          }
-                        },
-                      ),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
+                    child: Html(
+                      data: item.content,
+                      extensions: [
+                        TagExtension(
+                          tagsToExtend: {"img"},
+                          builder: (context) {
+                            final originalSrc = context.attributes['src'];
 
-                    ],
-                    style:{
-                       "body": Style(
-                        lineHeight: LineHeight(0),
-                        whiteSpace: WhiteSpace.normal,
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                       "p": Style(
-                        lineHeight: LineHeight(1.3),
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                       "h1": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "h2": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "h3": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "div": Style(
-                        lineHeight: LineHeight(1.3),
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                      "img": Style(
-                        width: Width(MediaQuery.of(context).size.width * 0.9),
-                        display: Display.inlineBlock,
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-
-                    },
+                            // Check if the original source starts with "/file"
+                            if (originalSrc != null &&
+                                originalSrc.startsWith("/file")) {
+                              // If it starts with "/file", add the prefix
+                              final newSrc = 'http://10.0.2.2:8080$originalSrc';
+                              return Image.network(newSrc);
+                            } else if (originalSrc != null &&
+                                originalSrc.startsWith("//")) {
+                              final newSrc = 'http:$originalSrc';
+                              return Image.network(newSrc);
+                            } else {
+                              // If it doesn't start with "/file", use the original source
+                              return Image.network(originalSrc!);
+                            }
+                          },
+                        ),
+                      ],
+                      style: {
+                        "body": Style(
+                            lineHeight: LineHeight(0),
+                            whiteSpace: WhiteSpace.normal,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "p": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "h1": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h2": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h3": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "div": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "img": Style(
+                            width:
+                                Width(MediaQuery.of(context).size.width * 0.9),
+                            display: Display.inlineBlock,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                      },
+                    ),
                   ),
-                  
-                ),
-                Visibility(
-                  visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
-                  child: CommentScreen(item: item, parentTable: 'live_board'),
-                ),
-              ],
-            ),
+                  Visibility(
+                    visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
+                    child: CommentScreen(item: item, parentTable: 'live_board'),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 60,
@@ -564,7 +565,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       floatingActionButton: Container(
         height: 55.0,
         width: double.infinity,
-        margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+        margin: EdgeInsets.fromLTRB(30, 0, 30, 80),
         child: FloatingActionButton(
           onPressed: () async {
             _count = 1;
@@ -613,7 +614,8 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            truncateText(item.title ?? '제목 없음', 10),
+                                            truncateText(
+                                                item.title ?? '제목 없음', 10),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 25.0,
@@ -773,166 +775,197 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                               width: 300.0,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                                  final authProvider =
+                                      Provider.of<AuthProvider>(context,
+                                          listen: false);
                                   final name = authProvider.currentUser?.name;
                                   final phone = authProvider.currentUser?.phone;
-                                  getTicketNum(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
-                                    .then((String response) {
-                                      if (response == 'SUCCESS') {
-                                         ticketPurchase(item.boardNo ?? 0, name ?? '구매자명', phone ?? '01011112222', _count)
-                                         .then((String response) {
-                                          if(response == 'SUCCESS'){
-                                             showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
-                                                    content: 
-                                                    Column(
-                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
-                                                      children: [
-                                                        // 큰 아이콘
-                                                        Icon(
-                                                          Icons.check_circle_outline_rounded,
-                                                          color: Colors.blue, // 파란색
-                                                          size: 50.0, // 아이콘 크기 조절
-                                                        ),
-                                                        SizedBox(height: 10,),
-                                                        // 텍스트
-                                                        Text(
-                                                          '티켓 구매 성공',
-                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
-                                                        ),
-                                                      ],
-                                                    )
-                                                  );
-                                              },
-                                            );
-                                          }else if(response =='TEMPTICKETFAIL'){
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
-                                                    content: 
-                                                    Column(
-                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
-                                                      children: [
-                                                        // 큰 아이콘
-                                                        Icon(
-                                                          Icons.close,
-                                                          color: Colors.red, 
-                                                          size: 50.0, // 아이콘 크기 조절
-                                                        ),
-                                                        SizedBox(height: 10,),
-                                                        // 텍스트
-                                                        Text(
-                                                          '임시 티켓 삭제 실패',
-                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
-                                                        ),
-                                                      ],
-                                                    )
-                                                  );
-                                              },
-                                            );
-                                          }else{
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return  AlertDialog(
-                                                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
-                                                    content: 
-                                                    Column(
-                                                      mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
-                                                      children: [
-                                                        // 큰 아이콘
-                                                        Icon(
-                                                          Icons.close,
-                                                          color: Colors.red, 
-                                                          size: 50.0, // 아이콘 크기 조절
-                                                        ),
-                                                        SizedBox(height: 10,),
-                                                        // 텍스트
-                                                        Text(
-                                                          '임시 티켓 삭제 실패',
-                                                          style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
-                                                        ),
-                                                      ],
-                                                    )
-                                                  );
-                                              },
-                                            );
-                                          }
-                                         }
-                                        );
-                                      } else if (response == 'OVERCOUNT') {
-                                        // 티켓 수 초과 모달 표시
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text('오류'),
-                                              content: Text('잔여 티켓 수보다 구매 티켓 수가 많습니다.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text('확인'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      } else if (response == 'ZERO') {
-                                        // 티켓 수 초과 모달 표시
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text('오류'),
-                                              content: Text('매진되었습니다.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text('확인'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }else{
-                                        // 서버에러
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text('오류'),
-                                              content: Text('서버 오류 입니다.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text('확인'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }
-                                    })
-                                    .catchError((error) {
-                                      // 오류 처리
-                                      print('오류: $error');
-                                    });
+                                  getTicketNum(
+                                          item.boardNo ?? 0,
+                                          name ?? '구매자명',
+                                          phone ?? '01011112222',
+                                          _count)
+                                      .then((String response) {
+                                    if (response == 'SUCCESS') {
+                                      ticketPurchase(
+                                              item.boardNo ?? 0,
+                                              name ?? '구매자명',
+                                              phone ?? '01011112222',
+                                              _count)
+                                          .then((String response) {
+                                        if (response == 'SUCCESS') {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 0.0,
+                                                          vertical: 60.0),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize
+                                                        .min, // 세로 크기 최소화
+                                                    children: [
+                                                      // 큰 아이콘
+                                                      Icon(
+                                                        Icons
+                                                            .check_circle_outline_rounded,
+                                                        color:
+                                                            Colors.blue, // 파란색
+                                                        size: 50.0, // 아이콘 크기 조절
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      // 텍스트
+                                                      Text(
+                                                        '티켓 구매 성공',
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                20.0), // 텍스트 크기 조절
+                                                      ),
+                                                    ],
+                                                  ));
+                                            },
+                                          );
+                                        } else if (response ==
+                                            'TEMPTICKETFAIL') {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 0.0,
+                                                          vertical: 60.0),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize
+                                                        .min, // 세로 크기 최소화
+                                                    children: [
+                                                      // 큰 아이콘
+                                                      Icon(
+                                                        Icons.close,
+                                                        color: Colors.red,
+                                                        size: 50.0, // 아이콘 크기 조절
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      // 텍스트
+                                                      Text(
+                                                        '임시 티켓 삭제 실패',
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                20.0), // 텍스트 크기 조절
+                                                      ),
+                                                    ],
+                                                  ));
+                                            },
+                                          );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 0.0,
+                                                          vertical: 60.0),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize
+                                                        .min, // 세로 크기 최소화
+                                                    children: [
+                                                      // 큰 아이콘
+                                                      Icon(
+                                                        Icons.close,
+                                                        color: Colors.red,
+                                                        size: 50.0, // 아이콘 크기 조절
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      // 텍스트
+                                                      Text(
+                                                        '임시 티켓 삭제 실패',
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                20.0), // 텍스트 크기 조절
+                                                      ),
+                                                    ],
+                                                  ));
+                                            },
+                                          );
+                                        }
+                                      });
+                                    } else if (response == 'OVERCOUNT') {
+                                      // 티켓 수 초과 모달 표시
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('오류'),
+                                            content: Text(
+                                                '잔여 티켓 수보다 구매 티켓 수가 많습니다.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('확인'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } else if (response == 'ZERO') {
+                                      // 티켓 수 초과 모달 표시
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('오류'),
+                                            content: Text('매진되었습니다.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('확인'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      // 서버에러
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('오류'),
+                                            content: Text('서버 오류 입니다.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('확인'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  }).catchError((error) {
+                                    // 오류 처리
+                                    print('오류: $error');
+                                  });
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
                                   foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 10.0),
                                   textStyle: TextStyle(fontSize: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
@@ -958,6 +991,59 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
           backgroundColor: Colors.black,
           elevation: 0.0,
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
       ),
     );
   }

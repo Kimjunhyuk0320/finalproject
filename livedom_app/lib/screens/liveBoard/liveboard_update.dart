@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
 
   File? _image;
   String? _imageUrl;
-
+  int _navIndex = 2;
   Future<void> _getImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -122,10 +123,12 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     super.initState();
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       final LiveBoard liveboard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
       // rental 데이터를 처리합니다.
       setState(() {
+        _navIndex = tempIndex;
         _titleController.text = liveboard.title!;
         _crewController.text = liveboard.crew!;
         _dateController.text = liveboard.liveDate!;

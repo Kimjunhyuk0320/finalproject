@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/ticket.dart';
 import 'package:intl/intl.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TicketDetail extends StatefulWidget {
@@ -18,7 +20,8 @@ class _TicketDetailState extends State<TicketDetail> {
   Future<Uint8List> loadImage(String imageUrl) async {
     try {
       // Dio를 사용하여 이미지를 가져옴
-      final Response<List<int>> response = await _dio.get<List<int>>(imageUrl,
+      final Response<List<int>> response = await _dio.get<List<int>>(
+        imageUrl,
         options: Options(responseType: ResponseType.bytes),
       );
 
@@ -29,6 +32,7 @@ class _TicketDetailState extends State<TicketDetail> {
       throw Exception('Error loading image: $e');
     }
   }
+
   // 가격 변환
   String formatCurrency(int amount) {
     final formatter = NumberFormat('#,###');
@@ -58,11 +62,24 @@ class _TicketDetailState extends State<TicketDetail> {
     return result;
   }
 
+  int _navIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Ticket item = ModalRoute.of(context)!.settings.arguments as Ticket;
 
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text(
           '티켓 정보',
@@ -95,9 +112,12 @@ class _TicketDetailState extends State<TicketDetail> {
               softWrap: true,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             FutureBuilder(
-              future: loadImage('http://10.0.2.2:8080/api/qr/img?qrNo=${item.qrNo}'),
+              future: loadImage(
+                  'http://10.0.2.2:8080/api/qr/img?qrNo=${item.qrNo}'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // 로딩 중이라면 반짝이는 스켈레톤 UI 표시
@@ -123,27 +143,29 @@ class _TicketDetailState extends State<TicketDetail> {
                   );
                 } else {
                   // 이미지 로딩이 완료되면 표시
-                  return Image.memory(snapshot.data as Uint8List, width: 250, height: 250, fit: BoxFit.contain);
+                  return Image.memory(snapshot.data as Uint8List,
+                      width: 250, height: 250, fit: BoxFit.contain);
                 }
               },
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Text(
               '${item.reservationNo}',
-                style: TextStyle(
-                  fontSize: 26.0,
-                  fontWeight: FontWeight.bold
-                ),
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 50,),
+            SizedBox(
+              height: 50,
+            ),
             Text(
               '${item.name}(${item.phone})',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
               ),
+            ),
             Text(
               '공연일자 ${item.liveDate} ${item.liveTime}',
               style: TextStyle(
@@ -158,15 +180,67 @@ class _TicketDetailState extends State<TicketDetail> {
             ),
             Text(
               '${formatCurrency(item.price ?? 0)}원',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
               ),
+            ),
           ],
         ),
       ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
+      ),
     );
   }
 }

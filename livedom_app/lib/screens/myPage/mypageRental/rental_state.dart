@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -340,11 +341,16 @@ class _RentalStateScreenState extends State<RentalStateScreen> {
     }
   }
 
+  int _navIndex = 2;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final context = this.context;
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
       final user = Provider.of<TempUserProvider>(context, listen: false);
       getTeamAppList(user);
       _infContoller.addListener(() async {

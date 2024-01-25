@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_list.dart';
 import 'package:livedom_app/screens/myPage/mypage.dart';
 import 'package:livedom_app/screens/rental/rental_list.dart';
 import 'package:livedom_app/screens/team/team_list.dart';
 import 'package:livedom_app/screens/user/home_view.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -23,6 +25,18 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int navIndex = Provider.of<NavProvider>(context,listen: false).navIndex;
+      setState(() {
+        _currentIndex= navIndex;
+      });
+      print('메인스크린 커런트 : ${_currentIndex}');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
@@ -35,57 +49,57 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
-      child: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.layers,
-              color: Colors.black,
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.layers,
+                color: Colors.black,
+              ),
+              label: '클럽대관',
             ),
-            label: '클럽대관',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.people_alt_rounded,
-              color: Colors.black,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.people_alt_rounded,
+                color: Colors.black,
+              ),
+              label: '팀 모집',
             ),
-            label: '팀 모집',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.black,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                color: Colors.black,
+              ),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.devices_rounded,
-              color: Colors.black,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.devices_rounded,
+                color: Colors.black,
+              ),
+              label: '공연',
             ),
-            label: '공연',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+                color: Colors.black,
+              ),
+              label: '내정보',
             ),
-            label: '내정보',
-          ),
-        ],
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(color: Colors.black),
-        unselectedLabelStyle: TextStyle(color: Colors.black),
-        showUnselectedLabels: true,
+          ],
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black,
+          selectedLabelStyle: TextStyle(color: Colors.black),
+          unselectedLabelStyle: TextStyle(color: Colors.black),
+          showUnselectedLabels: true,
+        ),
       ),
-    ),
     );
   }
 }

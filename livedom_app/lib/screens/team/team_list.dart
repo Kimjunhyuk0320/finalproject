@@ -28,6 +28,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
   final TextEditingController _keywordController =
       TextEditingController(text: '');
 
+  var teamScreenList = [];
+
   @override
   void initState() {
     super.initState();

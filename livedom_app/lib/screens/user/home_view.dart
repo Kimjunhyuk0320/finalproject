@@ -84,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
     if (token == null || token == '') {
       print('미리 저장된 jwt 토큰 없음');
       print('로그인 화면으로 이동...');
-      Navigator.pushReplacementNamed(context, '/login');
+      // Navigator.pushReplacementNamed(context, '/login');
       return;
     }
     print('테스트');

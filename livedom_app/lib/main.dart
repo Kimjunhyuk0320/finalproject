@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/provider/total_search_provider.dart';
 import 'package:livedom_app/screens/liveBoard/liveboard_insert.dart';
@@ -59,6 +60,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => TotalSearchProvider()),
         ChangeNotifierProvider(create: (context) => TempUserProvider()),
+        ChangeNotifierProvider(create: (context) => NavProvider()),
         // 필요한 만큼의 프로바이더를 추가합니다.
       ],
       child: const MyApp(),
@@ -87,7 +89,7 @@ class MyApp extends StatelessWidget {
       routes: {
         //  user
         // '/': (context) => HomeScreen(),
-        '/': (context) => HomeView(),
+        '/': (context) => MainScreen(),
         '/main': (context) => MainScreen(),
         '/login': (context) => LoginScreen(),
         '/logout': (context) => LogoutScreen(),
