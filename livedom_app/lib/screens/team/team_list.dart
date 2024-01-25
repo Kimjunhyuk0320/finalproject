@@ -33,7 +33,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
     super.initState();
     getTeamList();
     _infContoller.addListener(() async {
-      if (_infContoller.position.maxScrollExtent <= _infContoller.offset +400) {
+      if (_infContoller.position.maxScrollExtent <=
+          _infContoller.offset + 400) {
         getTeamList();
       }
     });
@@ -91,18 +92,18 @@ class _TeamListScreenState extends State<TeamListScreen> {
 
     if (teamListResponse.statusCode == 200) {
       setState(() {
-      //UTF - 8 디코딩
-      var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
+        //UTF - 8 디코딩
+        var teamListDecoded = utf8.decode(teamListResponse.bodyBytes);
 
-      //JSON 디코딩
-      var teamListJSON = jsonDecode(teamListDecoded);
+        //JSON 디코딩
+        var teamListJSON = jsonDecode(teamListDecoded);
 
-      final List tempTeamList = teamListJSON['data'];
-      _pageObject = teamListJSON['page'];
-      _nextCount = teamListJSON['page']['nextCount'];
-      if (_pageObject['page'] > _pageObject['last']) {
-        return;
-      }
+        final List tempTeamList = teamListJSON['data'];
+        _pageObject = teamListJSON['page'];
+        _nextCount = teamListJSON['page']['nextCount'];
+        if (_pageObject['page'] > _pageObject['last']) {
+          return;
+        }
 
         _page++;
         _teamList.addAll(tempTeamList);
@@ -135,7 +136,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.45,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/teamListBanner.png'),
@@ -143,15 +144,25 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child: Align(
-                  alignment: FractionalOffset(0.5, 0.1),
-                  child: Text(
-                    '팀 모집',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34.0,
-                      fontWeight: FontWeight.bold,
+                child: SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '팀모집 목록',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w900),
+                      textAlign: TextAlign.center,
                     ),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.white, // 뒤로가기 버튼 색상
+                    ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
                   ),
                 ),
               ),
@@ -239,41 +250,10 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
                 width: MediaQuery.of(context).size.width * 0.56,
-                height: 35,
+                height: 40,
               ),
-              Container(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  width: 90.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(
-                      18.0,
-                    ),
-                  ),
-                  margin: EdgeInsets.only(
-                    right: 10.0,
-                  ),
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/team/insert');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          '글쓰기',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(Icons.edit)
-                      ],
-                    ),
-                  ),
-                ),
+              SizedBox(
+                height: 10.0,
               ),
               Container(
                 child: ListView.builder(
@@ -311,7 +291,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '${item['title'].substring(0,14)}...',
+                                  '${item['title'].substring(0, 14)}...',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.0,
@@ -361,7 +341,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                       return Container(
                         margin: EdgeInsets.only(bottom: 20.0),
                         decoration: BoxDecoration(
-                          color: Colors.black12,
+                            color: Colors.black12,
                             border: Border.all(
                               width: 1.0,
                               color: Colors.black12,
@@ -381,6 +361,18 @@ class _TeamListScreenState extends State<TeamListScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/team/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: Colors.white, // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
       ),
     );
   }

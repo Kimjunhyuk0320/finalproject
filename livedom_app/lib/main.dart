@@ -38,6 +38,8 @@ import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/screens/user/user_update_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'provider/auth_provider.dart';
+
 void main() {
   // 카카오 sdk 초기화
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,11 +83,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/main',
       routes: {
         //  user
-        '/': (context) => HomeScreen(),
-        '/homeview': (context) => HomeView(),
+        // '/': (context) => HomeScreen(),
+        '/': (context) => HomeView(),
         '/main': (context) => MainScreen(),
         '/login': (context) => LoginScreen(),
         '/logout': (context) => LogoutScreen(),

@@ -11,6 +11,8 @@ import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../../provider/auth_provider.dart';
+
 class UserUpdateScreen extends StatefulWidget {
   const UserUpdateScreen({Key? key}) : super(key: key);
 
@@ -86,9 +88,9 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
     }
 
     // 문자열로 들어오는 권한을 권한에 따라 각각 0, 1, 2로 바꾸어줌.
-    if (auth == '유저권한') {
+    if (auth == 'ROLE_USER') {
       auth = '0';
-    } else if (auth == '클럽권한') {
+    } else if (auth == 'ROLE_CLUB') {
       auth = '1';
     } else {
       auth = '2';
@@ -362,10 +364,10 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
               text: "정보 수정",
               onTap: () {
                 print("정보 수정 버튼을 눌렀습니다.");
-                _showModalBottomSheet(context);
+                // _showModalBottomSheet(context);
                 // 비밀번호와 비밀번호 확인을 모두 입력하였을 때,
-                // userUpdate();
-                // Navigator.pop(context);
+                userUpdate();
+                Navigator.pop(context);
               },
             ),
             const SizedBox(height: 20),

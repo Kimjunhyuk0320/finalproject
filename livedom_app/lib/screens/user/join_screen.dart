@@ -10,6 +10,8 @@ import 'package:livedom_app/widget/custom_textfield.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../../provider/auth_provider.dart';
+
 class JoinScreen extends StatefulWidget {
   const JoinScreen({super.key});
 
@@ -1420,8 +1422,7 @@ class JoinEmailScreen extends StatelessWidget {
   }
 
   // 통합 알림창
-  void showCustomAlertDialog(
-      BuildContext context, String title, String content) {
+  void showCustomAlertDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
