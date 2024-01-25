@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
