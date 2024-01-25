@@ -3,6 +3,7 @@ import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/screens/user/user_info_screen.dart';
 import 'package:livedom_app/widget/custom_back_icon.dart';
 import 'package:livedom_app/widget/custom_button.dart';
@@ -28,11 +29,16 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
   final TextEditingController nickNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-
+  int _navIndex = 2;
   @override
   void initState() {
     super.initState();
-    
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
+    });
     // AuthProvider에서 사용자 정보를 가져와서 컨트롤러에 설정
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.getUserInfo();
@@ -48,7 +54,7 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
       print("currentUser.auth : ${currentUser.auth}");
 
       // 초기에 페이지에 들어갈 때 권한을 설정하는 코드
-      if(currentUser.auth == "ROLE_USER") {
+      if (currentUser.auth == "ROLE_USER") {
         selectedPermission = "ROLE_USER";
       } else if (currentUser.auth == "ROLE_BAND") {
         selectedPermission = "ROLE_BAND";
@@ -276,7 +282,6 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                         title: "아이디", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
-
                       const SizedBox(height: 30),
                       CustomTextWithoutPrefixField(
                         obscureText: true,
@@ -293,7 +298,6 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                         title: "비밀번호 확인", // 인풋이 뭔지 설명하는 위쪽 텍스트
                         sufix: const SizedBox(),
                       ),
-                      
                       const SizedBox(height: 20),
                       CustomTextWithoutPrefixField(
                         hintText: "이름", // 인풋의 힌트가 여기에 담긴다.
@@ -374,6 +378,59 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
+      ),
     );
   }
 }
@@ -423,34 +480,34 @@ class PermissionButton extends StatelessWidget {
 
 // 비밀번호를 통한 정보 수정
 void _showModalBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200, // 원하는 높이 설정
-          child: Column(
-            children: [
-              ListTile(
-                title: Text('Option 1'),
-                onTap: () {
-                  // 원하는 동작 수행
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text('Option 2'),
-                onTap: () {
-                  // 원하는 동작 수행
-                  Navigator.pop(context);
-                },
-              ),
-              // 추가적인 아이템들을 여기에 추가할 수 있습니다.
-            ],
-          ),
-        );
-      },
-    );
-  }
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        height: 200, // 원하는 높이 설정
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('Option 1'),
+              onTap: () {
+                // 원하는 동작 수행
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Option 2'),
+              onTap: () {
+                // 원하는 동작 수행
+                Navigator.pop(context);
+              },
+            ),
+            // 추가적인 아이템들을 여기에 추가할 수 있습니다.
+          ],
+        ),
+      );
+    },
+  );
+}
 
 // 비밀번호가 일치할 때 정보수정이 되도록 변경
 

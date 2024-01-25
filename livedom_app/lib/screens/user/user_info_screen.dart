@@ -7,6 +7,7 @@ import 'package:livedom_app/config/images.dart';
 import 'package:livedom_app/config/text_style.dart';
 import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/user_provider.dart';
 import 'package:livedom_app/screens/user/join_screen.dart';
 import 'package:livedom_app/screens/user/user_update_screen.dart';
@@ -20,6 +21,18 @@ class UserInfoScreen extends StatefulWidget {
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
+  int _navIndex = 2;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // AuthProvider에 접근
@@ -429,6 +442,59 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
       ),
     );
   }

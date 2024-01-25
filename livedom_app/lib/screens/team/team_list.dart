@@ -28,6 +28,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
   final TextEditingController _keywordController =
       TextEditingController(text: '');
 
+  var teamScreenList = [];
+
   @override
   void initState() {
     super.initState();
@@ -144,19 +146,35 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child: SafeArea(
-                  top: true,
-                  child: AppBar(
-                    title: const Text(
-                      '팀모집 목록',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w900),
-                      textAlign: TextAlign.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                        alignment: FractionalOffset(0, 0.15),
+                      ),
                     ),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    centerTitle: true,
-                  ),
+                    Align(
+                      alignment: FractionalOffset(0.5, 0.1),
+                      child: Text(
+                        '팀 모집',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 34.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(),
+                  ],
                 ),
               ),
               Container(
@@ -284,7 +302,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '${item['title'].substring(0, 14)}...',
+                                  '${item['title'].length >= 14 ? (item['title'].substring(0, 14) + "...") : (item['title'])}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.0,

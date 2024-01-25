@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:provider/provider.dart';
 
 class MyPageScreen extends StatefulWidget {
@@ -11,6 +12,19 @@ class MyPageScreen extends StatefulWidget {
 }
 
 class _MyPageScreenState extends State<MyPageScreen> {
+  int _navIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,8 +121,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushNamed(
-                                        context, "/userinfo");
+                                    Navigator.pushNamed(context, "/userinfo");
                                   },
                                 ),
                                 const SizedBox(
@@ -138,8 +151,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushNamed(
-                                        context, "/userupdate");
+                                    Navigator.pushNamed(context, "/userupdate");
                                   },
                                 ),
                               ],
@@ -192,7 +204,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         Provider.of<AuthProvider>(context,
                                             listen: false);
                                     authProvider.logout();
-                                    Navigator.pushReplacementNamed(context, "/");
+                                    Navigator.pushReplacementNamed(
+                                        context, "/");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -258,8 +271,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         minimumSize: Size(140, 110),
                                         elevation: 5),
                                     onPressed: () async {
-                                      Navigator.pushNamed(
-                                          context, "/userinfo");
+                                      Navigator.pushNamed(context, "/userinfo");
                                     },
                                   ),
                                   SizedBox(
@@ -494,7 +506,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                           Provider.of<AuthProvider>(context,
                                               listen: false);
                                       authProvider.logout();
-                                      Navigator.pushReplacementNamed(context, "/");
+                                      Navigator.pushReplacementNamed(
+                                          context, "/");
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -559,8 +572,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushNamed(
-                                        context, "/userinfo");
+                                    Navigator.pushNamed(context, "/userinfo");
                                   },
                                 ),
                                 SizedBox(
@@ -589,8 +601,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       minimumSize: Size(140, 110),
                                       elevation: 5),
                                   onPressed: () async {
-                                    Navigator.pushNamed(
-                                        context, "/userupdate");
+                                    Navigator.pushNamed(context, "/userupdate");
                                   },
                                 ),
                               ],
@@ -719,7 +730,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         Provider.of<AuthProvider>(context,
                                             listen: false);
                                     authProvider.logout();
-                                    Navigator.pushReplacementNamed(context, "/");
+                                    Navigator.pushReplacementNamed(
+                                        context, "/");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -761,6 +773,59 @@ class _MyPageScreenState extends State<MyPageScreen> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
       ),
     );
   }

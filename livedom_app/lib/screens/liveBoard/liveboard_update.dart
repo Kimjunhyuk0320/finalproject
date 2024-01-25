@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
 
   File? _image;
   String? _imageUrl;
-
+  int _navIndex = 2;
   Future<void> _getImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -122,10 +123,12 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     super.initState();
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       final LiveBoard liveboard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
       // rental 데이터를 처리합니다.
       setState(() {
+        _navIndex = tempIndex;
         _titleController.text = liveboard.title!;
         _crewController.text = liveboard.crew!;
         _dateController.text = liveboard.liveDate!;
@@ -151,16 +154,33 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
             top: 30,
             left: 0,
             right: 0,
-            child: Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                '팀 모집글 수정',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.black,
+                      size: 30.0,
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '공연 게시글 수정',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(),
+              ],
             ),
           ),
           Container(
@@ -777,153 +797,165 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 100.0,
+                      height: 50.0,
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 30,
-            left: MediaQuery.of(context).size.width * 0.15,
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.18,
-                      padding: EdgeInsets.all(
-                        20.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              '공연 게시글 수정을 완료하시겠습니까?',
-                              style: TextStyle(
-                                fontSize: 21.0,
-                                fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              padding: EdgeInsets.all(
+                                20.0,
                               ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Consumer<TempUserProvider>(
-                                builder: (context, value, child) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      //예 선택 시 실행 함수
-                                      var user =
-                                          context.read<TempUserProvider>();
-                                      var result =
-                                          await submit(liveboard.boardNo, user);
-                                      if (result == 'done') {
-                                        print('등록완료');
-                                        liveboard.title = _titleController.text;
-                                        liveboard.crew = _crewController.text;
-                                        liveboard.location = _location;
-                                        liveboard.liveDate =
-                                            _dateController.text;
-                                        liveboard.liveTime =
-                                            '${_stTimeController.text} ~ ${_endTimeController.text}';
-                                        liveboard.address =
-                                            _addressController.text;
-                                        liveboard.price =
-                                            int.parse(_priceController.text);
-                                        liveboard.maxTickets = int.parse(
-                                            _maxTicketsController.text);
-                                        var response = await http.get(Uri.parse(
-                                            'http://13.125.19.111/api/liveBoard/${liveboard.boardNo}'));
-                                        var parsedResponse = json.decode(
-                                            utf8.decode(response.bodyBytes));
-                                        liveboard.thumbnail =
-                                            parsedResponse['thumbnail']
-                                                ['fileNo'];
-                                        liveboard.content =
-                                            _titleController.text;
-                                        liveboard.isCaching = true;
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          '/liveboard/read',
-                                          arguments: liveboard,
-                                        );
-                                      } else {
-                                        print('등록실패');
-                                      }
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '공연 게시글 수정을 완료하시겠습니까?',
+                                      style: TextStyle(
+                                        fontSize: 21.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      child: Text(
-                                        '예',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.white,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Consumer<TempUserProvider>(
+                                        builder: (context, value, child) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              //예 선택 시 실행 함수
+                                              var user = context
+                                                  .read<TempUserProvider>();
+                                              var result = await submit(
+                                                  liveboard.boardNo, user);
+                                              if (result == 'done') {
+                                                print('등록완료');
+                                                liveboard.title =
+                                                    _titleController.text;
+                                                liveboard.crew =
+                                                    _crewController.text;
+                                                liveboard.location = _location;
+                                                liveboard.liveDate =
+                                                    _dateController.text;
+                                                liveboard.liveTime =
+                                                    '${_stTimeController.text} ~ ${_endTimeController.text}';
+                                                liveboard.address =
+                                                    _addressController.text;
+                                                liveboard.price = int.parse(
+                                                    _priceController.text);
+                                                liveboard.maxTickets =
+                                                    int.parse(
+                                                        _maxTicketsController
+                                                            .text);
+                                                var response = await http.get(
+                                                    Uri.parse(
+                                                        'http://13.125.19.111/api/liveBoard/${liveboard.boardNo}'));
+                                                var parsedResponse =
+                                                    json.decode(utf8.decode(
+                                                        response.bodyBytes));
+                                                liveboard.thumbnail =
+                                                    parsedResponse['thumbnail']
+                                                        ['fileNo'];
+                                                liveboard.content =
+                                                    _titleController.text;
+                                                liveboard.isCaching = true;
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/liveboard/read',
+                                                  arguments: liveboard,
+                                                );
+                                              } else {
+                                                print('등록실패');
+                                              }
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              height: 40,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(14.0),
+                                              ),
+                                              child: Text(
+                                                '예',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          //아니오 선택 시 실행 함수
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '아니오',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  //아니오 선택 시 실행 함수
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 40,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(14.0),
+                                    ],
                                   ),
-                                  child: Text(
-                                    '아니오',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: 50.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '수정완료',
+                          style: TextStyle(
+                            color: Color.fromRGBO(244, 244, 244, 1),
+                            fontSize: 20.0,
                           ),
-                        ],
+                        ),
                       ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(14.0),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '작성완료',
-                  style: TextStyle(
-                    color: Color.fromRGBO(244, 244, 244, 1),
-                    fontSize: 20.0,
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

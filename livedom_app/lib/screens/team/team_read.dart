@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:livedom_app/model/team.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +29,16 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
   }
 
   int selectedIndex = 0;
-
+  int _navIndex = 2;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      setState(() {
+        _navIndex = tempIndex;
+      });
+    });
     viewUp();
   }
 
@@ -115,7 +122,23 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(''),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: 10.0,
+                                    right: 65.0,
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Colors.white,
+                                    size: 30.0,
+                                  ),
+                                  alignment: FractionalOffset(0, 0.15),
+                                ),
+                              ),
                               Text(
                                 '팀 모집글 조회',
                                 style: TextStyle(
@@ -594,6 +617,59 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                   ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
       ),
     );
   }

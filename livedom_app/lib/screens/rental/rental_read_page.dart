@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
 import 'dart:ui';
@@ -25,15 +26,17 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
   int selectedIndex = 0;
   int _count = 1;
   // 말 줄이기 함수
+  int _navIndex = 2;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Rental rental = ModalRoute.of(context)?.settings.arguments as Rental;
-
+      int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       if (rental != null && rental.isCaching!) {
         setState(() {
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
+          _navIndex = tempIndex;
         });
       }
     });
@@ -42,7 +45,8 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
 
   Future<void> viewUp() async {
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      final Rental rental = ModalRoute.of(context)?.settings.arguments as Rental;
+      final Rental rental =
+          ModalRoute.of(context)?.settings.arguments as Rental;
       print('대관 데이터는 다음과 같습니다 : ${rental}');
       var headers = {
         'Content-Type': 'application/json',
@@ -496,43 +500,40 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                         },
                       ),
 
-                    ],
-                    style:{
-                       "body": Style(
-                        lineHeight: LineHeight(0),
-                        whiteSpace: WhiteSpace.normal,
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                       "p": Style(
-                        lineHeight: LineHeight(1.3),
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                       "h1": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "h2": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "h3": Style(
-                        lineHeight: LineHeight(1.3),
-                      ),
-                       "div": Style(
-                        lineHeight: LineHeight(1.3),
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
-                      "img": Style(
-                        width: Width(MediaQuery.of(context).size.width * 0.9),
-                        display: Display.inlineBlock,
-                        margin: Margins.all(1.0),
-                        padding: HtmlPaddings.all(1.0)
-                      ),
 
-                    },
+                      ],
+                      style: {
+                        "body": Style(
+                            lineHeight: LineHeight(0),
+                            whiteSpace: WhiteSpace.normal,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "p": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "h1": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h2": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "h3": Style(
+                          lineHeight: LineHeight(1.3),
+                        ),
+                        "div": Style(
+                            lineHeight: LineHeight(1.3),
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                        "img": Style(
+                            width:
+                                Width(MediaQuery.of(context).size.width * 0.9),
+                            display: Display.inlineBlock,
+                            margin: Margins.all(1.0),
+                            padding: HtmlPaddings.all(1.0)),
+                      },
+                    ),
                   ),
-                ),
                   Visibility(
                     visible: selectedIndex == 1, // 인덱스에 따라 화면 보이기/숨기기
                     child: CommentScreen(
@@ -554,7 +555,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
           : Container(
               height: 55.0,
               width: double.infinity,
-              margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+              margin: EdgeInsets.fromLTRB(30, 0, 30, 80),
               child: FloatingActionButton(
                 onPressed: () async {
                   _count = 1;
@@ -761,6 +762,59 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                 elevation: 0.0,
               ),
             ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) {
+          setState(() {
+            _navIndex = index;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
+            Navigator.pushReplacementNamed(context, '/main');
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.layers,
+              color: Colors.black,
+            ),
+            label: '클럽대관',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt_rounded,
+              color: Colors.black,
+            ),
+            label: '팀 모집',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.devices_rounded,
+              color: Colors.black,
+            ),
+            label: '공연',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내정보',
+          ),
+        ],
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        showUnselectedLabels: true,
+      ),
     );
   }
 }
