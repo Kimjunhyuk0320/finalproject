@@ -61,7 +61,7 @@ class _CommentScreenState extends State<CommentScreen> {
   Future<void> insert(int parentNo, String parentTable, String writer,
       String content, String username, String profileNo) async {
     print('insert...');
-    final url = Uri.parse('http://13.125.19.111/api/comment');
+    final url = Uri.parse('http://13.209.77.161/api/comment');
     final response = await http.post(url, body: {
       "parentNo": '$parentNo',
       "parentTable": parentTable,
@@ -99,7 +99,7 @@ class _CommentScreenState extends State<CommentScreen> {
   Future<void> updateComment(
       int commentNo, String content, String writer) async {
     print('댓글 수정${commentNo} ${content} ${writer}');
-    final url = Uri.parse('http://13.125.19.111/api/comment');
+    final url = Uri.parse('http://13.209.77.161/api/comment');
     final response = await http.put(url, body: {
       "commentNo": '$commentNo',
       "writer": writer,
@@ -138,7 +138,7 @@ class _CommentScreenState extends State<CommentScreen> {
 // 댓글 삭제
   Future<void> deleteComment(int commentNo) async {
     print('댓글 삭제 $commentNo');
-    final url = Uri.parse('http://13.125.19.111/api/comment/$commentNo');
+    final url = Uri.parse('http://13.209.77.161/api/comment/$commentNo');
     final response = await http.delete(url);
 
     if (response.statusCode == 200) {
@@ -156,7 +156,7 @@ class _CommentScreenState extends State<CommentScreen> {
   Future fetch() async {
     print('fetch...');
     final url = Uri.parse(
-        'http://13.125.19.111/api/comment?parentTable=${parentTable}&parentNo=${item.boardNo}&page=${_page}');
+        'http://13.209.77.161/api/comment?parentTable=${parentTable}&parentNo=${item.boardNo}&page=${_page}');
     print('comment fetch rul : ${url}');
     final response = await http.get(url);
     if (response.statusCode == 200) {

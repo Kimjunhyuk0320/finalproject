@@ -33,7 +33,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   Future<String> getTicketNum(
       int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량 $ticketCount');
-    final url = Uri.parse('http://13.125.19.111/api/liveBoard/ticketNum');
+    final url = Uri.parse('http://13.209.77.161/api/liveBoard/ticketNum');
     final response = await http.post(url,body: {
       "boardNo" : '$boardNo',
       "name" : name,
@@ -53,7 +53,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량122 $ticketCount');
    
-    final url = Uri.parse('http://13.125.19.111/api/liveBoard/purchase');
+    final url = Uri.parse('http://13.209.77.161/api/liveBoard/purchase');
     final response = await http.post(url,body: {
       "boardNo" : '$boardNo',
       "name" : name,
@@ -104,7 +104,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
         },
       );
       await http.put(
-        Uri.parse('http://13.125.19.111/api/user/viewUp'),
+        Uri.parse('http://13.209.77.161/api/user/viewUp'),
         headers: headers,
         body: body,
       );
@@ -112,7 +112,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   }
 
   Future<String> delete(int boardNo) async {
-    var parsedUrl = Uri.parse('http://13.125.19.111/api/liveBoard/${boardNo}');
+    var parsedUrl = Uri.parse('http://13.209.77.161/api/liveBoard/${boardNo}');
     try {
       var result = await http.delete(parsedUrl);
       if (result.statusCode == 200) {
@@ -232,7 +232,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   child: ImageFiltered(
                     imageFilter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                     child: Image.network(
-                      'http://13.125.19.111/api/file/img/${item.thumbnail}${isCaching}',
+                      'http://13.209.77.161/api/file/img/${item.thumbnail}${isCaching}',
                       width: 130,
                       height: 190,
                       fit: BoxFit.cover,
@@ -247,7 +247,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   child: Row(
                     children: [
                       Image.network(
-                        'http://13.125.19.111/api/file/img/${item.thumbnail}${isCaching}',
+                        'http://13.209.77.161/api/file/img/${item.thumbnail}${isCaching}',
                         width: 130,
                         height: 190,
                         fit: BoxFit.cover,
@@ -503,7 +503,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                             if (originalSrc != null &&
                                 originalSrc.startsWith("/file")) {
                               // If it starts with "/file", add the prefix
-                              final newSrc = 'http://13.125.19.111$originalSrc';
+                              final newSrc = 'http://13.209.77.161$originalSrc';
                               return Image.network(newSrc);
                             } else if (originalSrc != null &&
                                 originalSrc.startsWith("//")) {

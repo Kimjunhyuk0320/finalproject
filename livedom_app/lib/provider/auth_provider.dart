@@ -29,7 +29,7 @@ class AuthProvider with ChangeNotifier {
   // 로그인 요청 메서드
   Future<bool> login(String username, String password) async {
     // 로그인 로직 - 서버에 로그인 요청을 보내고 응답을 처리한다.
-    final String apiUrl = 'http://13.125.19.111/login'; // URL
+    final String apiUrl = 'http://13.209.77.161/login'; // URL
 
     var headers = {
       'Accept': '*/*',
@@ -86,7 +86,7 @@ class AuthProvider with ChangeNotifier {
 
   // 유저 정보 가져오기
   Future<void> getUserInfo() async {
-    var url = 'http://13.125.19.111/users/info';
+    var url = 'http://13.209.77.161/users/info';
     // var headersList = {
     //   'Accept': '*/*',
     //   'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
@@ -166,7 +166,7 @@ class AuthProvider with ChangeNotifier {
       'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
     };
     var url = Uri.parse(
-        'http://13.125.19.111/api/user/getLoginIdDup?username=$username');
+        'http://13.209.77.161/api/user/getLoginIdDup?username=$username');
 
     var req = http.Request('GET', url);
     req.headers.addAll(headersList);
@@ -189,7 +189,7 @@ class AuthProvider with ChangeNotifier {
       'User-Agent': 'Thunder Client (https://www.thunderclient.com)'
     };
     var url = Uri.parse(
-        'http://13.125.19.111/api/user/getNicknameDup?nickname=$nickname');
+        'http://13.209.77.161/api/user/getNicknameDup?nickname=$nickname');
 
     var req = http.Request('GET', url);
     req.headers.addAll(headersList);

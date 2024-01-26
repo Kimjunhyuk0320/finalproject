@@ -80,7 +80,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
         },
       );
       await http.put(
-        Uri.parse('http://13.125.19.111/api/user/viewUp'),
+        Uri.parse('http://13.209.77.161/api/user/viewUp'),
         headers: headers,
         body: body,
       );
@@ -125,7 +125,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
   }
 
   Future<String> delete(int frNo) async {
-    var parsedUrl = Uri.parse('http://13.125.19.111/api/fr/${frNo}');
+    var parsedUrl = Uri.parse('http://13.209.77.161/api/fr/${frNo}');
     try {
       var result = await http.delete(parsedUrl);
       if (result.statusCode == 200) {
@@ -245,7 +245,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                   child: ImageFiltered(
                     imageFilter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                     child: Image.network(
-                      'http://13.125.19.111/api/file/img/${item.thumbnail}${isCaching}',
+                      'http://13.209.77.161/api/file/img/${item.thumbnail}${isCaching}',
                       width: 130,
                       height: 190,
                       fit: BoxFit.cover,
@@ -260,7 +260,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                   child: Row(
                     children: [
                       Image.network(
-                        'http://13.125.19.111/api/file/img/${item.thumbnail}${isCaching}',
+                        'http://13.209.77.161/api/file/img/${item.thumbnail}${isCaching}',
                         width: 130,
                         height: 190,
                         fit: BoxFit.cover,
@@ -507,7 +507,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                             if (originalSrc != null &&
                                 originalSrc.startsWith("/file")) {
                               // If it starts with "/file", add the prefix
-                              final newSrc = 'http://13.125.19.111$originalSrc';
+                              final newSrc = 'http://13.209.77.161$originalSrc';
                               return Image.network(newSrc);
                             } else if (originalSrc != null &&
                                 originalSrc.startsWith("//")) {
@@ -721,7 +721,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         var parsedUrl = Uri.parse(
-                                            'http://13.125.19.111/api/booking');
+                                            'http://13.209.77.161/api/booking');
                                         var headers = {
                                           'Content-Type': 'application/json'
                                         };

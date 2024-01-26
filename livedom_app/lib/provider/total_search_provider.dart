@@ -20,7 +20,7 @@ class TotalSearchProvider with ChangeNotifier {
     try {
       print("02. getTotalSearch 함수의 매개변수 : $keyword");
       var url =
-          Uri.parse('http://13.125.19.111/api/home/totalSearch?page=1&searchType=0&keyword=$keyword');
+          Uri.parse('http://13.209.77.161/api/home/totalSearch?page=1&searchType=0&keyword=$keyword');
       final response = await http.get(url);
       if (response.statusCode == 200) {
         var utf8Decoded = utf8.decode(response.bodyBytes);

@@ -20,7 +20,7 @@ class TeamReadScreen extends StatefulWidget {
 
 class _TeamReadScreenState extends State<TeamReadScreen> {
   Future<String> delete(teamNo) async {
-    final url = 'http://13.125.19.111/api/team/${teamNo}';
+    final url = 'http://13.209.77.161/api/team/${teamNo}';
     final parsedUrl = Uri.parse(url);
     var response = await http.delete(parsedUrl);
     if (response.statusCode == 200) {
@@ -78,7 +78,7 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
       );
       print(team['teamNo']);
       await http.put(
-        Uri.parse('http://13.125.19.111/api/user/viewUp'),
+        Uri.parse('http://13.209.77.161/api/user/viewUp'),
         headers: headers,
         body: body,
       );
@@ -372,7 +372,7 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                                       originalSrc.startsWith("/file")) {
                                     // If it starts with "/file", add the prefix
                                     final newSrc =
-                                        'http://13.125.19.111$originalSrc';
+                                        'http://13.209.77.161$originalSrc';
                                     return Image.network(newSrc);
                                   } else if (originalSrc != null &&
                                       originalSrc.startsWith("//")) {

@@ -147,7 +147,7 @@ class _TeamStateReadScreenState extends State<TeamStateReadScreen> {
                             if (originalSrc != null &&
                                 originalSrc.startsWith("/file")) {
                               // If it starts with "/file", add the prefix
-                              final newSrc = 'http://13.125.19.111$originalSrc';
+                              final newSrc = 'http://13.209.77.161$originalSrc';
                               return Image.network(newSrc);
                             } else if (originalSrc != null &&
                                 originalSrc.startsWith("//")) {

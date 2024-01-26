@@ -148,7 +148,7 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
 
   Future getTeamList() async {
     var teamListURL =
-        'http://13.125.19.111/api/user/team/confirmedLiveList?page=${_page}&rows=${_rows}&username=${userInfo.username}';
+        'http://13.209.77.161/api/user/team/confirmedLiveList?page=${_page}&rows=${_rows}&username=${userInfo.username}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);

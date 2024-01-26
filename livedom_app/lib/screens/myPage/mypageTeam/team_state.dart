@@ -32,7 +32,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
 
   Future getTeamAppList() async {
     var teamListURL =
-        'http://13.125.19.111/api/user/team/listByLeader?page=${_page}&rows=${_rows}&username=${userInfo.username}';
+        'http://13.209.77.161/api/user/team/listByLeader?page=${_page}&rows=${_rows}&username=${userInfo.username}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -417,7 +417,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                         print('참가신청 승인을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/team/app/accept';
+                            'http://13.209.77.161/api/team/app/accept';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -529,7 +529,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                         print('참가신청 거절을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/team/app/denied';
+                            'http://13.209.77.161/api/team/app/denied';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -641,7 +641,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
                         print('참가신청 확정을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/team/app/confirmed';
+                            'http://13.209.77.161/api/team/app/confirmed';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
