@@ -192,13 +192,6 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                       color: Colors.white,
                       fontSize: 35,
                       fontWeight: FontWeight.w700,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1.0, 1.0), // 그림자의 위치 조절
-                          blurRadius: 3.0, // 그림자의 흐림 정도
-                          color: Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
-                        ),
-                      ],
                     ),
                   ),
                 ),
@@ -208,7 +201,9 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                     title: const Text(
                       '티켓팅',
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w900),
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(
@@ -226,15 +221,14 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
               ],
             ),
             SizedBox(
-              height: 20,
+              height: 5,
             ),
+            // 광고
             Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/adver.png'), // 이미지 경로를 수정해주세요
-                  fit: BoxFit.cover,
-                ),
-              ),
+              child: Image.asset(
+                    'images/adver.png',
+                    fit: BoxFit.cover,
+                  ),
             ),
             SizedBox(
               height: 20,
@@ -255,7 +249,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                   buildTextButton(2, '최신순'),
                 ],
               ),
-              width: MediaQuery.of(context).size.width * 0.56,
+              width: MediaQuery.of(context).size.width * 0.6,
               height: 35,
             ),
             SizedBox(
@@ -292,7 +286,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
-                                      'http://13.209.77.161/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                                      'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                       width: 120,
                                       height: 180,
                                       fit: BoxFit.cover,
@@ -321,6 +315,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                                                   '판매중',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
+                                                      fontSize: 9,
                                                       color: Colors.grey),
                                                 ),
                                               )
@@ -338,27 +333,28 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                                                   '매진',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
+                                                      fontSize: 9,
                                                       color: Colors.red),
                                                 ),
                                               ),
                                         SizedBox(
-                                          height: 10.0,
+                                          height: 5.0,
                                         ),
                                         Text(
                                           truncateText(item.title,
-                                              17), // 최대 길이를 설정 (예: 20)
+                                              12), // 최대 길이를 설정 (예: 20)
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          truncateText(item.crew, 17),
+                                          truncateText(item.crew, 10),
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          truncateText(item.address, 17),
+                                          truncateText(item.address, 11),
                                           textAlign: TextAlign.left,
                                         ),
                                         SizedBox(
-                                          height: 30.0,
+                                          height: 0.0,
                                         ),
                                         Column(
                                           crossAxisAlignment:

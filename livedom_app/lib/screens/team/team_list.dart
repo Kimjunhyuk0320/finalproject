@@ -143,7 +143,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.45,
+                height: MediaQuery.of(context).size.height * 0.38,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/teamListBanner.png'),
@@ -175,6 +175,16 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 5,
+              ),
+              // 광고
+              Container(
+                child: Image.asset(
+                  'images/adver.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
               Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -185,7 +195,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     Text(
                       '공연장소와 찾는 밴드를 검색해보세요',
                       style: TextStyle(
-                        fontSize: 13.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -193,7 +203,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
                       height: 10.0,
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 50,
                       decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(18.0)),
@@ -207,6 +218,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             width: MediaQuery.of(context).size.width * 0.15,
+                            height: 18,
                             child: Align(
                               alignment: Alignment.center, // 아이콘을 아래로 정렬
                               child: Icon(Icons.search),
@@ -242,6 +254,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
               ),
+
               Container(
                 margin: EdgeInsets.only(bottom: 0),
                 decoration: BoxDecoration(
@@ -293,7 +306,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                 color: Colors.black12,
                               ),
                               borderRadius: BorderRadius.circular(18.0)),
-                          height: 130.0,
+                          height: 150.0,
                           child: ListTile(
                             title: Row(
                               children: [
@@ -317,10 +330,10 @@ class _TeamListScreenState extends State<TeamListScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
-                                Text('장소 : ${item['address']}'),
+                                    '${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
+                                Text('${item['address']}'),
                                 Text(
-                                    '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                                    '${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
                                 Container(
                                   alignment: Alignment.center,
                                   height: 20,
@@ -361,7 +374,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                               color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(18.0)),
-                        height: 130.0,
+                        height: 150.0,
                         child: Container(),
                       );
                     } else {
