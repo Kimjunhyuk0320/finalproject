@@ -274,7 +274,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                               children: [
                                 item.soldOut == 0
                                     ? Container(
-                                        width: 50,
+                                        width: 60,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
@@ -287,11 +287,12 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Color.fromARGB(
-                                                  255, 221, 221, 221)),
+                                                  255, 221, 221, 221,),
+                                                  fontSize: 10),
                                         ),
                                       )
                                     : Container(
-                                        width: 50,
+                                        width: 60,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
@@ -302,55 +303,56 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         child: Text(
                                           '매진',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.red),
+                                          style: TextStyle(color: Colors.red, fontSize: 10),
                                         ),
                                       ),
                                 Text(
-                                  item.title ?? '',
+                                  truncateText(item.title ?? '', 10),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
                                 Text(
-                                  item.crew ?? '',
+                                  truncateText(item.crew ?? '', 10),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
-                                    fontSize: 14.0,
+                                    fontSize: 13.0,
                                   ),
                                 ),
                                 Text(
-                                  item.address ?? '',
+                                  truncateText(item.address ?? '', 10),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
-                                    fontSize: 14.0,
+                                    fontSize: 13.0,
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 30.0,
+                                  height: 10.0,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       '잔여 티켓 ${item.ticketLeft}장' ?? '',
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: Colors.white, fontSize: 13),
                                     ),
                                     Text(
                                       item.liveDate ?? '',
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: Colors.white, fontSize: 13),
                                     ),
                                     Text(
                                       item.liveTime ?? '',
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: Colors.white, fontSize: 13),
                                     ),
                                   ],
                                 )
@@ -367,7 +369,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                   child: AppBar(
                     title: const Text(
                       '공연 정보',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,                           
+                        fontSize: 14,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(

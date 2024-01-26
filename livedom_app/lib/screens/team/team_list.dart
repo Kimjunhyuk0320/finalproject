@@ -155,7 +155,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 height: MediaQuery.of(context).size.height * 0.38,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('images/teamListBanner.png'),
+                    image: AssetImage('images/main3.jpg'),
                     fit: BoxFit.cover,
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
@@ -184,6 +184,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 5,
               ),
@@ -196,7 +197,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
               ),
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.15,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
