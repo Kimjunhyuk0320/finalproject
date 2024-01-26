@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             "LIVE DOM",
                             style: pBold.copyWith(
-                              fontSize: 40,
+                              fontSize: 32,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -140,7 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 로그인 실패 : 아이디 및 비번 불일치 등
                               else {
                                 // 로그인 실패 시 알림창 띄우기
-                                showCustomAlertDialog(context,"로그인 오류 :(" , "아이디와 비밀번호를 확인해주세요.");
+                                showCustomAlertDialog(
+                                    context, "로그인 오류 :(", "아이디와 비밀번호를 확인해주세요.");
                               }
                             } catch (error) {
                               print('로그인 실패: $error');
@@ -158,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 '로그인',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -168,27 +169,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 20),
                         Row(
                           children: <Widget>[
-                            Container(
-                              color: Colors.grey,
-                              width: 164.0,
-                              height: 1.0,
+                            Expanded(
+                              child: Container(
+                                color: Colors.grey,
+                                height: 1.0,
+                              ),
                             ),
                             Container(
                               child: const Center(
                                 child: Text(
-                                  ' OR ',
+                                  '   OR   ',
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 209, 209, 209),
-                                    fontSize: 12.0,
+                                    fontSize: 10.0,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
                             ),
-                            Container(
-                              color: Color.fromARGB(255, 209, 209, 209),
-                              width: 164.0,
-                              height: 1.0,
+                            Expanded(
+                              child: Container(
+                                color: Colors.grey,
+                                height: 1.0,
+                              ),
                             ),
                           ],
                         ),
@@ -200,18 +203,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print('카카오로그인 진입');
                                 var user = context.read<UserProvider>();
 
-                              // ✔ 로그인 여부 확인
-                              user.loginCheck();
+                                // ✔ 로그인 여부 확인
+                                user.loginCheck();
 
-                              // 비로그인 시 ➡ 로그인 요청
-                              if( !await user.isLogin ) {
-                                // 사용자 조건 : 카카오톡 설치 여부
-                                await isKakaoTalkInstalled() ? user.kakoTalkLogin() : user.kakoLogin();
-                              }
-                              else {
-                                // 이미 로그인된 상태 ➡ 로그인 화면
-                                Navigator.pushReplacementNamed(context, "/logout");
-                              }
+                                // 비로그인 시 ➡ 로그인 요청
+                                if (!await user.isLogin) {
+                                  // 사용자 조건 : 카카오톡 설치 여부
+                                  await isKakaoTalkInstalled()
+                                      ? user.kakoTalkLogin()
+                                      : user.kakoLogin();
+                                } else {
+                                  // 이미 로그인된 상태 ➡ 로그인 화면
+                                  Navigator.pushReplacementNamed(
+                                      context, "/logout");
+                                }
                               },
                               child: Container(
                                 width: 360.0,
@@ -249,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         '카카오 로그인',
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 17.0,
+                                          fontSize: 15.0,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -286,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     text: '아직 회원이 아니신가요? ',
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w500,
                                       height: 0,
@@ -296,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     text: '회원가입',
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: 15,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w600,
                                       height: 0,
@@ -316,7 +321,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-          // 통합 알림창
+        // 통합 알림창
       ),
     );
   }

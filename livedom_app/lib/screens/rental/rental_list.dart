@@ -226,6 +226,16 @@ class _RentalListScreenState extends State<RentalListScreen> {
               ],
             ),
             SizedBox(
+              height: 5,
+            ),
+            // 광고
+            Container(
+              child: Image.asset(
+                    'images/adver.png',
+                    fit: BoxFit.cover,
+                  ),
+            ),
+            SizedBox(
               height: 20,
             ),
             Container(
@@ -282,7 +292,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
-                                      'http://13.209.77.161/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                      'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                       width: 120,
                                       height: 180,
                                       fit: BoxFit.cover,

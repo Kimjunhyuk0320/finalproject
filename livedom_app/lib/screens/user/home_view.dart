@@ -344,7 +344,7 @@ class _HomeViewState extends State<HomeView> {
                           ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             itemBuilder: (context, index) {
                               // index: 0~19
                               if (index <
@@ -352,7 +352,7 @@ class _HomeViewState extends State<HomeView> {
                                 final item =
                                     totalSearchProvider.liveBoardList[index];
                                 return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Column(
                                     children: [
                                       GestureDetector(
@@ -412,6 +412,7 @@ class _HomeViewState extends State<HomeView> {
                                                                     TextAlign
                                                                         .center,
                                                                 style: TextStyle(
+                                                                    fontSize: 9,
                                                                     color: Colors
                                                                         .grey),
                                                               ),
@@ -436,33 +437,35 @@ class _HomeViewState extends State<HomeView> {
                                                                     TextAlign
                                                                         .center,
                                                                 style: TextStyle(
+                                                                    fontSize: 9,
                                                                     color: Colors
                                                                         .red),
                                                               ),
                                                             ),
-                                                      SizedBox(
-                                                        height: 10.0,
-                                                      ),
                                                       Text(
                                                         truncateText(item.title,
-                                                            10), // 최대 길이를 설정 (예: 20)
+                                                            8), // 최대 길이를 설정 (예: 20)
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.crew, 11),
                                                         textAlign:
                                                             TextAlign.left,
                                                       ),
                                                       Text(
                                                         truncateText(
-                                                            item.crew, 12),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.address, 11),
+                                                            item.address, 9),
                                                         textAlign:
                                                             TextAlign.left,
                                                       ),
                                                       SizedBox(
-                                                        height: 30.0,
+                                                        height: 10.0,
                                                       ),
                                                       Column(
                                                         crossAxisAlignment:
@@ -472,7 +475,7 @@ class _HomeViewState extends State<HomeView> {
                                                           Text(
                                                             truncateText(
                                                                 item.liveDate,
-                                                                17),
+                                                                15),
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .grey),
@@ -572,13 +575,13 @@ class _HomeViewState extends State<HomeView> {
                           ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             itemBuilder: (context, index) {
                               // index: 0~19
                               if (index < frList.length) {
                                 final item = frList[index];
                                 return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Column(
                                     children: [
                                       GestureDetector(
@@ -638,6 +641,7 @@ class _HomeViewState extends State<HomeView> {
                                                                     TextAlign
                                                                         .center,
                                                                 style: TextStyle(
+                                                                    fontSize: 9,
                                                                     color: Colors
                                                                         .grey),
                                                               ),
@@ -662,28 +666,30 @@ class _HomeViewState extends State<HomeView> {
                                                                     TextAlign
                                                                         .center,
                                                                 style: TextStyle(
+                                                                    fontSize: 9,
                                                                     color: Colors
                                                                         .red),
                                                               ),
                                                             ),
-                                                      const SizedBox(
-                                                        height: 10.0,
-                                                      ),
                                                       Text(
                                                         truncateText(item.title,
-                                                            11), // 최대 길이를 설정 (예: 20)
+                                                            8), // 최대 길이를 설정 (예: 20)
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        truncateText(
+                                                            item.writer, 11),
                                                         textAlign:
                                                             TextAlign.left,
                                                       ),
                                                       Text(
                                                         truncateText(
-                                                            item.writer, 12),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                      Text(
-                                                        truncateText(
-                                                            item.address, 11),
+                                                            item.address, 9),
                                                         textAlign:
                                                             TextAlign.left,
                                                       ),
@@ -734,7 +740,7 @@ class _HomeViewState extends State<HomeView> {
                               else if ((_page - 1) > 0 &&
                                   (_page - 1) < _pageObj['last']!) {
                                 return Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Column(
                                     children: [
                                       Container(
@@ -814,7 +820,7 @@ class _HomeViewState extends State<HomeView> {
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(18.0)),
-                                        height: 130.0,
+                                        height: 150.0,
                                         child: ListTile(
                                           title: Row(
                                             children: [
@@ -822,14 +828,14 @@ class _HomeViewState extends State<HomeView> {
                                                 '(${item['location']})',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 18.0,
+                                                  fontSize: 15.0,
                                                 ),
                                               ),
                                               Text(
-                                                ' ${item['title'].substring(0, 11)}...',
+                                                ' ${item['title'].substring(0, 10)}...',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 18.0,
+                                                  fontSize: 15.0,
                                                 ),
                                               ),
                                             ],
@@ -839,14 +845,19 @@ class _HomeViewState extends State<HomeView> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                  '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
-                                              Text('장소 : ${item['address']}'),
+                                                '${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}',
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      13, // 원하는 폰트 크기로 변경하세요
+                                                ),
+                                              ),
+                                              Text('${item['address']}'),
                                               Text(
-                                                  '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                                                  '${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
                                               Container(
                                                 alignment: Alignment.center,
                                                 height: 20,
-                                                width: 40,
+                                                width: 50,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -868,7 +879,7 @@ class _HomeViewState extends State<HomeView> {
                                                         item['confirmed'] == 1
                                                             ? Colors.red
                                                             : Colors.green,
-                                                    fontSize: 12.0,
+                                                    fontSize: 10.0,
                                                   ),
                                                 ),
                                               ),
@@ -890,7 +901,7 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(18.0)),
-                                      height: 130.0,
+                                      height: 150.0,
                                       child: Container(),
                                     );
                                   } else {

@@ -152,7 +152,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.45,
+                height: MediaQuery.of(context).size.height * 0.38,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/teamListBanner.png'),
@@ -160,30 +160,40 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child:                   SafeArea(
-                    top: true,
-                    child: AppBar(
-                      title: const Text(
-                        '밴드 팀 모집',
-                        style: TextStyle(
+                child: SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '밴드 팀 모집',
+                      style: TextStyle(
                           fontSize: 14,
-                            color: Colors.white, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 뒤로가기 기능
-                        },
-                        color: Colors.white, // 뒤로가기 버튼 색상
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      centerTitle: true,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),
+                      textAlign: TextAlign.center,
                     ),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.white, // 뒤로가기 버튼 색상
+                    ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
                   ),
+                ),
               ),
-              
+              SizedBox(
+                height: 5,
+              ),
+              // 광고
+              Container(
+                child: Image.asset(
+                  'images/adver.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
               Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -194,7 +204,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     Text(
                       '공연장소와 찾는 밴드를 검색해보세요',
                       style: TextStyle(
-                        fontSize: 13.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -202,7 +212,8 @@ class _TeamListScreenState extends State<TeamListScreen> {
                       height: 10.0,
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 50,
                       decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(18.0)),
@@ -216,6 +227,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0),
                             width: MediaQuery.of(context).size.width * 0.15,
+                            height: 18,
                             child: Align(
                               alignment: Alignment.center, // 아이콘을 아래로 정렬
                               child: Icon(Icons.search),
@@ -251,31 +263,31 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
               ),
-Container(
-  margin: EdgeInsets.only(bottom: 0),
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(20.0),
-    border: Border.all(
-      color: Colors.grey,
-    ),
-  ),
-  child: SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        buildTextButton(0, '인기순'),
-        buildTextButton(1, '공연임박순'),
-        buildTextButton(2, '최신순'),
-      ],
-    ),
-  ),
-  constraints: BoxConstraints(
-    maxWidth: MediaQuery.of(context).size.width * 0.7,
-  ),
-  height: 35,
-),
 
+              Container(
+                margin: EdgeInsets.only(bottom: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildTextButton(0, '인기순'),
+                      buildTextButton(1, '공연임박순'),
+                      buildTextButton(2, '최신순'),
+                    ],
+                  ),
+                ),
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                ),
+                height: 35,
+              ),
               SizedBox(
                 height: 10.0,
               ),
@@ -303,7 +315,7 @@ Container(
                                 color: Colors.black12,
                               ),
                               borderRadius: BorderRadius.circular(18.0)),
-                          height: 130.0,
+                          height: 150.0,
                           child: ListTile(
                             title: Row(
                               children: [
@@ -327,10 +339,10 @@ Container(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    '일시 : ${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
-                                Text('장소 : ${item['address']}'),
+                                    '${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}'),
+                                Text('${item['address']}'),
                                 Text(
-                                    '대관료 : ${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                                    '${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
                                 Container(
                                   alignment: Alignment.center,
                                   height: 20,
@@ -371,7 +383,7 @@ Container(
                               color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(18.0)),
-                        height: 130.0,
+                        height: 150.0,
                         child: Container(),
                       );
                     } else {
@@ -394,7 +406,8 @@ Container(
               tooltip: 'Increment',
               child: Icon(
                 Icons.edit,
-                color: const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
+                color:
+                    const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
               ),
               backgroundColor: Colors.black, // 배경색을 검은색으로 설정
               shape: CircleBorder(), // 원형으로 설정
