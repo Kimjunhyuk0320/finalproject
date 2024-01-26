@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LiveBoardListScreen extends StatefulWidget {
   const LiveBoardListScreen({Key? key}) : super(key: key);
@@ -31,7 +33,8 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
 
   //데이터 중복 호출 방지 스위치
   bool isFetching = false;
-
+  //로그인 상태
+  bool _loginState = false;
   @override
   void initState() {
     super.initState();
@@ -47,6 +50,13 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
         // 데이터 요청 (다음 페이지)
         fetch();
       }
+    });
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _loginState = tempLoginState;
+      });
     });
   }
 
@@ -158,274 +168,274 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-          controller: _controller,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  SizedBox(
-                    height: 350,
-                    width: double.infinity,
-                    child: Image.asset(
-                      'images/tiketBigImg.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    left: 30,
-                    bottom: 20,
-                    child: Text(
-                      'LIVE DOM ',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        fontWeight: FontWeight.w700,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(1.0, 1.0), // 그림자의 위치 조절
-                            blurRadius: 3.0, // 그림자의 흐림 정도
-                            color:
-                                Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SafeArea(
-                    top: true,
-                    child: AppBar(
-                      title: const Text(
-                        '티켓팅',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w900),
-                        textAlign: TextAlign.center,
-                      ),
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 뒤로가기 기능
-                        },
-                        color: Colors.white, // 뒤로가기 버튼 색상
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      centerTitle: true,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/adver.png'), // 이미지 경로를 수정해주세요
+      body: SingleChildScrollView(
+        controller: _controller,
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: 350,
+                  width: double.infinity,
+                  child: Image.asset(
+                    'images/tiketBigImg.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: Colors.grey,
+                Positioned(
+                  left: 30,
+                  bottom: 20,
+                  child: Text(
+                    'LIVE DOM ',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontWeight: FontWeight.w700,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 1.0), // 그림자의 위치 조절
+                          blurRadius: 3.0, // 그림자의 흐림 정도
+                          color: Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    buildTextButton(0, '인기순'),
-                    buildTextButton(1, '공연임박순'),
-                    buildTextButton(2, '최신순'),
-                  ],
+                SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '티켓팅',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w900),
+                      textAlign: TextAlign.center,
+                    ),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.white, // 뒤로가기 버튼 색상
+                    ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
+                  ),
                 ),
-                width: MediaQuery.of(context).size.width * 0.56,
-                height: 35,
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/adver.png'), // 이미지 경로를 수정해주세요
+                  fit: BoxFit.cover,
+                ),
               ),
-              SizedBox(
-                height: 20,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
+                  color: Colors.grey,
+                ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                itemBuilder: (context, index) {
-                  // index: 0~19
-                  if (index < items.length) {
-                    final item = items[index];
-                    return Container(
-                      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              // 터치 이벤트 핸들링
-                              Navigator.pushNamed(
-                                context,
-                                "/liveboard/read",
-                                arguments: item,
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                item.thumbnail == 0
-                                    ? Image.asset(
-                                        'assets/images/defaultRentalImg.jpeg',
-                                        width: 120,
-                                        height: 180,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        'http://13.209.77.161/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
-                                        width: 120,
-                                        height: 180,
-                                        fit: BoxFit.cover,
-                                      ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          item.soldOut == 0
-                                              ? Container(
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    '판매중',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.grey),
-                                                  ),
-                                                )
-                                              : Container(
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    border: Border.all(
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    '매진',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.red),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildTextButton(0, '인기순'),
+                  buildTextButton(1, '공연임박순'),
+                  buildTextButton(2, '최신순'),
+                ],
+              ),
+              width: MediaQuery.of(context).size.width * 0.56,
+              height: 35,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              itemBuilder: (context, index) {
+                // index: 0~19
+                if (index < items.length) {
+                  final item = items[index];
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // 터치 이벤트 핸들링
+                            Navigator.pushNamed(
+                              context,
+                              "/liveboard/read",
+                              arguments: item,
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              item.thumbnail == 0
+                                  ? Image.asset(
+                                      'assets/images/defaultRentalImg.jpeg',
+                                      width: 120,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      'http://13.209.77.161/api/file/img/${item.thumbnail}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                                      width: 120,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                    ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        item.soldOut == 0
+                                            ? Container(
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  border: Border.all(
+                                                    color: Colors.grey,
                                                   ),
                                                 ),
-                                          SizedBox(
-                                            height: 10.0,
-                                          ),
-                                          Text(
-                                            truncateText(item.title,
-                                                17), // 최대 길이를 설정 (예: 20)
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          Text(
-                                            truncateText(item.crew, 17),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          Text(
-                                            truncateText(item.address, 17),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          SizedBox(
-                                            height: 30.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                truncateText(item.liveDate, 17),
-                                                style: TextStyle(
-                                                    color: Colors.grey),
+                                                child: Text(
+                                                  '판매중',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  border: Border.all(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  '매진',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
                                               ),
-                                              Text(
-                                                truncateText(item.liveTime, 17),
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                              Text(
-                                                truncateText(item.location, 17),
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Text(
+                                          truncateText(item.title,
+                                              17), // 최대 길이를 설정 (예: 20)
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        Text(
+                                          truncateText(item.crew, 17),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        Text(
+                                          truncateText(item.address, 17),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        SizedBox(
+                                          height: 30.0,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              truncateText(item.liveDate, 17),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                            Text(
+                                              truncateText(item.liveTime, 17),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                            Text(
+                                              truncateText(item.location, 17),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Divider(
-                            color: Colors.grey, // 원하는 색상으로 변경
-                            thickness: 0.5, // 원하는 두께로 변경
-                            height: 40.0, // 위아래 여백 조절
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  // index: 20
-                  else if ((_page - 1) > 0 && (_page - 1) < _pageObj['last']!) {
-                    return Container(
-                      margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 180.0,
-                          ),
-                          Divider(
-                            color: Colors.grey, // 원하는 색상으로 변경
-                            thickness: 0.5, // 원하는 두께로 변경
-                            height: 40.0, // 위아래 여백 조절
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
-                itemCount: items.length + _nextCount,
-              ),
-            ],
-          ),
+                        ),
+                        Divider(
+                          color: Colors.grey, // 원하는 색상으로 변경
+                          thickness: 0.5, // 원하는 두께로 변경
+                          height: 40.0, // 위아래 여백 조절
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                // index: 20
+                else if ((_page - 1) > 0 && (_page - 1) < _pageObj['last']!) {
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 180.0,
+                        ),
+                        Divider(
+                          color: Colors.grey, // 원하는 색상으로 변경
+                          thickness: 0.5, // 원하는 두께로 변경
+                          height: 40.0, // 위아래 여백 조절
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              itemCount: items.length + _nextCount,
+            ),
+          ],
         ),
-        floatingActionButton: 
-        FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/liveboard/insert');
-          },
-          tooltip: 'Increment',
-          child: Icon(
-            Icons.edit,
-            color: Colors.white, // 아이콘 색상을 흰색으로 설정
-          ),
-          backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-          shape: CircleBorder(), // 원형으로 설정
-        ));
+      ),
+      floatingActionButton: _loginState
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/liveboard/insert');
+              },
+              tooltip: 'Increment',
+              child: Icon(
+                Icons.edit,
+                color: Colors.white, // 아이콘 색상을 흰색으로 설정
+              ),
+              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+              shape: CircleBorder(), // 원형으로 설정
+            )
+          : Container(),
+    );
   }
 }

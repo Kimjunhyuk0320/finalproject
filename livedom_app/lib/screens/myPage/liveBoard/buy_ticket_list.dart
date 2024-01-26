@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:livedom_app/model/ticket.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,30 +19,44 @@ class BuyTicketListScreen extends StatefulWidget {
 class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
   int selectedIndex = 0;
   // 유저 정보
-  Map<String, String> user = {
-    'writer': '테스트11',
-    'username': '테스트11',
-    'profileNo': '15',
-    'phone': '01040115135',
-  };
   // 티켓 리스트
   List<dynamic> items = [];
   int _navIndex = 2;
+
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
     });
     fetch();
   }
 
   Future fetch() async {
     print('fetch...');
-    final url = Uri.parse('http://13.209.77.161/api/user/listByPhone?phone=${user['phone']}');
+    final url = Uri.parse(
+        'http://13.209.77.161/api/user/listByPhone?phone=${userInfo.phone}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {

@@ -410,18 +410,20 @@ class _RentalListScreenState extends State<RentalListScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/rental/insert');
-        },
-        tooltip: 'Increment',
-        child: Icon(
-          Icons.edit,
-          color: Colors.white, // 아이콘 색상을 흰색으로 설정
-        ),
-        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-        shape: CircleBorder(), // 원형으로 설정
-      ),
+      floatingActionButton: _loginState
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/rental/insert');
+              },
+              tooltip: 'Increment',
+              child: Icon(
+                Icons.edit,
+                color: Colors.white, // 아이콘 색상을 흰색으로 설정
+              ),
+              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+              shape: CircleBorder(), // 원형으로 설정
+            )
+          : Container(),
     );
   }
 }

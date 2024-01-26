@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:livedom_app/model/comment.dart';
 import 'package:intl/intl.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class CommentScreen extends StatefulWidget {
   final dynamic item;
@@ -16,12 +19,6 @@ class CommentScreen extends StatefulWidget {
 }
 
 class _CommentScreenState extends State<CommentScreen> {
-  // 유저 정보
-  Map<String, String> user = {
-    'writer': '테스트11',
-    'username': '테스트11',
-    'profileNo': '15',
-  };
 
   late dynamic item;
   late String parentTable;
@@ -38,15 +35,37 @@ class _CommentScreenState extends State<CommentScreen> {
     String inputValue = _commentController.text;
 
     print("입력값: $inputValue");
-    insert(item.boardNo, parentTable, user['writer']!, inputValue,
-        user['username']!, user['profileNo']!);
+
+    //**로그인 데이터의 프로필 사진을 가져오는 기능이 필요합니다!!**
+    insert(item.boardNo, parentTable, userInfo.nickname!, inputValue,
+        userInfo.username!, '0');
 
     _commentController.text = '';
   }
 
+//로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _loginState = tempLoginState;
+      });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      }
+    });
+
     item = widget.item;
     parentTable = widget.parentTable;
     fetch();
@@ -325,7 +344,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         ),
                       ],
                     ),
-                    (user['writer'] == item.writer &&
+                    (userInfo.nickname == item.writer &&
                             editingComment != item.commentNo)
                         ? Row(
                             children: [

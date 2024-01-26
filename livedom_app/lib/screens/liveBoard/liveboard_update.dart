@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/model/liveboard.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +80,7 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     }
   }
 
-  Future<String> submit(boardNo, user) async {
+  Future<String> submit(boardNo) async {
     print('submit함수 진입');
     final url = 'http://13.209.77.161/api/liveBoard/update';
     final parsedUrl = Uri.parse(url);
@@ -91,8 +93,8 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
       );
     }
     multiReq.fields['title'] = _titleController.text;
-    multiReq.fields['writer'] = user.userInfo['nickname'];
-    multiReq.fields['username'] = user.userInfo['username'];
+    multiReq.fields['writer'] = userInfo.nickname!;
+    multiReq.fields['username'] = userInfo.username!;
     multiReq.fields['content'] = await htmlEditorController.getText();
     multiReq.fields['crew'] = _crewController.text;
     multiReq.fields['location'] = _location;
@@ -118,12 +120,33 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     }
   }
 
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
+
   @override
   void initState() {
     super.initState();
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      final Rental rental =
+          ModalRoute.of(context)?.settings.arguments as Rental;
+      setState(() {
+        _loginState = tempLoginState;
+        if (_loginState) {
+          Users tempUserInfo =
+              Provider.of<AuthProvider>(context, listen: false).currentUser!;
+          userInfo = tempUserInfo;
+        } else {
+          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+          Navigator.pushReplacementNamed(context, '/main');
+        }
+      });
       final LiveBoard liveboard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
       // rental 데이터를 처리합니다.
@@ -827,77 +850,68 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Consumer<TempUserProvider>(
-                                        builder: (context, value, child) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              //예 선택 시 실행 함수
-                                              var user = context
-                                                  .read<TempUserProvider>();
-                                              var result = await submit(
-                                                  liveboard.boardNo, user);
-                                              if (result == 'done') {
-                                                print('등록완료');
-                                                liveboard.title =
-                                                    _titleController.text;
-                                                liveboard.crew =
-                                                    _crewController.text;
-                                                liveboard.location = _location;
-                                                liveboard.liveDate =
-                                                    _dateController.text;
-                                                liveboard.liveTime =
-                                                    '${_stTimeController.text} ~ ${_endTimeController.text}';
-                                                liveboard.address =
-                                                    _addressController.text;
-                                                liveboard.price = int.parse(
-                                                    _priceController.text);
-                                                liveboard.maxTickets =
-                                                    int.parse(
-                                                        _maxTicketsController
-                                                            .text);
-                                                var response = await http.get(
-                                                    Uri.parse(
-                                                        'http://13.209.77.161/api/liveBoard/${liveboard.boardNo}'));
-                                                var parsedResponse =
-                                                    json.decode(utf8.decode(
-                                                        response.bodyBytes));
-                                                liveboard.thumbnail =
-                                                    parsedResponse['thumbnail']
-                                                        ['fileNo'];
-                                                liveboard.content =
-                                                    _titleController.text;
-                                                liveboard.isCaching = true;
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/liveboard/read',
-                                                  arguments: liveboard,
-                                                );
-                                              } else {
-                                                print('등록실패');
-                                              }
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 40,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius:
-                                                    BorderRadius.circular(14.0),
-                                              ),
-                                              child: Text(
-                                                '예',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                      GestureDetector(
+                                        onTap: () async {
+                                          //예 선택 시 실행 함수
+                                          var result =
+                                              await submit(liveboard.boardNo);
+                                          if (result == 'done') {
+                                            print('등록완료');
+                                            liveboard.title =
+                                                _titleController.text;
+                                            liveboard.crew =
+                                                _crewController.text;
+                                            liveboard.location = _location;
+                                            liveboard.liveDate =
+                                                _dateController.text;
+                                            liveboard.liveTime =
+                                                '${_stTimeController.text} ~ ${_endTimeController.text}';
+                                            liveboard.address =
+                                                _addressController.text;
+                                            liveboard.price = int.parse(
+                                                _priceController.text);
+                                            liveboard.maxTickets = int.parse(
+                                                _maxTicketsController.text);
+                                            var response = await http.get(Uri.parse(
+                                                'http://13.209.77.161/api/liveBoard/${liveboard.boardNo}'));
+                                            var parsedResponse = json.decode(
+                                                utf8.decode(
+                                                    response.bodyBytes));
+                                            liveboard.thumbnail =
+                                                parsedResponse['thumbnail']
+                                                    ['fileNo'];
+                                            liveboard.content =
+                                                _titleController.text;
+                                            liveboard.isCaching = true;
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/liveboard/read',
+                                              arguments: liveboard,
+                                            );
+                                          } else {
+                                            print('등록실패');
+                                          }
                                         },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '예',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: () {

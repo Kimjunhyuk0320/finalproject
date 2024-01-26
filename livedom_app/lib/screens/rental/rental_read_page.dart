@@ -52,9 +52,6 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
         setState(() {
           userInfo = tempUserInfo;
         });
-      } else {
-        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-        Navigator.pushReplacementNamed(context, '/main');
       }
       if (rental != null && rental.isCaching!) {
         setState(() {

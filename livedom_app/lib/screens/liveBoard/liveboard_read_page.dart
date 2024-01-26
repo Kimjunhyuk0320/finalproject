@@ -34,11 +34,11 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량 $ticketCount');
     final url = Uri.parse('http://13.209.77.161/api/liveBoard/ticketNum');
-    final response = await http.post(url,body: {
-      "boardNo" : '$boardNo',
-      "name" : name,
-      "phone" : phone,
-      "count" : '$ticketCount'
+    final response = await http.post(url, body: {
+      "boardNo": '$boardNo',
+      "name": name,
+      "phone": phone,
+      "count": '$ticketCount'
     });
     if (response.statusCode == 200) {
       var res = utf8.decode(response.bodyBytes);
@@ -52,13 +52,13 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   Future<String> ticketPurchase(
       int boardNo, String name, String phone, int ticketCount) async {
     print('티켓 수량122 $ticketCount');
-   
+
     final url = Uri.parse('http://13.209.77.161/api/liveBoard/purchase');
-    final response = await http.post(url,body: {
-      "boardNo" : '$boardNo',
-      "name" : name,
-      "phone" : phone,
-      "count" : '$ticketCount'
+    final response = await http.post(url, body: {
+      "boardNo": '$boardNo',
+      "name": name,
+      "phone": phone,
+      "count": '$ticketCount'
     });
     if (response.statusCode == 200) {
       var res = utf8.decode(response.bodyBytes);
@@ -71,6 +71,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   //이미 캐싱 분기
   String isCaching = '';
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
@@ -78,7 +82,19 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       LiveBoard liveBoard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
-
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _navIndex = tempIndex;
+        _loginState = tempLoginState;
+      });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      }
       if (liveBoard != null && liveBoard.isCaching!) {
         setState(() {
           _navIndex = tempIndex;
@@ -150,40 +166,36 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Consumer<TempUserProvider>(
-                    builder: (context, value, child) {
-                      return GestureDetector(
-                        onTap: () async {
-                          //예 선택 시 실행 함수
-                          var result = await delete(boardNo);
-                          if (result == 'done') {
-                            print('삭제완료');
-                            Navigator.pushReplacementNamed(
-                              context,
-                              '/liveboard',
-                            );
-                          } else {
-                            print('삭제실패');
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 40,
-                          width: MediaQuery.of(context).size.width * 0.2,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: Text(
-                            '예',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
+                  GestureDetector(
+                    onTap: () async {
+                      //예 선택 시 실행 함수
+                      var result = await delete(boardNo);
+                      if (result == 'done') {
+                        print('삭제완료');
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/liveboard',
+                        );
+                      } else {
+                        print('삭제실패');
+                      }
                     },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 40,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                      child: Text(
+                        '예',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -366,39 +378,36 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                       color: Colors.white,
                     ),
                     actions: [
-                      Consumer<TempUserProvider>(
-                        builder: (context, value, child) {
-                          return value.userInfo['username'] == item.username
-                              ? PopupMenuButton(
-                                  icon: Icon(Icons.menu, color: Colors.white),
-                                  onSelected: (value) {
-                                    if (value == 'item1') {
-                                      // 'item1'이 선택되었을 때 수행할 작업
-                                      Navigator.pushNamed(
-                                          context, '/liveboard/update',
-                                          arguments: item);
-                                    } else if (value == 'item2') {
-                                      // 'item2'가 선택되었을 때 수행할 작업
-                                      deleteConfirm(item.boardNo!);
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      PopupMenuItem(
-                                        value: 'item1',
-                                        child: Text('게시글 수정'),
-                                      ),
-                                      if (item.ticketLeft == item.maxTickets)
-                                        PopupMenuItem(
-                                          value: 'item2',
-                                          child: Text('게시글 삭제'),
-                                        ),
-                                    ];
-                                  },
-                                )
-                              : Container();
-                        },
-                      ),
+                      userInfo.username != null &&
+                              userInfo.username == item.username
+                          ? PopupMenuButton(
+                              icon: Icon(Icons.menu, color: Colors.white),
+                              onSelected: (value) {
+                                if (value == 'item1') {
+                                  // 'item1'이 선택되었을 때 수행할 작업
+                                  Navigator.pushNamed(
+                                      context, '/liveboard/update',
+                                      arguments: item);
+                                } else if (value == 'item2') {
+                                  // 'item2'가 선택되었을 때 수행할 작업
+                                  deleteConfirm(item.boardNo!);
+                                }
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  PopupMenuItem(
+                                    value: 'item1',
+                                    child: Text('게시글 수정'),
+                                  ),
+                                  if (item.ticketLeft == item.maxTickets)
+                                    PopupMenuItem(
+                                      value: 'item2',
+                                      child: Text('게시글 삭제'),
+                                    ),
+                                ];
+                              },
+                            )
+                          : Container(),
                     ],
                     backgroundColor: Colors.transparent,
                     elevation: 0,

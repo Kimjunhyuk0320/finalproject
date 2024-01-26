@@ -55,10 +55,7 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
         setState(() {
           userInfo = tempUserInfo;
         });
-      }else{
-          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-          Navigator.pushReplacementNamed(context, '/main');
-        }
+      }
     });
     viewUp();
   }

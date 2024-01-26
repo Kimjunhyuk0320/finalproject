@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -29,9 +31,9 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
   //애니메이션 너비 속성
   final List<double> _animaWidth = [];
 
-  Future getTeamAppList(user) async {
+  Future getTeamAppList() async {
     var teamListURL =
-        'http://13.209.77.161/api/booking/rreq?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
+        'http://13.209.77.161/api/booking/rreq?page=${_page}&rows=${_rows}&username=${userInfo.username}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -257,21 +259,36 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
   }
 
   int _navIndex = 2;
+  bool _loginState = false;
 
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final context = this.context;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
-      final user = Provider.of<TempUserProvider>(context, listen: false);
-      getTeamAppList(user);
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
+      getTeamAppList();
       _infContoller.addListener(() async {
         if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
-          getTeamAppList(user);
+          getTeamAppList();
         }
       });
       for (var i = 0; i < 6; i++) {
