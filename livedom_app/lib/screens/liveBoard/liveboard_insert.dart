@@ -116,8 +116,6 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
   }
 
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
 
   Users userInfo = Users();
   //회원 정보
@@ -126,22 +124,14 @@ class _LiveBoardInsertScreenState extends State<LiveBoardInsertScreen> {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
         Users tempUserInfo =
             Provider.of<AuthProvider>(context, listen: false).currentUser!;
         setState(() {
           userInfo = tempUserInfo;
         });
-      } else {
-        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-        Navigator.pushReplacementNamed(context, '/main');
-      }
     });
   }
 

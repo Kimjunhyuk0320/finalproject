@@ -33,8 +33,6 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
 
   //데이터 중복 호출 방지 스위치
   bool isFetching = false;
-  //로그인 상태
-  bool _loginState = false;
   @override
   void initState() {
     super.initState();
@@ -50,13 +48,6 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
         // 데이터 요청 (다음 페이지)
         fetch();
       }
-    });
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
-      setState(() {
-        _loginState = tempLoginState;
-      });
     });
   }
 
@@ -226,9 +217,9 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
             // 광고
             Container(
               child: Image.asset(
-                    'images/adver.png',
-                    fit: BoxFit.cover,
-                  ),
+                'images/adver.png',
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(
               height: 20,
@@ -418,20 +409,18 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
           ],
         ),
       ),
-      floatingActionButton: _loginState
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/liveboard/insert');
-              },
-              tooltip: 'Increment',
-              child: Icon(
-                Icons.edit,
-                color: Colors.white, // 아이콘 색상을 흰색으로 설정
-              ),
-              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-              shape: CircleBorder(), // 원형으로 설정
-            )
-          : Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/liveboard/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: Colors.white, // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
+      ),
     );
   }
 }

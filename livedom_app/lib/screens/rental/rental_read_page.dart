@@ -29,8 +29,6 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
   int _count = 1;
   // 말 줄이기 함수
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
 
   //회원 정보
   Users userInfo = Users();
@@ -40,19 +38,14 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Rental rental = ModalRoute.of(context)?.settings.arguments as Rental;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
         Users tempUserInfo =
             Provider.of<AuthProvider>(context, listen: false).currentUser!;
         setState(() {
           userInfo = tempUserInfo;
         });
-      }
       if (rental != null && rental.isCaching!) {
         setState(() {
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';

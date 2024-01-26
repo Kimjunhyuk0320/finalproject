@@ -33,8 +33,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
       TextEditingController(text: '');
 
   var teamScreenList = [];
-  //로그인 상태
-  bool _loginState = false;
 
   @override
   void initState() {
@@ -45,13 +43,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
           _infContoller.offset + 400) {
         getTeamList();
       }
-    });
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
-      setState(() {
-        _loginState = tempLoginState;
-      });
     });
   }
 
@@ -399,21 +390,18 @@ class _TeamListScreenState extends State<TeamListScreen> {
           ),
         ),
       ),
-      floatingActionButton: _loginState
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/team/insert');
-              },
-              tooltip: 'Increment',
-              child: Icon(
-                Icons.edit,
-                color:
-                    const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
-              ),
-              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-              shape: CircleBorder(), // 원형으로 설정
-            )
-          : Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/team/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
+      ),
     );
   }
 }

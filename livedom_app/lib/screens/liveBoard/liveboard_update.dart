@@ -120,9 +120,6 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     }
   }
 
-  //로그인 상태
-  bool _loginState = false;
-
   //회원 정보
   Users userInfo = Users();
 
@@ -132,20 +129,12 @@ class _LiveBoardUpdateScreenState extends State<LiveBoardUpdateScreen> {
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       final Rental rental =
           ModalRoute.of(context)?.settings.arguments as Rental;
       setState(() {
-        _loginState = tempLoginState;
-        if (_loginState) {
-          Users tempUserInfo =
-              Provider.of<AuthProvider>(context, listen: false).currentUser!;
-          userInfo = tempUserInfo;
-        } else {
-          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-          Navigator.pushReplacementNamed(context, '/main');
-        }
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        userInfo = tempUserInfo;
       });
       final LiveBoard liveboard =
           ModalRoute.of(context)?.settings.arguments as LiveBoard;
