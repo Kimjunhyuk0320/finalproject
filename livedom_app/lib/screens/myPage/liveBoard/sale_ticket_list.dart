@@ -41,8 +41,8 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
       setState(() {
         userInfo = tempUserInfo;
       });
-    });
     fetch();
+    });
   }
 
   Future fetch() async {

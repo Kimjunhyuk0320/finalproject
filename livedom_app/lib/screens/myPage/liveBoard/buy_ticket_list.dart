@@ -30,8 +30,6 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
       });
@@ -40,12 +38,13 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
       setState(() {
         userInfo = tempUserInfo;
       });
-    });
     fetch();
+    });
   }
 
   Future fetch() async {
     print('fetch...');
+    print('폰 정보 : ${userInfo.phone}');
     final url = Uri.parse(
         'http://13.209.77.161/api/user/listByPhone?phone=${userInfo.phone}');
     final response = await http.get(url);

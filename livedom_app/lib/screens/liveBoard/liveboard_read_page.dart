@@ -71,8 +71,6 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   //이미 캐싱 분기
   String isCaching = '';
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
   //회원 정보
   Users userInfo = Users();
   @override
@@ -86,15 +84,12 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
           Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      }
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
       if (liveBoard != null && liveBoard.isCaching!) {
         setState(() {
           _navIndex = tempIndex;

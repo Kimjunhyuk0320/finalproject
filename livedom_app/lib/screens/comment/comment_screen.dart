@@ -19,7 +19,6 @@ class CommentScreen extends StatefulWidget {
 }
 
 class _CommentScreenState extends State<CommentScreen> {
-
   late dynamic item;
   late String parentTable;
   int editingComment = 0;
@@ -64,16 +63,15 @@ class _CommentScreenState extends State<CommentScreen> {
           userInfo = tempUserInfo;
         });
       }
-    });
+      item = widget.item;
+      parentTable = widget.parentTable;
+      fetch();
 
-    item = widget.item;
-    parentTable = widget.parentTable;
-    fetch();
-
-    _controller.addListener(() {
-      if (_controller.position.maxScrollExtent < _controller.offset + 10) {
-        fetch();
-      }
+      _controller.addListener(() {
+        if (_controller.position.maxScrollExtent < _controller.offset + 10) {
+          fetch();
+        }
+      });
     });
   }
 
