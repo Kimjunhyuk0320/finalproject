@@ -90,28 +90,28 @@ class _HomeViewState extends State<HomeView> {
     print('테스트');
     // 저장된 토큰이 있으면 ➡ 서버로 사용자 정보 요청
     setState(() {
-
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       authProvider.getUserInfo();
-      
+
       jwtToken = token ?? "";
-
     });
-
   }
 
   Future<void> saveJwtToken(String token) async {
     await storage.write(key: 'jwtToken', value: token);
   }
 
+  bool _isDataLoaded = false; // 상태 변수 추가
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // 기존에 데이터가 없을 때만 getTotalSearch 메서드를 호출합니다.
-    if (Provider.of<TotalSearchProvider>(context).liveBoardList.isEmpty) {
+    // 데이터가 로드되지 않았을 때만 getTotalSearch 메서드를 호출합니다.
+    if (!_isDataLoaded) {
       Provider.of<TotalSearchProvider>(context).getTotalSearch(' ');
+      _isDataLoaded = true; // 데이터가 로드되었음을 표시
     }
   }
 
@@ -134,10 +134,8 @@ class _HomeViewState extends State<HomeView> {
             fontWeight: FontWeight.w900,
           ),
         ),
-
         centerTitle: true,
         leading: null,
-
       ),
       body: Consumer<TotalSearchProvider>(
         builder: (context, totalSearchProvider, child) {

@@ -78,6 +78,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
       child: Text(
         buttonText,
         style: TextStyle(
+          fontSize: 11,
           color: Colors.black,
         ),
       ),
@@ -146,37 +147,30 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        child: Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Colors.white,
-                          size: 30.0,
-                        ),
-                        alignment: FractionalOffset(0, 0.15),
-                      ),
-                    ),
-                    Align(
-                      alignment: FractionalOffset(0.5, 0.1),
-                      child: Text(
-                        '팀 모집',
+                child:                   SafeArea(
+                    top: true,
+                    child: AppBar(
+                      title: const Text(
+                        '밴드 팀 모집',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 34.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          fontSize: 14,
+                            color: Colors.white, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
                       ),
+                      leading: IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // 뒤로가기 기능
+                        },
+                        color: Colors.white, // 뒤로가기 버튼 색상
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      centerTitle: true,
                     ),
-                    Container(),
-                  ],
-                ),
+                  ),
               ),
+              
               Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -187,7 +181,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     Text(
                       '공연장소와 찾는 밴드를 검색해보세요',
                       style: TextStyle(
-                        fontSize: 20.0,
+                        fontSize: 13.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -244,25 +238,31 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    buildTextButton(0, '인기순'),
-                    buildTextButton(1, '공연임박순'),
-                    buildTextButton(2, '최신순'),
-                  ],
-                ),
-                width: MediaQuery.of(context).size.width * 0.56,
-                height: 40,
-              ),
+Container(
+  margin: EdgeInsets.only(bottom: 0),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(20.0),
+    border: Border.all(
+      color: Colors.grey,
+    ),
+  ),
+  child: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        buildTextButton(0, '인기순'),
+        buildTextButton(1, '공연임박순'),
+        buildTextButton(2, '최신순'),
+      ],
+    ),
+  ),
+  constraints: BoxConstraints(
+    maxWidth: MediaQuery.of(context).size.width * 0.7,
+  ),
+  height: 35,
+),
+
               SizedBox(
                 height: 10.0,
               ),
@@ -298,14 +298,14 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                   '(${item['location']})',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18.0,
+                                    fontSize: 13.0,
                                   ),
                                 ),
                                 Text(
                                   '${item['title'].length >= 14 ? (item['title'].substring(0, 14) + "...") : (item['title'])}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18.0,
+                                    fontSize: 14.0,
                                   ),
                                 ),
                               ],
@@ -337,7 +337,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                       color: item['confirmed'] == 1
                                           ? Colors.red
                                           : Colors.green,
-                                      fontSize: 12.0,
+                                      fontSize: 10.0,
                                     ),
                                   ),
                                 ),

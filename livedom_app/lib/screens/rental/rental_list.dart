@@ -196,7 +196,8 @@ class _RentalListScreenState extends State<RentalListScreen> {
                       title: const Text(
                         '클럽 대관',
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w900),
+                          fontSize: 14,
+                            color: Colors.black, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
                       ),
                       leading: IconButton(

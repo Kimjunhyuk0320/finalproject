@@ -50,7 +50,7 @@ void main() {
     nativeAppKey: 'c8d48be3a74cdc63839d547995b8efd0',
     javaScriptAppKey: 'e0484d6dd54e2c2541108f8e826222db',
   );
-
+ 
 //테스트용으로 멀티프로바이더 형태로 바꿨습니다. 해당 부분을 아래 주석 부분으로 치환하면 돌릴 수 있습니다.
   runApp(
     MultiProvider(
