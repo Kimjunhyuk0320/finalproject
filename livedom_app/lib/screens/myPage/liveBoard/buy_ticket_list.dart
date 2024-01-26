@@ -40,7 +40,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
 
   Future fetch() async {
     print('fetch...');
-    final url = Uri.parse('http://13.125.19.111/api/user/listByPhone?phone=${user['phone']}');
+    final url = Uri.parse('http://13.209.77.161/api/user/listByPhone?phone=${user['phone']}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       setState(() {
@@ -254,7 +254,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                   child: Row(
                                     children: [
                                       Image.network(
-                                        'http://13.125.19.111/api/file/img/${item.thumbnail}',
+                                        'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                         width: 100,
                                         height: 160,
                                         fit: BoxFit.cover,
@@ -359,7 +359,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                     child: Row(
                                       children: [
                                         Image.network(
-                                          'http://13.125.19.111/api/file/img/${item.thumbnail}',
+                                          'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                           width: 100,
                                           height: 160,
                                           fit: BoxFit.cover,
@@ -471,7 +471,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                     child: Row(
                                       children: [
                                         Image.network(
-                                          'http://13.125.19.111/api/file/img/${item.thumbnail}',
+                                          'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                           width: 100,
                                           height: 160,
                                           fit: BoxFit.cover,

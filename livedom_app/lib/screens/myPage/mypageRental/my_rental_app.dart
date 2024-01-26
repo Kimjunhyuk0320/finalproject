@@ -31,7 +31,7 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
 
   Future getTeamAppList(user) async {
     var teamListURL =
-        'http://13.125.19.111/api/booking/rreq?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
+        'http://13.209.77.161/api/booking/rreq?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -314,7 +314,7 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
                         print('참가신청 승인을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/team/app/accept';
+                            'http://13.209.77.161/api/team/app/accept';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -426,7 +426,7 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
                         print('참가신청을 취소 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/booking/${_teamList[index]['brNo']}';
+                            'http://13.209.77.161/api/booking/${_teamList[index]['brNo']}';
                         final parsedUri = Uri.parse(url);
                         var result = await http.delete(
                           parsedUri,
@@ -529,7 +529,7 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
                         print('참가신청 확정을 확인했습니다.');
                         //요청
                         final String url =
-                            'http://13.125.19.111/api/team/app/confirmed';
+                            'http://13.209.77.161/api/team/app/confirmed';
                         final parsedUri = Uri.parse(url);
                         final headers = {
                           'Content-Type': 'application/json',
@@ -840,7 +840,7 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
                         },
                         onTap: () async {
                           final result = await http.get(Uri.parse(
-                              'http://13.125.19.111/api/fr/${item['frNo']}'));
+                              'http://13.209.77.161/api/fr/${item['frNo']}'));
                           Map decodedResult =
                               await json.decode(utf8.decode(result.bodyBytes));
                           var rental = Rental(
