@@ -337,27 +337,31 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                           // height: 0,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          PermissionButton(
-                            permission: '유저권한',
-                            isSelected: selectedPermission == 'ROLE_USER',
-                            onSelect: () => selectPermission('ROLE_USER'),
-                          ),
-                          PermissionButton(
-                            permission: '밴드권한',
-                            isSelected: selectedPermission == 'ROLE_BAND',
-                            onSelect: () => selectPermission('ROLE_BAND'),
-                          ),
-                          PermissionButton(
-                            permission: '클럽권한',
-                            isSelected: selectedPermission == 'ROLE_CLUB',
-                            onSelect: () => selectPermission('ROLE_CLUB'),
-                          ),
-                        ],
-                      ),
+SingleChildScrollView(
+  scrollDirection: Axis.horizontal,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      PermissionButton(
+        permission: '유저권한',
+        isSelected: selectedPermission == 'ROLE_USER',
+        onSelect: () => selectPermission('ROLE_USER'),
+      ),
+      PermissionButton(
+        permission: '밴드권한',
+        isSelected: selectedPermission == 'ROLE_BAND',
+        onSelect: () => selectPermission('ROLE_BAND'),
+      ),
+      PermissionButton(
+        permission: '클럽권한',
+        isSelected: selectedPermission == 'ROLE_CLUB',
+        onSelect: () => selectPermission('ROLE_CLUB'),
+      ),
+    ],
+  ),
+),
+
                       const SizedBox(height: 20),
                     ],
                   ),
