@@ -226,6 +226,16 @@ class _RentalListScreenState extends State<RentalListScreen> {
               ],
             ),
             SizedBox(
+              height: 5,
+            ),
+            // 광고
+            Container(
+              child: Image.asset(
+                    'images/adver.png',
+                    fit: BoxFit.cover,
+                  ),
+            ),
+            SizedBox(
               height: 20,
             ),
             Container(
@@ -245,7 +255,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                   buildTextButton(2, '최신순'),
                 ],
               ),
-              width: MediaQuery.of(context).size.width * 0.56,
+              width: MediaQuery.of(context).size.width * 0.63,
               height: 35,
             ),
             SizedBox(
@@ -282,7 +292,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.network(
-                                      'http://13.209.77.161/api/file/img/${item.thumbnail}?${DateTime.now().microsecondsSinceEpoch.toString()}',
+                                      'http://13.209.77.161/api/file/img/${item.thumbnail}',
                                       width: 120,
                                       height: 180,
                                       fit: BoxFit.cover,
@@ -298,7 +308,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                       children: [
                                         item.confirmed == 0
                                             ? Container(
-                                                width: 45,
+                                                width: 55,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -312,7 +322,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     color: Colors.grey,
-                                                    fontSize: 11,
+                                                    fontSize: 9,
                                                   ),
                                                 ),
                                               )
@@ -331,40 +341,41 @@ class _RentalListScreenState extends State<RentalListScreen> {
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     color: Colors.red,
-                                                    fontSize: 11,
+                                                    fontSize: 9,
                                                   ),
                                                 ),
                                               ),
                                         SizedBox(
-                                          height: 10.0,
+                                          height: 5.0,
                                         ),
                                         Text(
                                           truncateText(item.title,
-                                              17), // 최대 길이를 설정 (예: 20)
+                                              10), // 최대 길이를 설정 (예: 20)
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          truncateText(item.writer, 10),
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          truncateText(item.writer, 17),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        Text(
-                                          truncateText(item.address, 17),
+                                          truncateText(item.address, 10),
                                           textAlign: TextAlign.left,
                                         ),
                                         SizedBox(
-                                          height: 30.0,
+                                          height: 10.0,
                                         ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              truncateText(item.liveDate, 17),
+                                              truncateText(item.liveDate, 10),
                                               style:
                                                   TextStyle(color: Colors.grey),
                                             ),
                                             Text(
-                                              truncateText(item.location, 17),
+                                              truncateText(item.location, 10),
                                               style:
                                                   TextStyle(color: Colors.grey),
                                             ),
