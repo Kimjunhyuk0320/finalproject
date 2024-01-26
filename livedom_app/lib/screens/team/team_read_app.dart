@@ -74,8 +74,6 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
   }
 
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
 
   //회원 정보
   Users userInfo = Users();
@@ -85,22 +83,14 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      }else{
-          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-          Navigator.pushReplacementNamed(context, '/main');
-        }
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
     });
   }
 

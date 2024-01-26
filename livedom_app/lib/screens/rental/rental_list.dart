@@ -30,8 +30,6 @@ class _RentalListScreenState extends State<RentalListScreen> {
 
   //데이터 중복 호출 방지 스위치
   bool isFetching = false;
-//로그인 상태
-  bool _loginState = false;
 
   @override
   void initState() {
@@ -49,13 +47,6 @@ class _RentalListScreenState extends State<RentalListScreen> {
         // 데이터 요청 (다음 페이지)
         fetch();
       }
-    });
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
-      setState(() {
-        _loginState = tempLoginState;
-      });
     });
   }
 
@@ -208,7 +199,8 @@ class _RentalListScreenState extends State<RentalListScreen> {
                       '클럽 대관',
                       style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black, fontWeight: FontWeight.w400),
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(
@@ -411,20 +403,18 @@ class _RentalListScreenState extends State<RentalListScreen> {
           ],
         ),
       ),
-      floatingActionButton: _loginState
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/rental/insert');
-              },
-              tooltip: 'Increment',
-              child: Icon(
-                Icons.edit,
-                color: Colors.white, // 아이콘 색상을 흰색으로 설정
-              ),
-              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-              shape: CircleBorder(), // 원형으로 설정
-            )
-          : Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/rental/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: Colors.white, // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
+      ),
     );
   }
 }

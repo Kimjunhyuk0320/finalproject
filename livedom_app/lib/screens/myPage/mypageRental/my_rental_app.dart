@@ -259,7 +259,6 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
   }
 
   int _navIndex = 2;
-  bool _loginState = false;
 
   //회원 정보
   Users userInfo = Users();
@@ -269,22 +268,14 @@ class _MyRentalAppScreenState extends State<MyRentalAppScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final context = this.context;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      } else {
-        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-        Navigator.pushReplacementNamed(context, '/main');
-      }
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
       getTeamAppList();
       _infContoller.addListener(() async {
         if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {

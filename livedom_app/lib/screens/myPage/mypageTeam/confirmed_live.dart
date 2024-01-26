@@ -105,15 +105,12 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
   }
 
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
 
   //회원 정보
   Users userInfo = Users();
   @override
   void initState() {
     super.initState();
-    var user;
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       final context = this.context;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
@@ -121,22 +118,12 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
           Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      } else {
-        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-        Navigator.pushReplacementNamed(context, '/main');
-      }
-      user = await Provider.of<TempUserProvider>(
-        context,
-        listen: false,
-      );
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
       getTeamList();
       _infContoller.addListener(() async {
         if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {

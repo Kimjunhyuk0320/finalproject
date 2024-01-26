@@ -33,8 +33,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
       TextEditingController(text: '');
 
   var teamScreenList = [];
-  //로그인 상태
-  bool _loginState = false;
 
   @override
   void initState() {
@@ -45,13 +43,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
           _infContoller.offset + 400) {
         getTeamList();
       }
-    });
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
-      setState(() {
-        _loginState = tempLoginState;
-      });
     });
   }
 
@@ -160,30 +151,30 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
                 ),
-                child:                   SafeArea(
-                    top: true,
-                    child: AppBar(
-                      title: const Text(
-                        '밴드 팀 모집',
-                        style: TextStyle(
+                child: SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '밴드 팀 모집',
+                      style: TextStyle(
                           fontSize: 14,
-                            color: Colors.white, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 뒤로가기 기능
-                        },
-                        color: Colors.white, // 뒤로가기 버튼 색상
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      centerTitle: true,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),
+                      textAlign: TextAlign.center,
                     ),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.white, // 뒤로가기 버튼 색상
+                    ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
                   ),
+                ),
               ),
-              
               Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -251,31 +242,30 @@ class _TeamListScreenState extends State<TeamListScreen> {
                   ],
                 ),
               ),
-Container(
-  margin: EdgeInsets.only(bottom: 0),
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(20.0),
-    border: Border.all(
-      color: Colors.grey,
-    ),
-  ),
-  child: SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        buildTextButton(0, '인기순'),
-        buildTextButton(1, '공연임박순'),
-        buildTextButton(2, '최신순'),
-      ],
-    ),
-  ),
-  constraints: BoxConstraints(
-    maxWidth: MediaQuery.of(context).size.width * 0.7,
-  ),
-  height: 35,
-),
-
+              Container(
+                margin: EdgeInsets.only(bottom: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildTextButton(0, '인기순'),
+                      buildTextButton(1, '공연임박순'),
+                      buildTextButton(2, '최신순'),
+                    ],
+                  ),
+                ),
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                ),
+                height: 35,
+              ),
               SizedBox(
                 height: 10.0,
               ),
@@ -386,20 +376,18 @@ Container(
           ),
         ),
       ),
-      floatingActionButton: _loginState
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/team/insert');
-              },
-              tooltip: 'Increment',
-              child: Icon(
-                Icons.edit,
-                color: const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
-              ),
-              backgroundColor: Colors.black, // 배경색을 검은색으로 설정
-              shape: CircleBorder(), // 원형으로 설정
-            )
-          : Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/team/insert');
+        },
+        tooltip: 'Increment',
+        child: Icon(
+          Icons.edit,
+          color: const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
+        ),
+        backgroundColor: Colors.black, // 배경색을 검은색으로 설정
+        shape: CircleBorder(), // 원형으로 설정
+      ),
     );
   }
 }

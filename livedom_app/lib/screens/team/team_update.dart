@@ -43,7 +43,7 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   final TextEditingController _contentController =
       TextEditingController(text: '');
 
-  Future<String> submit(team,Users userInfo) async {
+  Future<String> submit(team, Users userInfo) async {
     print('submit함수 진입');
     final url = 'http://13.209.77.161/api/team';
     final parsedUrl = Uri.parse(url);
@@ -81,8 +81,6 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   }
 
   int _navIndex = 2;
-  //로그인 상태
-  bool _loginState = false;
 
   //회원 정보
   Users userInfo = Users();
@@ -92,18 +90,10 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final Map team = ModalRoute.of(context)?.settings.arguments as Map;
-      bool tempLoginState =
-          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
-        _loginState = tempLoginState;
-        if (_loginState) {
-          Users tempUserInfo =
-              Provider.of<AuthProvider>(context, listen: false).currentUser!;
-          userInfo = tempUserInfo;
-        }else{
-          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-          Navigator.pushReplacementNamed(context, '/main');
-        }
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        userInfo = tempUserInfo;
       });
       // team 데이터를 처리합니다.
       setState(() {
@@ -865,7 +855,8 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                       GestureDetector(
                                         onTap: () async {
                                           //예 선택 시 실행 함수
-                                          var result = await submit(team, userInfo);
+                                          var result =
+                                              await submit(team, userInfo);
                                           if (result == 'done') {
                                             print('등록완료');
                                             team['title'] =

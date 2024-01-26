@@ -23,9 +23,6 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
   List<dynamic> items = [];
   int _navIndex = 2;
 
-  //로그인 상태
-  bool _loginState = false;
-
   //회원 정보
   Users userInfo = Users();
   @override
@@ -37,18 +34,12 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
           Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
-        _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      } else {
-        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
-        Navigator.pushReplacementNamed(context, '/main');
-      }
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
     });
     fetch();
   }
