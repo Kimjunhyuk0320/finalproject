@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -25,15 +27,15 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
   final TextEditingController _contentController =
       TextEditingController(text: '');
 
-  Future<String> submit(teamNo, user) async {
+  Future<String> submit(teamNo, Users userInfo) async {
     final String url = 'http://13.125.19.111/api/team/app';
     final parsedUrl = Uri.parse(url);
     final header = {'Content-Type': 'application/json'};
     final data = {
       'teamNo': teamNo,
       'title': _titleController.text,
-      'phone': user.userInfo['phone'],
-      'username': user.userInfo['username'],
+      'phone': userInfo.phone,
+      'username': userInfo.username,
       'bandName': _bandnameController.text,
       'content': await htmlEditorController.getText(),
     };
@@ -72,15 +74,33 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
   }
 
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      }else{
+          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+          Navigator.pushReplacementNamed(context, '/main');
+        }
     });
   }
 
@@ -301,41 +321,34 @@ class _TeamReadAppScreenState extends State<TeamReadAppScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Consumer<TempUserProvider>(
-                                builder: (context, value, child) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      //예 선택 시 실행 함수
-                                      var user =
-                                          context.read<TempUserProvider>();
-                                      var result = await submit(
-                                          _teamAppData['teamNo'], user);
-                                      if (result == 'done') {
-                                        print('등록완료');
-                                      } else {
-                                        print('등록실패');
-                                      }
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
-                                      ),
-                                      child: Text(
-                                        '예',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                              GestureDetector(
+                                onTap: () async {
+                                  //예 선택 시 실행 함수
+                                  var result = await submit(
+                                      _teamAppData['teamNo'], userInfo);
+                                  if (result == 'done') {
+                                    print('등록완료');
+                                  } else {
+                                    print('등록실패');
+                                  }
                                 },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 40,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(14.0),
+                                  ),
+                                  child: Text(
+                                    '예',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
                               GestureDetector(
                                 onTap: () {

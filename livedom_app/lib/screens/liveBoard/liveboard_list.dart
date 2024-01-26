@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/model/users.dart';
 
 class LiveBoardListScreen extends StatefulWidget {
   const LiveBoardListScreen({Key? key}) : super(key: key);
@@ -413,7 +414,8 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: 
+        FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, '/liveboard/insert');
           },

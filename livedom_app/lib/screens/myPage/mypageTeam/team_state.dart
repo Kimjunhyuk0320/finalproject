@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +30,9 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   //애니메이션 너비 속성
   final List<double> _animaWidth = [];
 
-  Future getTeamAppList(user) async {
+  Future getTeamAppList() async {
     var teamListURL =
-        'http://13.125.19.111/api/user/team/listByLeader?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
+        'http://13.125.19.111/api/user/team/listByLeader?page=${_page}&rows=${_rows}&username=${userInfo.username}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);
@@ -341,6 +343,11 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
     }
   }
 
+//로그인 상태
+  bool _loginState = false;
+  //회원 정보
+  Users userInfo = Users();
+
   int _navIndex = 2;
   @override
   void initState() {
@@ -348,14 +355,26 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final context = this.context;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
-      final user = Provider.of<TempUserProvider>(context, listen: false);
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
-      getTeamAppList(user);
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
+      getTeamAppList();
       _infContoller.addListener(() async {
         if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
-          getTeamAppList(user);
+          getTeamAppList();
         }
       });
       for (var i = 0; i < 6; i++) {
@@ -365,7 +384,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   }
 
   Future ExApproval(context, index) async {
-    var user = Provider.of<TempUserProvider>(context, listen: false);
+    var user = Provider.of<AuthProvider>(context, listen: false);
     var result = await showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -474,7 +493,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   }
 
   Future ExDenided(context, index) async {
-    final user = Provider.of<TempUserProvider>(
+    final user = Provider.of<AuthProvider>(
       context,
       listen: false,
     );
@@ -586,7 +605,7 @@ class _TeamStateScreenState extends State<TeamStateScreen> {
   }
 
   Future ExConfirm(context, index) async {
-    final user = Provider.of<TempUserProvider>(
+    final user = Provider.of<AuthProvider>(
       context,
       listen: false,
     );

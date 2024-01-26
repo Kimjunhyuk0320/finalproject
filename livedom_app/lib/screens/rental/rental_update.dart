@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +75,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
     }
   }
 
-  Future<String> submit(rental, user) async {
+  Future<String> submit(rental) async {
     print('submit함수 진입');
     final url = 'http://13.125.19.111/api/fr';
     final parsedUrl = Uri.parse(url);
@@ -86,7 +88,7 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
       );
     }
     multiReq.fields['title'] = _titleController.text;
-    multiReq.fields['writer'] = user.userInfo['nickname'];
+    multiReq.fields['writer'] = userInfo.nickname!;
     multiReq.fields['content'] = await htmlEditorController.getText();
     multiReq.fields['location'] = _location;
     multiReq.fields['address'] = _addressController.text;
@@ -110,16 +112,34 @@ class _RentalUpdateScreenState extends State<RentalUpdateScreen> {
       return 'dont';
     }
   }
-int _navIndex = 2;
+
+  int _navIndex = 2;
+//로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       final Rental rental =
           ModalRoute.of(context)?.settings.arguments as Rental;
-          
+      setState(() {
+        _loginState = tempLoginState;
+        if (_loginState) {
+          Users tempUserInfo =
+              Provider.of<AuthProvider>(context, listen: false).currentUser!;
+          userInfo = tempUserInfo;
+        } else {
+          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+          Navigator.pushReplacementNamed(context, '/main');
+        }
+      });
       // rental 데이터를 처리합니다.
       setState(() {
         _navIndex = tempIndex;
@@ -688,15 +708,12 @@ int _navIndex = 2;
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Consumer<TempUserProvider>(
-                                        builder: (context, value, child) {
-                                          return GestureDetector(
+                                      GestureDetector(
                                             onTap: () async {
                                               //예 선택 시 실행 함수
                                               var user = context
                                                   .read<TempUserProvider>();
-                                              var result =
-                                                  await submit(rental, user);
+                                              var result = await submit(rental);
                                               if (result == 'done') {
                                                 print('등록완료');
                                                 rental.title =
@@ -716,7 +733,7 @@ int _navIndex = 2;
                                                 if (_image != null) {
                                                   var data = await http.get(
                                                       Uri.parse(
-                                                          'http://10.0.2.2:8080/api/fr/${rental.boardNo}'));
+                                                          'http://13.125.19.111/api/fr/${rental.boardNo}'));
                                                   var decodedData = json.decode(
                                                       utf8.decode(
                                                           data.bodyBytes));
@@ -758,9 +775,7 @@ int _navIndex = 2;
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
                                       GestureDetector(
                                         onTap: () {
                                           //아니오 선택 시 실행 함수
@@ -822,151 +837,6 @@ int _navIndex = 2;
               ),
             ),
           ),
-          Positioned(
-            bottom: 30,
-            left: MediaQuery.of(context).size.width * 0.15,
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.18,
-                      padding: EdgeInsets.all(
-                        20.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              '수정을 완료하시겠습니까?',
-                              style: TextStyle(
-                                fontSize: 21.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Consumer<TempUserProvider>(
-                                builder: (context, value, child) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      //예 선택 시 실행 함수
-                                      var user =
-                                          context.read<TempUserProvider>();
-                                      var result = await submit(rental, user);
-                                      if (result == 'done') {
-                                        print('등록완료');
-                                        rental.title = _titleController.text;
-                                        rental.liveDate = _dateController.text;
-                                        rental.location = _location;
-                                        rental.address =
-                                            _addressController.text;
-                                        rental.account = _account +
-                                            '/' +
-                                            _accountController.text;
-                                        rental.price =
-                                            int.parse(_priceController.text);
-                                        rental.content =
-                                            _contentController.text;
-                                        if (_image != null) {
-                                          var data = await http.get(Uri.parse(
-                                              'http://13.125.19.111/api/fr/${rental.boardNo}'));
-                                          var decodedData = json.decode(
-                                              utf8.decode(data.bodyBytes));
-                                          var fileNo = decodedData['thumbnail']
-                                              ['fileNo'];
-                                          rental.thumbnail = fileNo;
-                                        } else {
-                                          rental.thumbnail = 0;
-                                        }
-                                        rental.isCaching = true;
-                                        print(rental.thumbnail);
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          '/rental/read',
-                                          arguments: rental,
-                                        );
-                                      } else {
-                                        print('등록실패');
-                                      }
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 40,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
-                                      ),
-                                      child: Text(
-                                        '예',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  //아니오 선택 시 실행 함수
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 40,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(14.0),
-                                  ),
-                                  child: Text(
-                                    '아니오',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(14.0),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '작성완료',
-                  style: TextStyle(
-                    color: Color.fromRGBO(244, 244, 244, 1),
-                    fontSize: 20.0,
-                  ),
-                ),
-              ),
-            )
-          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -41,13 +43,13 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   final TextEditingController _contentController =
       TextEditingController(text: '');
 
-  Future<String> submit(team, user) async {
+  Future<String> submit(team,Users userInfo) async {
     print('submit함수 진입');
     final url = 'http://13.125.19.111/api/team';
     final parsedUrl = Uri.parse(url);
     final body = json.encode({
       'title': _titleController.text,
-      'writer': user.userInfo['nickname'],
+      'writer': userInfo.nickname,
       'content': await htmlEditorController.getText(),
       'location': _location,
       'address': _addressController.text,
@@ -79,13 +81,30 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
   }
 
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
 
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
     //초기 세팅을 해줍시다.
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final Map team = ModalRoute.of(context)?.settings.arguments as Map;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _loginState = tempLoginState;
+        if (_loginState) {
+          Users tempUserInfo =
+              Provider.of<AuthProvider>(context, listen: false).currentUser!;
+          userInfo = tempUserInfo;
+        }else{
+          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+          Navigator.pushReplacementNamed(context, '/main');
+        }
+      });
       // team 데이터를 처리합니다.
       setState(() {
         _navIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
@@ -843,67 +862,60 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Consumer<TempUserProvider>(
-                                        builder: (context, value, child) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              //예 선택 시 실행 함수
-                                              var user = context
-                                                  .read<TempUserProvider>();
-                                              var result =
-                                                  await submit(team, user);
-                                              if (result == 'done') {
-                                                print('등록완료');
-                                                team['title'] =
-                                                    _titleController.text;
-                                                team['capacity'] = _capacity;
-                                                team['liveDate'] =
-                                                    _dateController.text;
-                                                team['liveStTime'] =
-                                                    _stTimeController.text;
-                                                team['liveEndTime'] =
-                                                    _endTimeController.text;
-                                                team['location'] = _location;
-                                                team['address'] =
-                                                    _addressController.text;
-                                                team['account'] = _account +
-                                                    '/' +
-                                                    _accountController.text;
-                                                team['price'] =
-                                                    _priceController.text;
-                                                team['content'] =
-                                                    _contentController.text;
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/team/read',
-                                                  arguments: team,
-                                                );
-                                              } else {
-                                                print('등록실패');
-                                              }
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 40,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius:
-                                                    BorderRadius.circular(14.0),
-                                              ),
-                                              child: Text(
-                                                '예',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                      GestureDetector(
+                                        onTap: () async {
+                                          //예 선택 시 실행 함수
+                                          var result = await submit(team, userInfo);
+                                          if (result == 'done') {
+                                            print('등록완료');
+                                            team['title'] =
+                                                _titleController.text;
+                                            team['capacity'] = _capacity;
+                                            team['liveDate'] =
+                                                _dateController.text;
+                                            team['liveStTime'] =
+                                                _stTimeController.text;
+                                            team['liveEndTime'] =
+                                                _endTimeController.text;
+                                            team['location'] = _location;
+                                            team['address'] =
+                                                _addressController.text;
+                                            team['account'] = _account +
+                                                '/' +
+                                                _accountController.text;
+                                            team['price'] =
+                                                _priceController.text;
+                                            team['content'] =
+                                                _contentController.text;
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/team/read',
+                                              arguments: team,
+                                            );
+                                          } else {
+                                            print('등록실패');
+                                          }
                                         },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '예',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
@@ -974,7 +986,8 @@ class _TeamUpdateScreenState extends State<TeamUpdateScreen> {
         onTap: (index) {
           setState(() {
             _navIndex = index;
-            Provider.of<NavProvider>(context, listen: false).navIndex = _navIndex;
+            Provider.of<NavProvider>(context, listen: false).navIndex =
+                _navIndex;
             Navigator.pushReplacementNamed(context, '/main');
           });
         },

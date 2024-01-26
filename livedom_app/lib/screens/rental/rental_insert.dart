@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +75,7 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
     }
   }
 
-  Future<String> submit(user) async {
+  Future<String> submit() async {
     print('submit함수 진입');
     final url = 'http://13.125.19.111/api/fr';
     final parsedUrl = Uri.parse(url);
@@ -86,9 +88,9 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
       );
     }
     multiReq.fields['title'] = _titleController.text;
-    multiReq.fields['writer'] = user.userInfo['nickname'];
-    multiReq.fields['username'] = user.userInfo['username'];
-    multiReq.fields['phone'] = user.userInfo['phone'];
+    multiReq.fields['writer'] = userInfo.nickname!;
+    multiReq.fields['username'] = userInfo.username!;
+    multiReq.fields['phone'] = userInfo.phone!;
     multiReq.fields['content'] = await htmlEditorController.getText();
     multiReq.fields['location'] = _location;
     multiReq.fields['address'] = _addressController.text;
@@ -112,15 +114,36 @@ class _RentalInsertScreenState extends State<RentalInsertScreen> {
       return 'dont';
     }
   }
-int _navIndex = 2;
+
+  int _navIndex = 2;
+
+//로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
     });
   }
 
@@ -649,7 +672,7 @@ int _navIndex = 2;
                                   Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '수정을 완료하시겠습니까?',
+                                      '작성을 완료하시겠습니까?',
                                       style: TextStyle(
                                         fontSize: 21.0,
                                         fontWeight: FontWeight.bold,
@@ -660,46 +683,40 @@ int _navIndex = 2;
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Consumer<TempUserProvider>(
-                                        builder: (context, value, child) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              //예 선택 시 실행 함수
-                                              var user = context
-                                                  .read<TempUserProvider>();
-                                              var result = await submit(user);
-                                              if (result == 'done') {
-                                                print('등록완료');
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/rental',
-                                                );
-                                              } else {
-                                                print('등록실패');
-                                              }
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 40,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius:
-                                                    BorderRadius.circular(14.0),
-                                              ),
-                                              child: Text(
-                                                '예',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                      GestureDetector(
+                                        onTap: () async {
+                                          //예 선택 시 실행 함수
+                                          var result = await submit();
+                                          if (result == 'done') {
+                                            print('등록완료');
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/rental',
+                                            );
+                                          } else {
+                                            print('등록실패');
+                                          }
                                         },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '예',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: () {

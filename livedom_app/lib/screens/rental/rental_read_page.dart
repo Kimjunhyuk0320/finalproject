@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
@@ -27,16 +29,36 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
   int _count = 1;
   // 말 줄이기 함수
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Rental rental = ModalRoute.of(context)?.settings.arguments as Rental;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _navIndex = tempIndex;
+        _loginState = tempLoginState;
+      });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
       if (rental != null && rental.isCaching!) {
         setState(() {
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
-          _navIndex = tempIndex;
         });
       }
     });
@@ -353,38 +375,34 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                       color: Colors.white,
                     ),
                     actions: [
-                      Consumer<TempUserProvider>(
-                        builder: (context, value, child) {
-                          return value.userInfo['username'] == item.username
-                              ? PopupMenuButton(
-                                  icon: Icon(Icons.menu, color: Colors.white),
-                                  onSelected: (value) {
-                                    if (value == 'item1') {
-                                      // 'item1'이 선택되었을 때 수행할 작업
-                                      Navigator.pushNamed(
-                                          context, '/rental/update',
-                                          arguments: item);
-                                    } else if (value == 'item2') {
-                                      // 'item2'가 선택되었을 때 수행할 작업
-                                      deleteConfirm(item.boardNo!);
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      PopupMenuItem(
-                                        value: 'item1',
-                                        child: Text('게시글 수정'),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 'item2',
-                                        child: Text('게시글 삭제'),
-                                      ),
-                                    ];
-                                  },
-                                )
-                              : Container();
-                        },
-                      ),
+                      userInfo.username != null &&
+                              userInfo.username == item.username
+                          ? PopupMenuButton(
+                              icon: Icon(Icons.menu, color: Colors.white),
+                              onSelected: (value) {
+                                if (value == 'item1') {
+                                  // 'item1'이 선택되었을 때 수행할 작업
+                                  Navigator.pushNamed(context, '/rental/update',
+                                      arguments: item);
+                                } else if (value == 'item2') {
+                                  // 'item2'가 선택되었을 때 수행할 작업
+                                  deleteConfirm(item.boardNo!);
+                                }
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  PopupMenuItem(
+                                    value: 'item1',
+                                    child: Text('게시글 수정'),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'item2',
+                                    child: Text('게시글 삭제'),
+                                  ),
+                                ];
+                              },
+                            )
+                          : Container(),
                     ],
                     backgroundColor: Colors.transparent,
                     elevation: 0,
@@ -472,35 +490,35 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
             ),
             // 탭바뷰
             Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Visibility(
-                  visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
-                  child: Html(
-                    data: item.content,
-                     extensions: [
-                     TagExtension(
-                        tagsToExtend: {"img"},
-                        builder: (context) {
-                          final originalSrc = context.attributes['src'];
-                          
-                          // Check if the original source starts with "/file"
-                          if (originalSrc != null && originalSrc.startsWith("/file")) {
-                            // If it starts with "/file", add the prefix
-                            final newSrc = 'http://13.125.19.111$originalSrc';
-                            return Image.network(newSrc);
-                          }else if(originalSrc != null && originalSrc.startsWith("//")){
-                            final newSrc = 'http:$originalSrc';
-                            return Image.network(newSrc);
-                          } else {
-                            // If it doesn't start with "/file", use the original source
-                            return Image.network(originalSrc!);
-                          }
-                        },
-                      ),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: selectedIndex == 0, // 인덱스에 따라 화면 보이기/숨기기
+                    child: Html(
+                      data: item.content,
+                      extensions: [
+                        TagExtension(
+                          tagsToExtend: {"img"},
+                          builder: (context) {
+                            final originalSrc = context.attributes['src'];
 
-
+                            // Check if the original source starts with "/file"
+                            if (originalSrc != null &&
+                                originalSrc.startsWith("/file")) {
+                              // If it starts with "/file", add the prefix
+                              final newSrc = 'http://13.125.19.111$originalSrc';
+                              return Image.network(newSrc);
+                            } else if (originalSrc != null &&
+                                originalSrc.startsWith("//")) {
+                              final newSrc = 'http:$originalSrc';
+                              return Image.network(newSrc);
+                            } else {
+                              // If it doesn't start with "/file", use the original source
+                              return Image.network(originalSrc!);
+                            }
+                          },
+                        ),
                       ],
                       style: {
                         "body": Style(
@@ -700,48 +718,41 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                   Container(
                                     height: 55.0,
                                     width: 300.0,
-                                    child: Consumer<TempUserProvider>(
-                                      builder: (context, value, child) {
-                                        return ElevatedButton(
-                                          onPressed: () async {
-                                            var parsedUrl = Uri.parse(
-                                                'http://13.125.19.111/api/booking');
-                                            var headers = {
-                                              'Content-Type': 'application/json'
-                                            };
-                                            var body = json.encode({
-                                              'frNo': item.boardNo,
-                                              'username':
-                                                  value.userInfo['username'],
-                                              'phone': value.userInfo['phone'],
-                                            });
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        var parsedUrl = Uri.parse(
+                                            'http://13.125.19.111/api/booking');
+                                        var headers = {
+                                          'Content-Type': 'application/json'
+                                        };
+                                        var body = json.encode({
+                                          'frNo': item.boardNo,
+                                          'username': userInfo.username,
+                                          'phone': userInfo.phone,
+                                        });
 
-                                            var response = await http.post(
-                                              parsedUrl,
-                                              headers: headers,
-                                              body: body,
-                                            );
-                                            if (response.statusCode == 200) {
-                                              Navigator.pushNamed(context,
-                                                  '/mypage/rental/myApp');
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.black,
-                                            foregroundColor: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0,
-                                                vertical: 10.0),
-                                            textStyle:
-                                                TextStyle(fontSize: 16.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                          ),
-                                          child: Text('대관 신청하기'),
+                                        var response = await http.post(
+                                          parsedUrl,
+                                          headers: headers,
+                                          body: body,
                                         );
+                                        if (response.statusCode == 200) {
+                                          Navigator.pushNamed(
+                                              context, '/mypage/rental/myApp');
+                                        }
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 10.0),
+                                        textStyle: TextStyle(fontSize: 16.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                        ),
+                                      ),
+                                      child: Text('대관 신청하기'),
                                     ),
                                   ),
                                 ],

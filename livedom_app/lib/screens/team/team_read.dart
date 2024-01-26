@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:livedom_app/model/team.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/screens/comment/comment_screen.dart';
@@ -30,14 +32,33 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
 
   int selectedIndex = 0;
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      }else{
+          Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+          Navigator.pushReplacementNamed(context, '/main');
+        }
     });
     viewUp();
   }
@@ -151,53 +172,47 @@ class _TeamReadScreenState extends State<TeamReadScreen> {
                               SizedBox(
                                 width: 60.0,
                               ),
-                              Consumer<TempUserProvider>(
-                                builder: (context, value, child) {
-                                  return Container(
-                                    width: 40,
-                                    child: value.userInfo['username'] ==
-                                            team['username']
-                                        ? PopupMenuButton<String>(
-                                            icon: Icon(
-                                              Icons.menu,
-                                              color: Colors.white,
-                                              size: 30.0,
-                                            ), // 메뉴 아이콘을 설정합니다.
-                                            onSelected: (value) async {
-                                              // 메뉴 아이템을 클릭했을 때의 동작을 정의합니다.
-                                              if (value == '수정하기') {
-                                                Navigator.pushNamed(
-                                                    context, '/team/update',
-                                                    arguments: team);
-                                              } else if (value == '삭제하기') {
-                                                var result = await delete(
-                                                    team['teamNo']);
-                                                if (result == 'done') {
-                                                  Navigator
-                                                      .pushReplacementNamed(
-                                                          context, '/team');
-                                                } else {
-                                                  print('삭제 실패');
-                                                }
-                                              } else {
-                                                return;
-                                              }
-                                            },
-                                            itemBuilder:
-                                                (BuildContext context) {
-                                              // 팝업 메뉴의 아이템을 정의합니다.
-                                              return ['수정하기', '삭제하기']
-                                                  .map((String choice) {
-                                                return PopupMenuItem<String>(
-                                                  value: choice,
-                                                  child: Text(choice),
-                                                );
-                                              }).toList();
-                                            },
-                                          )
-                                        : Container(),
-                                  );
-                                },
+                              Container(
+                                width: 40,
+                                child: userInfo.username != null &&
+                                        userInfo.username == team['username']
+                                    ? PopupMenuButton<String>(
+                                        icon: Icon(
+                                          Icons.menu,
+                                          color: Colors.white,
+                                          size: 30.0,
+                                        ), // 메뉴 아이콘을 설정합니다.
+                                        onSelected: (value) async {
+                                          // 메뉴 아이템을 클릭했을 때의 동작을 정의합니다.
+                                          if (value == '수정하기') {
+                                            Navigator.pushNamed(
+                                                context, '/team/update',
+                                                arguments: team);
+                                          } else if (value == '삭제하기') {
+                                            var result =
+                                                await delete(team['teamNo']);
+                                            if (result == 'done') {
+                                              Navigator.pushReplacementNamed(
+                                                  context, '/team');
+                                            } else {
+                                              print('삭제 실패');
+                                            }
+                                          } else {
+                                            return;
+                                          }
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          // 팝업 메뉴의 아이템을 정의합니다.
+                                          return ['수정하기', '삭제하기']
+                                              .map((String choice) {
+                                            return PopupMenuItem<String>(
+                                              value: choice,
+                                              child: Text(choice),
+                                            );
+                                          }).toList();
+                                        },
+                                      )
+                                    : Container(),
                               ),
                             ],
                           ),

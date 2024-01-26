@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:livedom_app/model/rental.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class RentalListScreen extends StatefulWidget {
   const RentalListScreen({Key? key}) : super(key: key);
@@ -27,6 +30,8 @@ class _RentalListScreenState extends State<RentalListScreen> {
 
   //데이터 중복 호출 방지 스위치
   bool isFetching = false;
+//로그인 상태
+  bool _loginState = false;
 
   @override
   void initState() {
@@ -44,6 +49,13 @@ class _RentalListScreenState extends State<RentalListScreen> {
         // 데이터 요청 (다음 페이지)
         fetch();
       }
+    });
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
+      setState(() {
+        _loginState = tempLoginState;
+      });
     });
   }
 
@@ -169,48 +181,47 @@ class _RentalListScreenState extends State<RentalListScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                  Positioned(
-                    left: 30,
-                    bottom: 14,
-                    child: Text(
-                      'LIVE DOM ',
-                      textAlign: TextAlign.left,
+                Positioned(
+                  left: 30,
+                  bottom: 14,
+                  child: Text(
+                    'LIVE DOM ',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 1.0), // 그림자의 위치 조절
+                          blurRadius: 3.0, // 그림자의 흐림 정도
+                          color: Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  top: true,
+                  child: AppBar(
+                    title: const Text(
+                      '클럽 대관',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(1.0, 1.0), // 그림자의 위치 조절
-                            blurRadius: 3.0, // 그림자의 흐림 정도
-                            color:
-                                Colors.black.withOpacity(0.5), // 그림자의 색상 및 투명도
-                          ),
-                        ],
-                      ),
+                          color: Colors.black, fontWeight: FontWeight.w900),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SafeArea(
-                    top: true,
-                    child: AppBar(
-                      title: const Text(
-                        '클럽 대관',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w900),
-                        textAlign: TextAlign.center,
-                      ),
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 뒤로가기 기능
-                        },
-                        color: Colors.black, // 뒤로가기 버튼 색상
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      centerTitle: true,
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 뒤로가기 기능
+                      },
+                      color: Colors.black, // 뒤로가기 버튼 색상
                     ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
                   ),
+                ),
               ],
             ),
             SizedBox(

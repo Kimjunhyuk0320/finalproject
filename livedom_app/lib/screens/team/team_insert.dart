@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:livedom_app/widget/custom_button.dart';
@@ -44,14 +46,14 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
   final TextEditingController _contentController =
       TextEditingController(text: '');
 
-  Future<String> submit(user) async {
+  Future<String> submit() async {
     print('submit함수 진입');
     final url = 'http://13.125.19.111/api/team';
     final parsedUrl = Uri.parse(url);
     final body = json.encode({
-      'username': user.userInfo['username'],
+      'username': userInfo.username,
       'title': _titleController.text,
-      'writer': user.userInfo['nickname'],
+      'writer': userInfo.nickname,
       'content': await htmlEditorController.getText(),
       'location': _location,
       'address': _addressController.text,
@@ -99,17 +101,38 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
       return '0';
     }
   }
+
   int _navIndex = 2;
-@override
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
+
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -835,46 +858,42 @@ class _TeamInsertScreenState extends State<TeamInsertScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Consumer<TempUserProvider>(
-                                        builder: (context, value, child) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              //예 선택 시 실행 함수
-                                              var user = context
-                                                  .read<TempUserProvider>();
-                                              var result = await submit(user);
-                                              if (result == 'done') {
-                                                print('등록완료');
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/team',
-                                                );
-                                              } else {
-                                                print('등록실패');
-                                              }
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 40,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius:
-                                                    BorderRadius.circular(14.0),
-                                              ),
-                                              child: Text(
-                                                '예',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                      GestureDetector(
+                                        onTap: () async {
+                                          //예 선택 시 실행 함수
+                                          var user =
+                                              context.read<TempUserProvider>();
+                                          var result = await submit();
+                                          if (result == 'done') {
+                                            print('등록완료');
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              '/team',
+                                            );
+                                          } else {
+                                            print('등록실패');
+                                          }
                                         },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                          ),
+                                          child: Text(
+                                            '예',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: () {

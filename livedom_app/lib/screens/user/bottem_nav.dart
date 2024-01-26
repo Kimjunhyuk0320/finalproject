@@ -28,9 +28,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      int navIndex = Provider.of<NavProvider>(context,listen: false).navIndex;
+      int navIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
       setState(() {
-        _currentIndex= navIndex;
+        _currentIndex = navIndex;
       });
       print('메인스크린 커런트 : ${_currentIndex}');
     });
@@ -54,6 +54,8 @@ class _MainScreenState extends State<MainScreen> {
           onTap: (index) {
             setState(() {
               _currentIndex = index;
+              Provider.of<NavProvider>(context, listen: false).navIndex =
+                  _currentIndex;
             });
           },
           items: [

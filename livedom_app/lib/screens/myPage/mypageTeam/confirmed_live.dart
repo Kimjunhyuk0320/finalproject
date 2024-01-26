@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:livedom_app/model/users.dart';
+import 'package:livedom_app/provider/auth_provider.dart';
 import 'package:livedom_app/provider/nav_provider.dart';
 import 'package:livedom_app/provider/temp_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -103,6 +105,11 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
   }
 
   int _navIndex = 2;
+  //로그인 상태
+  bool _loginState = false;
+
+  //회원 정보
+  Users userInfo = Users();
   @override
   void initState() {
     super.initState();
@@ -110,25 +117,38 @@ class _ConfirmedLiveScreenState extends State<ConfirmedLiveScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       final context = this.context;
       int tempIndex = Provider.of<NavProvider>(context, listen: false).navIndex;
+      bool tempLoginState =
+          Provider.of<AuthProvider>(context, listen: false).isLogin;
       setState(() {
         _navIndex = tempIndex;
+        _loginState = tempLoginState;
       });
+      if (_loginState) {
+        Users tempUserInfo =
+            Provider.of<AuthProvider>(context, listen: false).currentUser!;
+        setState(() {
+          userInfo = tempUserInfo;
+        });
+      } else {
+        Provider.of<NavProvider>(context, listen: false).navIndex = 2;
+        Navigator.pushReplacementNamed(context, '/main');
+      }
       user = await Provider.of<TempUserProvider>(
         context,
         listen: false,
       );
-      getTeamList(user);
+      getTeamList();
       _infContoller.addListener(() async {
         if (_infContoller.position.maxScrollExtent <= _infContoller.offset) {
-          getTeamList(user);
+          getTeamList();
         }
       });
     });
   }
 
-  Future getTeamList(user) async {
+  Future getTeamList() async {
     var teamListURL =
-        'http://13.125.19.111/api/user/team/confirmedLiveList?page=${_page}&rows=${_rows}&username=${user.userInfo['username']}';
+        'http://13.125.19.111/api/user/team/confirmedLiveList?page=${_page}&rows=${_rows}&username=${userInfo.username}';
     var parsedURI = Uri.parse(teamListURL);
     //응답
     var teamListResponse = await http.get(parsedURI);

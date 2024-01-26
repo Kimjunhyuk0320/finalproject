@@ -774,59 +774,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _navIndex,
-        onTap: (index) {
-          setState(() {
-            _navIndex = index;
-            Provider.of<NavProvider>(context, listen: false).navIndex =
-                _navIndex;
-            Navigator.pushReplacementNamed(context, '/main');
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.layers,
-              color: Colors.black,
-            ),
-            label: '클럽대관',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.people_alt_rounded,
-              color: Colors.black,
-            ),
-            label: '팀 모집',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.black,
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.devices_rounded,
-              color: Colors.black,
-            ),
-            label: '공연',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
-            label: '내정보',
-          ),
-        ],
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(color: Colors.black),
-        unselectedLabelStyle: TextStyle(color: Colors.black),
-        showUnselectedLabels: true,
-      ),
     );
   }
 }
