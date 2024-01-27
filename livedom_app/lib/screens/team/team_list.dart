@@ -146,7 +146,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 height: MediaQuery.of(context).size.height * 0.38,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('images/main5.jpg'),
+                    image: AssetImage('images/main3.jpg'),
                     fit: BoxFit.cover,
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
