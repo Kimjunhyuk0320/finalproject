@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:livedom_app/config/colors.dart';
 import 'package:livedom_app/model/users.dart';
 import 'package:livedom_app/screens/user/home_view.dart';
+import 'package:livedom_app/screens/user/join_complete_screen.dart';
 import 'package:livedom_app/screens/user/login_screen.dart';
 import 'package:livedom_app/widget/custom_button.dart';
 import 'package:livedom_app/widget/custom_textfield.dart';
@@ -32,12 +33,21 @@ class _JoinScreenState extends State<JoinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 다음 버튼을 위해 > 화면 높이의 6/10 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.6;
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('1/6'),
+            Text(
+              '1/6',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            )
           ],
         ),
       ),
@@ -53,8 +63,8 @@ class _JoinScreenState extends State<JoinScreen> {
                   '아이디를 설정해주세요',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -65,7 +75,7 @@ class _JoinScreenState extends State<JoinScreen> {
                   '아이디는 5글자 이상으로 설정해주세요',
                   style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 15.0,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.w100,
                   ),
                 ),
@@ -85,13 +95,13 @@ class _JoinScreenState extends State<JoinScreen> {
                     child: Icon(
                       Icons.account_circle, // 원하는 아이콘을 설정
                       color: Colors.grey, // 아이콘의 색상
-                      size: 20.0, // 아이콘의 크기
+                      size: 20.0,           // 아이콘의 크기
                     ),
                   ),
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 420),
+              SizedBox(height: buttonHeight),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
@@ -130,14 +140,12 @@ class _JoinScreenState extends State<JoinScreen> {
                       showInvalidUsernamePopup(context);
                       return;
                     }
-
                     // 프로바이더에 저장된 아이디 중복검사
                     try {
                       String loginStatus = await Provider.of<AuthProvider>(
                               context,
                               listen: false)
                           .getLoginIdDup(username);
-
                       if (loginStatus == 'N') {
                         // 회원 아이디가 없는 경우
                         showCustomAlertDialog(context);
@@ -177,18 +185,6 @@ class _JoinScreenState extends State<JoinScreen> {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -202,7 +198,7 @@ class _JoinScreenState extends State<JoinScreen> {
                     "특수문자 포함 :(",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -210,33 +206,12 @@ class _JoinScreenState extends State<JoinScreen> {
                   Text(
                     "영문과 숫자로만 설정할 수 있어요",
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -257,18 +232,6 @@ class _JoinScreenState extends State<JoinScreen> {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -279,44 +242,23 @@ class _JoinScreenState extends State<JoinScreen> {
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                    "글자수 5글자 미만 :(",
+                    "글자수 부족 :(",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    "5글자 이상으로 설정해주세요.",
+                    "5글자 이상으로 설정해주세요",
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -337,18 +279,6 @@ class _JoinScreenState extends State<JoinScreen> {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -362,7 +292,7 @@ class _JoinScreenState extends State<JoinScreen> {
                     "아이디 중복 :(",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -370,33 +300,12 @@ class _JoinScreenState extends State<JoinScreen> {
                   Text(
                     "다른 아이디로 설정해주세요.",
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -432,14 +341,23 @@ class JoinPwScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
-    // print('JoinScreen -> JoinPwSreen : ${user?.username}');
+
+    // 다음 버튼을 위해 > 화면 높이의 5/10 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.5; 
 
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('2/6'),
+            Text(
+              '2/6',
+              style: TextStyle(
+                fontSize: 14, // 원하는 작은 크기로 조정
+                // 다른 스타일 속성도 추가할 수 있습니다.
+              ),
+            )
           ],
         ),
       ),
@@ -455,8 +373,8 @@ class JoinPwScreen extends StatelessWidget {
                   '비밀번호를 설정해주세요',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -470,7 +388,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '비밀번호는 ',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -480,7 +398,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '대문자',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w700,
                             height: 0,
@@ -490,7 +408,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '와 ',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -500,7 +418,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '소문자,',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -510,7 +428,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: ' ',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -520,7 +438,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '특수문자',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -530,7 +448,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '를 \n포함하고 ',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -540,7 +458,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '8글자 이상',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -550,7 +468,7 @@ class JoinPwScreen extends StatelessWidget {
                           text: '으로 설정해주세요.',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -603,7 +521,7 @@ class JoinPwScreen extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 320),
+              SizedBox(height: buttonHeight),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
@@ -656,18 +574,6 @@ class JoinPwScreen extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -678,10 +584,10 @@ class JoinPwScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 15.0),
                   Text(
-                    "유효하지 않는 비밀번호 :(",
+                    "비밀번호 오류 :(",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -689,33 +595,12 @@ class JoinPwScreen extends StatelessWidget {
                   Text(
                     "대문자와 소문자, 특수문자를 포함하여 \n설정해주세요.",
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -736,18 +621,6 @@ class JoinPwScreen extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -758,44 +631,23 @@ class JoinPwScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                    "아이디가 중복되었네요 :(",
+                    "비밀번호 불일치 :(",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    "다른 아이디로 설정해주세요.",
+                    "비밀번호 일치 여부를 확인하세요.",
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -814,12 +666,21 @@ class JoinNameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
+    // 다음 버튼을 위해 > 화면 높이의 5/10 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.5; 
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('3/6'),
+            Text(
+              '3/6',
+              style: TextStyle(
+                fontSize: 14, // 원하는 작은 크기로 조정
+                // 다른 스타일 속성도 추가할 수 있습니다.
+              ),
+            )
           ],
         ),
       ),
@@ -835,8 +696,8 @@ class JoinNameScreen extends StatelessWidget {
                   '이름과 별명을 설정해주세요',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 19.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -850,7 +711,7 @@ class JoinNameScreen extends StatelessWidget {
                           text: '이름',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -860,7 +721,7 @@ class JoinNameScreen extends StatelessWidget {
                           text: '은 ',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -870,7 +731,7 @@ class JoinNameScreen extends StatelessWidget {
                           text: '실명',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -880,14 +741,14 @@ class JoinNameScreen extends StatelessWidget {
                           text: '을 작성해주세요. \n',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
                           ),
                         ),
                         TextSpan(
-                          text: '(*티켓 구매시 불이익을 받을 수 있습니다.)',
+                          text: '(* 티켓 구매 시 불이익을 받을 수 있습니다.)',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
                             fontSize: 13,
@@ -941,7 +802,7 @@ class JoinNameScreen extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 320),
+              SizedBox(height: buttonHeight),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
@@ -1005,18 +866,6 @@ class JoinNameScreen extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1030,7 +879,7 @@ class JoinNameScreen extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1038,33 +887,12 @@ class JoinNameScreen extends StatelessWidget {
                   Text(
                     content,
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -1089,12 +917,22 @@ class JoinPhoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
+
+    // 다음 버튼을 위해 > 화면 높이의 56/100 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.56; 
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('4/6'),
+            Text(
+              '4/6',
+              style: TextStyle(
+                fontSize: 14, // 원하는 작은 크기로 조정
+                // 다른 스타일 속성도 추가할 수 있습니다.
+              ),
+            )
           ],
         ),
       ),
@@ -1110,8 +948,8 @@ class JoinPhoneScreen extends StatelessWidget {
                   '연락처를 설정해주세요',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -1125,17 +963,17 @@ class JoinPhoneScreen extends StatelessWidget {
                         text: '연락처는 (-)기호를 제외하고 설정해주세요.\n',
                         style: TextStyle(
                           color: Color(0xFF8D8D8D),
-                          fontSize: 16,
+                          fontSize: 13,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w200,
                           height: 0,
                         ),
                       ),
                       TextSpan(
-                        text: '(*다른 연락처를 작성시 불이익을 받을 수 있습니다.)',
+                        text: '(* 타인의 연락처를 작성시 불이익을 받을 수 \n있습니다.)',
                         style: TextStyle(
                           color: Color(0xFF8D8D8D),
-                          fontSize: 13,
+                          fontSize: 12,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w200,
                           height: 0,
@@ -1167,7 +1005,7 @@ class JoinPhoneScreen extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 390),
+              SizedBox(height: buttonHeight),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
@@ -1230,18 +1068,6 @@ class JoinPhoneScreen extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1255,7 +1081,7 @@ class JoinPhoneScreen extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1263,33 +1089,12 @@ class JoinPhoneScreen extends StatelessWidget {
                   Text(
                     content,
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -1314,12 +1119,22 @@ class JoinEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
+
+    // 다음 버튼을 위해 > 화면 높이의 55/100 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.55;
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('5/6'),
+            Text(
+              '5/6',
+              style: TextStyle(
+                fontSize: 14, // 원하는 작은 크기로 조정
+              ),
+            )
           ],
         ),
       ),
@@ -1335,8 +1150,8 @@ class JoinEmailScreen extends StatelessWidget {
                   '이메일을 설정해주세요',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -1350,14 +1165,14 @@ class JoinEmailScreen extends StatelessWidget {
                         text: '이메일을 작성해주세요. \n',
                         style: TextStyle(
                           color: Color(0xFF8D8D8D),
-                          fontSize: 16,
+                          fontSize: 13,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w200,
                           height: 0,
                         ),
                       ),
                       TextSpan(
-                        text: '(*다른 이메일을 작성시 불이익을 받을 수 있습니다.)',
+                        text: '(* 타인의 이메일을 작성 시 불이익을 \n받을 수 있습니다.)',
                         style: TextStyle(
                           color: Color(0xFF8D8D8D),
                           fontSize: 13,
@@ -1391,7 +1206,7 @@ class JoinEmailScreen extends StatelessWidget {
                   sufix: const SizedBox(width: 10),
                 ),
               ),
-              const SizedBox(height: 390),
+              SizedBox(height: buttonHeight),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: CustomButton(
@@ -1404,7 +1219,6 @@ class JoinEmailScreen extends StatelessWidget {
                           context, "이메일 형식 :(", "올바른 이메일 형식으로 입력해주세요.");
                       return;
                     }
-
                     user!.email = emailController.text;
                     Navigator.pushNamed(
                       context,
@@ -1422,7 +1236,8 @@ class JoinEmailScreen extends StatelessWidget {
   }
 
   // 통합 알림창
-  void showCustomAlertDialog(BuildContext context, String title, String content) {
+  void showCustomAlertDialog(
+      BuildContext context, String title, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1432,18 +1247,6 @@ class JoinEmailScreen extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1457,7 +1260,7 @@ class JoinEmailScreen extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1465,33 +1268,12 @@ class JoinEmailScreen extends StatelessWidget {
                   Text(
                     content,
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -1520,13 +1302,23 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
-    // final TextEditingController authController = TextEditingController();
+
+    // 다음 버튼을 위해 > 화면 높이의 19/100 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.19; 
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('6/6'),
+            Text(
+              '6/6',
+              style: TextStyle(
+                fontSize: 14, // 원하는 작은 크기로 조정
+                // 다른 스타일 속성도 추가할 수 있습니다.
+              ),
+            )
           ],
         ),
       ),
@@ -1534,17 +1326,18 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 30),
             const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: 40),
                   child: Text(
-                    '아래에 해당하는 \n권한을 설정해주세요.',
+                    '권한을 설정해주세요.',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 28.0,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -1558,7 +1351,7 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                           text: '하나의 권한을 선택해주세요.',
                           style: TextStyle(
                             color: Color(0xFF8D8D8D),
-                            fontSize: 16,
+                            fontSize: 13,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w200,
                             height: 0,
@@ -1570,7 +1363,7 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 80),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -1589,17 +1382,17 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                   isSelected: selectedPermission == '클럽권한',
                   onSelect: () => selectPermission('클럽권한'),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 50),
                 Text(
                   selectedPermission.isEmpty
-                      ? '권한을 선택하지 않았습니다.'
-                      : '"$selectedPermission"을 선택하였습니다',
+                      ? '아직 권한을 선택하지 않았습니다.'
+                      : '"$selectedPermission"을 선택하였습니다.',
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 50),
+                SizedBox(height: buttonHeight),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: CustomButton(
@@ -1610,7 +1403,6 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                             context, "권한 설정 :(", "선택한 권한이 없습니다.");
                         return;
                       }
-
                       if (user != null) {
                         if (selectedPermission == "유저권한") {
                           user.auth = '0';
@@ -1619,7 +1411,6 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                         } else if (selectedPermission == "밴드권한") {
                           user.auth = '2';
                         }
-
                         print('User객체 확인 아이디 : ${user.username}');
                         print('User객체 확인 비번 : ${user.password}');
                         print('User객체 확인 실명 : ${user.name}');
@@ -1628,13 +1419,10 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                         print('User객체 확인 이메일 : ${user.email}');
                         print('User객체 확인 권한 : ${user.auth}');
                       }
-
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.pushNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginScreen(),
-                        ),
-                        (route) => false, // 이전 페이지가 없도록 설정
+                        '/joincomplete',
+                        arguments: user,
                       );
                     },
                   ),
@@ -1659,18 +1447,6 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
             child: Container(
               margin: EdgeInsets.all(20.0),
               padding: EdgeInsets.all(20.0),
-              // decoration: BoxDecoration(
-              //   color: Colors.transparent, // 배경을 투명하게 설정
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.3),
-              //       spreadRadius: 2,
-              //       blurRadius: 8,
-              //       offset: Offset(0, 3),
-              //     ),
-              //   ],
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -1684,7 +1460,7 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                     title,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1692,33 +1468,12 @@ class JoinAuthScreenState extends State<JoinAuthScreen> {
                   Text(
                     content,
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 13.0,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     primary: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12.0),
-                  //     ),
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  //     child: Text(
-                  //       '확인',
-                  //       style: TextStyle(
-                  //         fontSize: 18.0,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -1755,16 +1510,14 @@ class PermissionButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            // side: BorderSide(color: Colors.grey),
           ),
-          minimumSize: Size(320, 100),
+          minimumSize: Size(290, 80),
         ),
         child: Text(
           permission,
           style: const TextStyle(
-            // color: Color.fromRGBO(0, 0, 0, 1),
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

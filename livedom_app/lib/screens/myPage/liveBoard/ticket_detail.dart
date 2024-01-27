@@ -76,28 +76,32 @@ class _TicketDetailState extends State<TicketDetail> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final Ticket item = ModalRoute.of(context)!.settings.arguments as Ticket;
+Widget build(BuildContext context) {
+  final Ticket item = ModalRoute.of(context)!.settings.arguments as Ticket;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '티켓 정보',
-          style: TextStyle(color: Colors.black),
-          textAlign: TextAlign.center,
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        '티켓 정보',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 14,
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            Navigator.of(context).pop(); // 뒤로가기 기능
-          },
-          color: Colors.black, // 뒤로가기 버튼 색상
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
+        textAlign: TextAlign.center,
       ),
-      body: Padding(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios_new),
+        onPressed: () {
+          Navigator.of(context).pop(); // 뒤로가기 기능
+        },
+        color: Colors.black, // 뒤로가기 버튼 색상
+      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+    ),
+    body: Center(
+      child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +110,7 @@ class _TicketDetailState extends State<TicketDetail> {
             Text(
               formatMultilineText(item.title ?? ''),
               style: TextStyle(
-                fontSize: 30.0,
+                fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
               softWrap: true,
@@ -116,7 +120,8 @@ class _TicketDetailState extends State<TicketDetail> {
               height: 10,
             ),
             FutureBuilder(
-              future: loadImage('http://13.209.77.161/api/qr/img?qrNo=${item.qrNo}'),
+              future: loadImage(
+                  'http://13.209.77.161/api/qr/img?qrNo=${item.qrNo}'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // 로딩 중이라면 반짝이는 스켈레톤 UI 표시
@@ -152,94 +157,107 @@ class _TicketDetailState extends State<TicketDetail> {
             ),
             Text(
               '${item.reservationNo}',
-              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 8.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: 50,
+              height: 20,
             ),
             Text(
-              '${item.name}(${item.phone})',
+              '${item.name}님',
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              '공연일자 ${item.liveDate} ${item.liveTime}',
+              '${item.phone}',
               style: TextStyle(
                 fontSize: 15.0,
               ),
             ),
+            SizedBox(
+              height: 40,
+            ),
             Text(
-              '장소   ${formatMultilineText('${item.location} ${item.address}')}',
+              '${item.liveDate} ${item.liveTime}',
               style: TextStyle(
-                fontSize: 15.0,
+                fontSize: 14.0,
               ),
+            ),
+            Text(
+              '${formatMultilineText('${item.location} ${item.address}')}',
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+            ),
+            SizedBox(
+              height: 40,
             ),
             Text(
               '${formatCurrency(item.price ?? 0)}원',
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 25.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _navIndex,
-        onTap: (index) {
-          setState(() {
-            _navIndex = index;
-            Provider.of<NavProvider>(context, listen: false).navIndex =
-                _navIndex;
-            Navigator.pushReplacementNamed(context, '/main');
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.layers,
-              color: Colors.black,
-            ),
-            label: '클럽대관',
+    ),
+    bottomNavigationBar: BottomNavigationBar(
+      currentIndex: _navIndex,
+      onTap: (index) {
+        setState(() {
+          _navIndex = index;
+          Provider.of<NavProvider>(context, listen: false).navIndex =
+              _navIndex;
+          Navigator.pushReplacementNamed(context, '/main');
+        });
+      },
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.layers,
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.people_alt_rounded,
-              color: Colors.black,
-            ),
-            label: '팀 모집',
+          label: '클럽대관',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.people_alt_rounded,
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.black,
-            ),
-            label: 'Home',
+          label: '팀 모집',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home,
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.devices_rounded,
-              color: Colors.black,
-            ),
-            label: '공연',
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.devices_rounded,
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
-            label: '내정보',
+          label: '공연',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.person,
+            color: Colors.black,
           ),
-        ],
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(color: Colors.black),
-        unselectedLabelStyle: TextStyle(color: Colors.black),
-        showUnselectedLabels: true,
-      ),
-    );
-  }
+          label: '내정보',
+        ),
+      ],
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.black,
+      selectedLabelStyle: TextStyle(color: Colors.black),
+      unselectedLabelStyle: TextStyle(color: Colors.black),
+      showUnselectedLabels: true,
+    ),
+  );
+}
 }

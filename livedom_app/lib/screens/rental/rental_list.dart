@@ -181,7 +181,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w900,
                       shadows: [
                         Shadow(
                           offset: Offset(1.0, 1.0), // 그림자의 위치 조절
@@ -223,7 +223,7 @@ class _RentalListScreenState extends State<RentalListScreen> {
             // 광고
             Container(
               child: Image.asset(
-                    'images/adver.png',
+                    'images/ad1.png',
                     fit: BoxFit.cover,
                   ),
             ),

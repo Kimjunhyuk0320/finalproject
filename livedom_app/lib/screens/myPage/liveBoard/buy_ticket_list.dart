@@ -38,7 +38,7 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
       setState(() {
         userInfo = tempUserInfo;
       });
-    fetch();
+      fetch();
     });
   }
 
@@ -91,39 +91,78 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '티켓 구매 내역',
-          style: TextStyle(color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            Navigator.of(context).pop(); // 뒤로가기 기능
-          },
-          color: Colors.black, // 뒤로가기 버튼 색상
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     '티켓 구매 내역',
+      //     style: TextStyle(color: Colors.black),
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back_ios_new),
+      //     onPressed: () {
+      //       Navigator.of(context).pop(); // 뒤로가기 기능
+      //     },
+      //     color: Colors.black, // 뒤로가기 버튼 색상
+      //   ),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   centerTitle: true,
+      // ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          padding: EdgeInsets.symmetric(horizontal: 0.0),
           child: Column(
             children: [
-              // 이미지
-              Container(
-                width: double.infinity,
-                height: 100,
-                child: Image.asset(
-                  'images/sample.jpg',
-                  fit: BoxFit.cover,
-                ),
+              Stack(
+                children: [
+                  SizedBox(
+                    height: 350,
+                    width: double.infinity,
+                    child: Image.asset(
+                      'images/BigMyPage.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    left: 20,
+                    bottom: 20,
+                    child: Text(
+                      'LIVE DOM ',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    top: true,
+                    child: AppBar(
+                      title: const Text(
+                        '티켓 구매 내역',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                      leading: IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // 뒤로가기 기능
+                        },
+                        color: Colors.white, // 뒤로가기 버튼 색상
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      centerTitle: true,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               // 탭바
               Padding(
@@ -277,12 +316,15 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                               children: [
                                                 Text(
                                                   truncateText(item.title,
-                                                      15), // 최대 길이를 설정 (예: 20)
+                                                      11), // 최대 길이를 설정 (예: 20)
                                                   textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700),
                                                 ),
                                                 Text(
                                                   truncateText(
-                                                      item.reservationNo, 17),
+                                                      item.reservationNo, 15),
                                                   textAlign: TextAlign.left,
                                                 ),
                                                 Text(
@@ -384,6 +426,9 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                                     truncateText(item.title,
                                                         15), // 최대 길이를 설정 (예: 20)
                                                     textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700),
                                                   ),
                                                   Text(
                                                     truncateText(
@@ -496,6 +541,9 @@ class _BuyTicketListScreenState extends State<BuyTicketListScreen> {
                                                     truncateText(item.title,
                                                         15), // 최대 길이를 설정 (예: 20)
                                                     textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700),
                                                   ),
                                                   Text(
                                                     truncateText(

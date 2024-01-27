@@ -146,7 +146,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 height: MediaQuery.of(context).size.height * 0.38,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('images/main3.jpg'),
+                    image: AssetImage('images/main5.jpg'),
                     fit: BoxFit.cover,
                     alignment: FractionalOffset(0.5, 0.8),
                   ),
@@ -182,7 +182,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
               // 광고
               Container(
                 child: Image.asset(
-                  'images/adver.png',
+                  'images/ad3.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -205,7 +205,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.9,
-                      height: 50,
+                      height: 55,
                       decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(18.0)),
@@ -397,7 +397,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
         tooltip: 'Increment',
         child: Icon(
           Icons.edit,
-          color: const Color.fromARGB(255, 184, 132, 132), // 아이콘 색상을 흰색으로 설정
+          color: Color.fromARGB(255, 255, 255, 255), // 아이콘 색상을 흰색으로 설정
         ),
         backgroundColor: Colors.black, // 배경색을 검은색으로 설정
         shape: CircleBorder(), // 원형으로 설정

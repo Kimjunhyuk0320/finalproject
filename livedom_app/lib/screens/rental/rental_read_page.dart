@@ -41,11 +41,11 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
       setState(() {
         _navIndex = tempIndex;
       });
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
       if (rental != null && rental.isCaching!) {
         setState(() {
           isCaching = '?${DateTime.now().millisecondsSinceEpoch.toString()}';
@@ -223,6 +223,9 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
   Widget build(BuildContext context) {
     final Rental item = ModalRoute.of(context)!.settings.arguments as Rental;
 
+    // 다음 버튼을 위해 > 화면 높이의 3/100 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.03;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -265,7 +268,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                               children: [
                                 item.confirmed == 0
                                     ? Container(
-                                        width: 50,
+                                        width: 60,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
@@ -278,7 +281,8 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Color.fromARGB(
-                                                  255, 221, 221, 221)),
+                                                  255, 221, 221, 221),
+                                              fontSize: 10),
                                         ),
                                       )
                                     : Container(
@@ -293,22 +297,28 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                         child: Text(
                                           '매진',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.red),
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 10,
+                                          ),
                                         ),
                                       ),
                                 Text(
-                                  formatMultilineText(item.title ?? ''),
+                                  truncateText(item.title ?? '', 10),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
-                                    fontSize: 20.0,
-                                  ),
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
                                 Text(
-                                  item.writer ?? '',
+                                  truncateText(item.writer ?? '', 9),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
@@ -317,16 +327,16 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                   ),
                                 ),
                                 Text(
-                                  item.address ?? '',
+                                  truncateText(item.address ?? '', 10),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
-                                    fontSize: 14.0,
+                                    fontSize: 13.0,
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 30.0,
+                                  height: 10.0,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +364,10 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                   child: AppBar(
                     title: const Text(
                       '클럽 정보',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(
@@ -480,7 +493,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
             ),
             // 탭바뷰
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(5.0),
               child: Column(
                 children: [
                   Visibility(
@@ -578,7 +591,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                       return StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
                           return Container(
-                            height: MediaQuery.of(context).size.height * 0.45,
+                            height: MediaQuery.of(context).size.height * 0.4,
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
@@ -593,7 +606,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  SizedBox(height: 10.0),
+                                  SizedBox(height: 12.0),
                                   Container(
                                     height: 120.0,
                                     width: 330,
@@ -614,10 +627,10 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                               children: [
                                                 Text(
                                                   truncateText(
-                                                      item.title ?? '제목없음', 10),
+                                                      item.title ?? '제목없음', 9),
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 25.0,
+                                                    fontSize: 20.0,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                   textAlign: TextAlign.left,
@@ -626,7 +639,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                                   '뮬 대관 신청합니다',
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 20.0,
+                                                    fontSize: 15.0,
                                                   ),
                                                   textAlign: TextAlign.left,
                                                 ),
@@ -636,8 +649,8 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                         ),
                                         Image.asset(
                                           'images/ticket.png',
-                                          width: 100.0,
-                                          height: 100.0,
+                                          width: 80.0,
+                                          height: 80.0,
                                         ),
                                       ],
                                     ),
@@ -645,66 +658,77 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                   SizedBox(
                                     height: 15,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '지역',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.0,
-                                            ),
-                                            textAlign: TextAlign.left,
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              right: 0.0), // 우측에만 패딩을 추가합니다.
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '지역',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                              SizedBox(
+                                                height: 15.0,
+                                              ),
+                                              Text(
+                                                '대관 가격',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(
-                                            height: 15.0,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(right: 20.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                item.location ?? '',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15.0,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                              SizedBox(
+                                                height: 15.0,
+                                              ),
+                                              Text(
+                                                '${formatCurrency(item.price ?? 0)}원' ??
+                                                    '',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15.0,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            '대관 가격',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.0,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.location ?? '',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.0,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          SizedBox(
-                                            height: 15.0,
-                                          ),
-                                          Text(
-                                            '${formatCurrency(item.price ?? 0)}원' ??
-                                                '',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.0,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  SizedBox(height: buttonHeight),
                                   Container(
                                     height: 55.0,
                                     width: 300.0,
@@ -720,7 +744,6 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                                           'username': userInfo.username,
                                           'phone': userInfo.phone,
                                         });
-
                                         var response = await http.post(
                                           parsedUrl,
                                           headers: headers,
@@ -757,7 +780,7 @@ class _RentalReadScreenState extends State<RentalReadScreen> {
                 tooltip: 'Floating Button',
                 child: Text(
                   '신청하기',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(color: Colors.white, fontSize: 15),
                 ),
                 backgroundColor: Colors.black,
                 elevation: 0.0,

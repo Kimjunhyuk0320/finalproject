@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -31,14 +33,17 @@ class _HomeViewState extends State<HomeView> {
   // FlutterSecureStorage : 안전한 저장소
   final storage = const FlutterSecureStorage();
   String jwtToken = "";
+  
 
   // 통함검색 이미지슬라이드 사진 리스트
   final List<String> slideList = [
-    'assets/images/newJS.png',
-    'assets/images/aespa.jpg',
-    'assets/images/SLan.webp',
+    'images/BigMain03.jpg',
+    'images/BigMain02.jpeg',
+    'images/BigMain01.jpg',
   ];
-  final ScrollController _controller = ScrollController();
+  // final ScrollController _controller = ScrollController();
+  final CarouselController _controller = CarouselController();
+
 
   // LivdBoardList
   // 여기에 값을 세팅해 주어야한다.
@@ -70,7 +75,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-
+     // 자동 스크롤 시작
+    startAutoScroll();
     loadJwtToken();
   }
 
@@ -115,23 +121,41 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+    @override
+  void dispose() {
+    super.dispose();
+    // 타이머 해제
+    _timer?.cancel();
+  }
+
+  Timer? _timer;
+  int _currentPage = 0;
+  final int _numPages = 3;
+
+  void startAutoScroll() {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      if (_currentPage < _numPages - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      // 다음 페이지로 이동
+      _controller.animateToPage(_currentPage);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // 현재 로그인한 사용자 정보 가져오기
     TotalSearchProvider totalSearchProvider =
         Provider.of<TotalSearchProvider>(context);
-    // List<dynamic> liveBoardList = totalSearchProvider.liveBoardList;
     List<dynamic> frList = totalSearchProvider.frList;
-    // List teamList = totalSearchProvider.teamList;
-
-    // final String username = _authProvider.;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "LIVE DOM",
           style: pBold.copyWith(
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
           ),
         ),
         centerTitle: true,
@@ -217,7 +241,17 @@ class _HomeViewState extends State<HomeView> {
                             ],
                           );
                         },
-                        options: CarouselOptions(viewportFraction: 1.0),
+                        options: CarouselOptions(
+                          viewportFraction: 1.0,
+                          onPageChanged: (index, reason) {
+                            // 페이지가 변경될 때 현재 페이지 업데이트
+                            setState(() {
+                              _currentPage = index;
+                            });
+                          },
+                          autoPlay: true, // 자동 스크롤 활성화
+                          autoPlayInterval: Duration(seconds: 5), // 자동 스크롤 간격 설정
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Column(
@@ -797,7 +831,7 @@ class _HomeViewState extends State<HomeView> {
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(8),
+                                padding: EdgeInsets.all(0),
                                 itemBuilder: (context, index) {
                                   if (index <
                                       totalSearchProvider.teamList.length) {
@@ -845,15 +879,15 @@ class _HomeViewState extends State<HomeView> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                '${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}',
+                                                truncateText('${item['liveDate']} ${item['liveStTime']} ~ ${item['liveEndTime']}', 28),
                                                 style: TextStyle(
                                                   fontSize:
                                                       13, // 원하는 폰트 크기로 변경하세요
                                                 ),
                                               ),
-                                              Text('${item['address']}'),
+                                              Text(truncateText('${item['address']}', 15)),
                                               Text(
-                                                  '${item['price']}원(팀당 ${(item['price'] / item['capacity']).round()}원)'),
+                                                  '${item['price']}원 (팀당 ${(item['price'] / item['capacity']).round()}원)'),
                                               Container(
                                                 alignment: Alignment.center,
                                                 height: 20,
@@ -956,58 +990,6 @@ Widget icon(String image, String text, VoidCallback onTap) {
   );
 }
 
-Widget transaction(
-    String image, String text, String text1, String text2, Color color) {
-  return Row(
-    children: [
-      Container(
-        height: 40,
-        width: 40,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: ConstColors.lightGrayColor,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: SvgPicture.asset(
-            image,
-          ),
-        ),
-      ),
-      const SizedBox(width: 14),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              text,
-              style: pSemiBold20.copyWith(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              text1,
-              style: pRegular14.copyWith(
-                fontSize: 12,
-                color: ConstColors.greyColor,
-              ),
-            ),
-            const SizedBox(height: 6),
-          ],
-        ),
-      ),
-      Text(
-        text2,
-        style: pSemiBold20.copyWith(
-          fontSize: 14,
-          color: color,
-        ),
-      ),
-    ],
-  );
-}
-
 // 아래에서 위로 올라오는 검색창
 class _BottomSheetScreen extends StatefulWidget {
   @override
@@ -1015,7 +997,7 @@ class _BottomSheetScreen extends StatefulWidget {
 }
 
 class _BottomSheetScreenState extends State<_BottomSheetScreen> {
-  String selectedPermission = ''; // 선택한 글이 담기는 변수
+  String selectedPermission = '소란'; // 선택한 글이 담기는 변수
   final TextEditingController _keywordHintController =
       TextEditingController(text: '');
 
@@ -1030,129 +1012,125 @@ class _BottomSheetScreenState extends State<_BottomSheetScreen> {
   Widget build(BuildContext context) {
     final totalSearchProvider = Provider.of<TotalSearchProvider>(context);
 
-    return Container(
-      height: 400, // 원하는 높이로 설정
-      width: 390,
-      decoration: BoxDecoration(
-        color: Colors.white, // 배경색을 원하는 색상으로 설정
-        // 다른 스타일 속성들을 추가할 수 있습니다.
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
+    return SingleChildScrollView(
+      child: Container(
+        height: 600, // 원하는 높이로 설정
+        width: 390,
+        decoration: BoxDecoration(
+          color: Colors.white, // 배경색을 원하는 색상으로 설정
+          // 다른 스타일 속성들을 추가할 수 있습니다.
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // BottomSheet
-          SizedBox(
-            // BottomSheet 검색창 높이
-            height: 120,
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                Container(
-                  width: 110,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(4), // 굴곡을 위한 반지름 설정
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // BottomSheet
+            SizedBox(
+              // BottomSheet 검색창 높이
+              height: 100,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Container(
+                    width: 110,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4), // 굴곡을 위한 반지름 설정
+                    ),
                   ),
-                ),
-                SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CustomTextField(
-                    hintText: '검색',
-                    controller: _keywordHintController,
-                    prefix: const SizedBox(width: 0),
-                    sufix: Padding(
-                      padding: EdgeInsets.only(
-                          left: 0, right: 20, top: 14, bottom: 20),
-                      child: GestureDetector(
-                        onTap: () async {
-                          String keyword = _keywordHintController.text;
-                          print('Search keyword: $keyword');
-                          await totalSearchProvider.getTotalSearch(keyword);
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomeView(),
-                            ),
-                            (route) => false, // 이전 페이지가 없도록 설정
-                          );
-                          // print('최종 ${totalSearchProvider.liveBoardList[0].boardNo}');
-                        }, // 아이콘을 눌렀을 때 호출될 메서드
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.black,
-                          size: 30.0,
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                      hintText: '검색',
+                      controller: _keywordHintController,
+                      prefix: const SizedBox(width: 0),
+                      sufix: Padding(
+                        padding: EdgeInsets.only(
+                            left: 0, right: 20, top: 14, bottom: 20),
+                        child: GestureDetector(
+                          onTap: () async {
+                            String keyword = _keywordHintController.text;
+                            print('Search keyword: $keyword');
+                            await totalSearchProvider.getTotalSearch(keyword);
+                            Navigator.pop(context);
+                            // print('최종 ${totalSearchProvider.liveBoardList[0].boardNo}');
+                          }, // 아이콘을 눌렀을 때 호출될 메서드
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.black,
+                            size: 30.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                ],
+              ),
             ),
-          ),
-          // 스크롤 영역
-          SizedBox(
-            // BottomSheet 의 스크롤 높이
-            height: 280,
-            child: ListView(
-              children: [
-                PermissionButton(
-                  numbering: '01.',
-                  permission: '임재현',
-                  isSelected: selectedPermission == '임재현',
-                  onSelect: () => selectPermission('임재현'),
-                ),
-                PermissionButton(
-                  numbering: '02.',
-                  permission: '태연',
-                  isSelected: selectedPermission == '태연',
-                  onSelect: () => selectPermission('태연'),
-                ),
-                PermissionButton(
-                  numbering: '03.',
-                  permission: 'LE SSERAFIM (르세라핌)',
-                  isSelected: selectedPermission == 'LE SSERAFIM (르세라핌)',
-                  onSelect: () => selectPermission('LE SSERAFIM (르세라핌)'),
-                ),
-                PermissionButton(
-                  numbering: '04.',
-                  permission: 'easpa',
-                  isSelected: selectedPermission == 'easpa',
-                  onSelect: () => selectPermission('easpa'),
-                ),
-                PermissionButton(
-                  numbering: '05.',
-                  permission: '이무진',
-                  isSelected: selectedPermission == '이무진',
-                  onSelect: () => selectPermission('이무진'),
-                ),
-                PermissionButton(
-                  numbering: '06.',
-                  permission: '박재정',
-                  isSelected: selectedPermission == '박재정',
-                  onSelect: () => selectPermission('박재정'),
-                ),
-                const SizedBox(height: 30),
-              ],
-            ),
-          )
-        ],
+            // 스크롤 영역
+            SizedBox(
+              // BottomSheet 의 스크롤 높이
+              height: 400,
+              child: ListView(
+                children: [
+                  PermissionButton(
+                    numbering: '01.',
+                    permission: '유다빈밴드',
+                    isSelected: selectedPermission == '유다빈밴드',
+                    onSelect: () => selectPermission('유다빈밴드'),
+                  ),
+                  PermissionButton(
+                    numbering: '02.',
+                    permission: '독백',
+                    isSelected: selectedPermission == '독백',
+                    onSelect: () => selectPermission('독백'),
+                  ),
+                  PermissionButton(
+                    numbering: '03.',
+                    permission: '버스커의 술집',
+                    isSelected: selectedPermission == '버스커의 술집',
+                    onSelect: () => selectPermission('버스커의 술집'),
+                  ),
+                  PermissionButton(
+                    numbering: '04.',
+                    permission: '직밴',
+                    isSelected: selectedPermission == '직밴',
+                    onSelect: () => selectPermission('직밴'),
+                  ),
+                  PermissionButton(
+                    numbering: '05.',
+                    permission: 'AOR',
+                    isSelected: selectedPermission == 'AOR',
+                    onSelect: () => selectPermission('AOR'),
+                  ),
+                  PermissionButton(
+                    numbering: '06.',
+                    permission: '홍대',
+                    isSelected: selectedPermission == '홍대',
+                    onSelect: () => selectPermission('홍대'),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -1188,17 +1166,15 @@ class PermissionButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
-            side: const BorderSide(color: Colors.white),
           ),
-          minimumSize: Size(350, 70),
+          minimumSize: Size(350, 60),
         ),
         child: Row(
           children: [
             Text(
               numbering,
               style: const TextStyle(
-                // color: Colors.black,
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: FontWeight.w300,
               ),
             ),
@@ -1208,13 +1184,22 @@ class PermissionButton extends StatelessWidget {
             Text(
               permission,
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+// 말 줄이기 함수
+String truncateText(String text, int length) {
+  if (text.length <= length) {
+    return text;
+  } else {
+    return '${text.substring(0, length)}...';
   }
 }

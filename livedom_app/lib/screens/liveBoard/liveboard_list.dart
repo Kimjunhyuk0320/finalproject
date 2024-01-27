@@ -174,15 +174,15 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                   ),
                 ),
                 Positioned(
-                  left: 30,
+                  left: 20,
                   bottom: 20,
                   child: Text(
                     'LIVE DOM ',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 35,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
@@ -217,7 +217,7 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
             // 광고
             Container(
               child: Image.asset(
-                'images/adver.png',
+                'images/ad2.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -333,8 +333,11 @@ class _LiveBoardListScreenState extends State<LiveBoardListScreen> {
                                         ),
                                         Text(
                                           truncateText(item.title,
-                                              12), // 최대 길이를 설정 (예: 20)
+                                              10), // 최대 길이를 설정 (예: 20)
                                           textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w700
+                                          ),
                                         ),
                                         Text(
                                           truncateText(item.crew, 10),

@@ -50,7 +50,10 @@ class _QRViewExampleState extends State<QRViewExample> {
       appBar: AppBar(
         title: const Text(
           '티켓 QR 스캔',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 14,
+          ),
           textAlign: TextAlign.center,
         ),
         leading: IconButton(
@@ -84,7 +87,7 @@ class _QRViewExampleState extends State<QRViewExample> {
               ),
             ),
             Container(
-              height: 200,
+              height: 300,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -102,7 +105,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                         ),
                         const Text(
                           '티켓 QR코드를 스캔해주세요.',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 15),
                         ),
                       ],
                     )
@@ -170,8 +173,8 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Future<String?> useTicket() async {
     print('티켓사용 티켓 번호 : ${ticket!.ticketNo}');
-    final url =
-        Uri.parse('http://13.209.77.161/api/qr/use?ticketNo=${ticket!.ticketNo}');
+    final url = Uri.parse(
+        'http://13.209.77.161/api/qr/use?ticketNo=${ticket!.ticketNo}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var result = utf8.decode(response.bodyBytes);
@@ -204,52 +207,63 @@ class _QRViewExampleState extends State<QRViewExample> {
           ),
           const Text(
             '이용 가능한 티켓입니다',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 15),
           ),
           SizedBox(
             height: 15,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '공연명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    '예매자명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${ticket?.title}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                  Text(
-                    '${ticket?.name}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              )
-            ],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '공연명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      '예매자명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      truncateText('${ticket?.title}', 16),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                    Text(
+                      '${ticket?.name}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           SizedBox(
-            height: 20,
+            height: 50,
           ),
           Container(
-            width: 280,
-            height: 40,
+            width: 390,
+            height: 50,
             child: ElevatedButton(
               onPressed: () async {
                 print('ElevatedButton이 클릭되었습니다.');
@@ -259,7 +273,6 @@ class _QRViewExampleState extends State<QRViewExample> {
                 } else {
                   _showModal('fail');
                 }
-
                 // result를 null로 업데이트
                 setState(() {
                   result = null;
@@ -297,40 +310,51 @@ class _QRViewExampleState extends State<QRViewExample> {
           SizedBox(
             height: 15,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '공연명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    '예매자명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${ticket?.title}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                  Text(
-                    '${ticket?.name}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              )
-            ],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '공연명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      '예매자명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      truncateText('${ticket?.title}', 15),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                    Text(
+                      '${ticket?.name}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                )
+              ],
+            ),
           )
         ],
       );
@@ -346,45 +370,56 @@ class _QRViewExampleState extends State<QRViewExample> {
           ),
           const Text(
             '이미 사용한 티켓입니다',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 15),
           ),
           SizedBox(
             height: 15,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '공연명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    '예매자명',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${ticket?.title}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                  Text(
-                    '${ticket?.name}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              )
-            ],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '공연명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      '예매자명',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${ticket?.title}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                    Text(
+                      '${ticket?.name}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                )
+              ],
+            ),
           )
         ],
       );
@@ -477,46 +512,46 @@ class _QRViewExampleState extends State<QRViewExample> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
-            content: (message == 'success')
-                ? Column(
-                    mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
-                    children: [
-                      // 큰 아이콘
-                      Icon(
-                        Icons.check_circle_outline_rounded,
-                        color: Colors.blue, // 파란색
-                        size: 50.0, // 아이콘 크기 조절
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      // 텍스트
-                      Text(
-                        '티켓 사용 성공',
-                        style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
-                      ),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      // 큰 아이콘
-                      Icon(
-                        Icons.close,
-                        color: Colors.red, // 파란색
-                        size: 50.0, // 아이콘 크기 조절
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      // 텍스트
-                      Text(
-                        '티켓 사용 실패',
-                        style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
-                      ),
-                    ],
-                  ));
+          contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 60.0),
+          content: (message == 'success')
+              ? Column(
+                  mainAxisSize: MainAxisSize.min, // 세로 크기 최소화
+                  children: [
+                    // 큰 아이콘
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      color: Colors.blue, // 파란색
+                      size: 50.0, // 아이콘 크기 조절
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    // 텍스트
+                    Text(
+                      '티켓 사용 성공',
+                      style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    // 큰 아이콘
+                    Icon(
+                      Icons.close,
+                      color: Colors.red, // 파란색
+                      size: 50.0, // 아이콘 크기 조절
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    // 텍스트
+                    Text(
+                      '티켓 사용 실패',
+                      style: TextStyle(fontSize: 20.0), // 텍스트 크기 조절
+                    ),
+                  ],
+                ),
+        );
       },
     );
   }
@@ -525,5 +560,14 @@ class _QRViewExampleState extends State<QRViewExample> {
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+}
+
+// 말 줄이기 함수
+String truncateText(String text, int length) {
+  if (text.length <= length) {
+    return text;
+  } else {
+    return '${text.substring(0, length)}...';
   }
 }

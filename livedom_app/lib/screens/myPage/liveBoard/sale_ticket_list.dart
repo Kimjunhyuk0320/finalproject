@@ -41,7 +41,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
       setState(() {
         userInfo = tempUserInfo;
       });
-    fetch();
+      fetch();
     });
   }
 
@@ -93,39 +93,66 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '티켓 판매 내역',
-          style: TextStyle(color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            Navigator.of(context).pop(); // 뒤로가기 기능
-          },
-          color: Colors.black, // 뒤로가기 버튼 색상
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          padding: EdgeInsets.symmetric(horizontal: 0.0),
           child: Column(
             children: [
-              // 이미지
-              Container(
-                width: double.infinity,
-                height: 100,
-                child: Image.asset(
-                  'images/sample.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(
-                height: 20,
+              Stack(
+                children: [
+                  SizedBox(
+                    height: 350,
+                    width: double.infinity,
+                    child: Image.asset(
+                      'images/BigMyPage2.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    left: 20,
+                    bottom: 20,
+                    child: Text(
+                      'LIVE DOM ',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black
+                                .withOpacity(0.5), // 그림자의 색상과 불투명도 조정
+                            offset: Offset(2.0, 2.0), // 그림자의 위치 조정 (x, y)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    top: true,
+                    child: AppBar(
+                      title: const Text(
+                        '티켓 판매 내역',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                      leading: IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // 뒤로가기 기능
+                        },
+                        color: Colors.grey[500], // 뒤로가기 버튼 색상
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      centerTitle: true,
+                    ),
+                  ),
+                ],
               ),
               // 탭바
               Padding(
@@ -242,12 +269,12 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                         itemBuilder: (context, index) {
                           final item = items[index];
 
                           return Container(
-                            margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                             child: Column(
                               children: [
                                 GestureDetector(
@@ -257,7 +284,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   child: Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 16.0),
+                                        padding: EdgeInsets.only(left: 0.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -268,12 +295,15 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                               children: [
                                                 Text(
                                                   truncateText(item.title,
-                                                      17), // 최대 길이를 설정 (예: 20)
+                                                      22), // 최대 길이를 설정 (예: 20)
                                                   textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
                                                 ),
                                                 Text(
                                                   truncateText(
-                                                      item.reservationNo, 30),
+                                                      item.reservationNo, 28),
                                                   textAlign: TextAlign.left,
                                                 ),
                                                 Text(
@@ -323,7 +353,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                 Divider(
                                   color: Colors.grey, // 원하는 색상으로 변경
                                   thickness: 0.5, // 원하는 두께로 변경
-                                  height: 40.0, // 위아래 여백 조절
+                                  height: 25.0, // 위아래 여백 조절
                                 ),
                               ],
                             ),
@@ -337,12 +367,12 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                         itemBuilder: (context, index) {
                           final item = items[index];
                           if (item.refund != 1) {
                             return Container(
-                              margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                              margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                               child: Column(
                                 children: [
                                   GestureDetector(
@@ -352,7 +382,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                     child: Row(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
+                                          padding: EdgeInsets.only(left: 0.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -363,12 +393,16 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                 children: [
                                                   Text(
                                                     truncateText(item.title,
-                                                        17), // 최대 길이를 설정 (예: 20)
+                                                        22), // 최대 길이를 설정 (예: 20)
                                                     textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
                                                   ),
                                                   Text(
                                                     truncateText(
-                                                        item.reservationNo, 30),
+                                                        item.reservationNo, 28),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   Text(
@@ -419,7 +453,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   Divider(
                                     color: Colors.grey, // 원하는 색상으로 변경
                                     thickness: 0.5, // 원하는 두께로 변경
-                                    height: 40.0, // 위아래 여백 조절
+                                    height: 25.0, // 위아래 여백 조절
                                   ),
                                 ],
                               ),
@@ -436,12 +470,12 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                         itemBuilder: (context, index) {
                           final item = items[index];
                           if (item.refund == 1) {
                             return Container(
-                              margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                              margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                               child: Column(
                                 children: [
                                   GestureDetector(
@@ -451,7 +485,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                     child: Row(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
+                                          padding: EdgeInsets.only(left: 0.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -462,12 +496,16 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                                 children: [
                                                   Text(
                                                     truncateText(item.title,
-                                                        17), // 최대 길이를 설정 (예: 20)
+                                                        22), // 최대 길이를 설정 (예: 20)
                                                     textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
                                                   ),
                                                   Text(
                                                     truncateText(
-                                                        item.reservationNo, 30),
+                                                        item.reservationNo, 28),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   Text(
@@ -518,7 +556,7 @@ class _SaleTicketListScreenState extends State<SaleTicketListScreen> {
                                   Divider(
                                     color: Colors.grey, // 원하는 색상으로 변경
                                     thickness: 0.5, // 원하는 두께로 변경
-                                    height: 40.0, // 위아래 여백 조절
+                                    height: 25.0, // 위아래 여백 조절
                                   ),
                                 ],
                               ),

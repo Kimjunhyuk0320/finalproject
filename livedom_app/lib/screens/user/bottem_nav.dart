@@ -42,12 +42,21 @@ class _MainScreenState extends State<MainScreen> {
       body: _pages[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Colors.black,
-              width: 1.0,
-            ),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blue.shade900,
+              Colors.blue.shade600,
+            ],
           ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromARGB(106, 0, 0, 0).withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 10,
+            ),
+          ],
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
@@ -62,43 +71,48 @@ class _MainScreenState extends State<MainScreen> {
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.layers,
-                color: Colors.black,
+                size: _currentIndex == 0 ? 32.0 : 24.0, 
+                color: _currentIndex == 0 ? Color(0xff111827) : Colors.grey,
               ),
               label: '클럽대관',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.people_alt_rounded,
-                color: Colors.black,
+                size: _currentIndex == 1 ? 32.0 : 24.0, 
+                color: _currentIndex == 1 ? Color(0xff111827) : Colors.grey,
               ),
               label: '팀 모집',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.home,
-                color: Colors.black,
+                size: _currentIndex == 2 ? 32.0 : 24.0,                 
+                color: _currentIndex == 2 ? Color(0xff111827) : Colors.grey,
               ),
               label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.devices_rounded,
-                color: Colors.black,
+                size: _currentIndex == 3 ? 32.0 : 24.0, 
+                color: _currentIndex == 3 ? Color(0xff111827) : Colors.grey,
               ),
               label: '공연',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.person,
-                color: Colors.black,
+                size: _currentIndex == 4 ? 32.0 : 24.0,                 
+                color: _currentIndex == 4 ? Color(0xff111827) : Colors.grey,
               ),
               label: '내정보',
             ),
           ],
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black,
-          selectedLabelStyle: TextStyle(color: Colors.black),
-          unselectedLabelStyle: TextStyle(color: Colors.black),
+          selectedItemColor: Color(0xff111827),
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: TextStyle(fontSize: 9, color: Color(0xff111827)),
+          unselectedLabelStyle: TextStyle(fontSize: 9, color: Colors.grey),
           showUnselectedLabels: true,
         ),
       ),

@@ -19,15 +19,12 @@ class JoinCompleteScreen extends StatefulWidget {
 }
 
 class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
-
   Future<void> registerUser(Users user) async {
     final String apiUrl = 'http://13.209.77.161/users';
 
     try {
-      // Create a MultipartRequest
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
-      // Add form fields
       request.fields['username'] = user.username!;
       request.fields['password'] = user.password!;
       request.fields['name'] = user.name!;
@@ -36,10 +33,8 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
       request.fields['email'] = user.email!;
       request.fields['auth'] = user.auth.toString();
 
-      // Send the request
       var response = await request.send();
 
-      // Read and print the server response
       var resBody = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
@@ -80,33 +75,29 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
     final user = ModalRoute.of(context)!.settings.arguments as Users?;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('정보확인'),
-        centerTitle: true,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              '',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            )
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SizedBox(height: MediaQuery.of(context).padding.top + 15),
-            // if (user != null)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       Text('아이디: ${user.username}'),
-            //       Text('이름: ${user.name}'),
-            //       Text('닉네임: ${user.nickname}'),
-            //       Text('전화번호: ${user.phone}'),
-            //       Text('이메일: ${user.email}'),
-            //       Text('권한: ${user.auth}'),
-            //     ],
-            //   ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
                 physics: const ClampingScrollPhysics(),
                 children: [
-                  // const SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Column(
                     children: [
                       Center(
@@ -227,16 +218,16 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 80),
                       Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.center,
                         child: Text(
-                          "Personal Info",
+                          "${user?.nickname}님, \n가입을 축하합니다!",
                           style: pSemiBold20.copyWith(
-                            color: ConstColors.greyColor,
+                            color: Color.fromARGB(255, 0, 0, 0),
                             fontSize: 20,
                           ),
-                          textAlign: TextAlign.left,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -253,17 +244,17 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   '아이디',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                                SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
+                                SizedBox(width: 0), // 텍스트 간격 조절을 위한 SizedBox
 
                                 if (user != null)
                                   Text(
                                     '${user.username}',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -285,7 +276,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   '이름',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -294,7 +285,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   Text(
                                     '${user.name}',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -316,7 +307,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   '닉네임',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -325,7 +316,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   Text(
                                     '${user.nickname}',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -347,7 +338,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   '권한',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -356,7 +347,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   Text(
                                     '${getAuthName(user.auth!)}',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -366,16 +357,10 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Personal Info",
-                          style: pSemiBold20.copyWith(
-                            color: ConstColors.greyColor,
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 0.6,
+                        color: Colors.grey,
                       ),
                       const SizedBox(height: 20),
                       Padding(
@@ -387,23 +372,23 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Text(
+                                  '연락처',
+                                  style: TextStyle(
+                                    color: ConstColors.greyColor,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 if (user != null)
                                   Text(
                                     '${user.phone}',
                                     style: TextStyle(
-                                      color: ConstColors.greyColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
-                                Text(
-                                  '01023250724',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -422,16 +407,16 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                   '이메일',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 if (user != null)
                                   Text(
-                                    '${user.email}',
+                                    truncateText('${user.email}', 17),
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -450,14 +435,20 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                             } else {
                               print('사용자 정보가 없습니다.');
                             }
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              '/login',
-                              (route) => false, // 이전 페이지가 없도록 설정
-                            );
+                            CustomAlertDialog(context);
+                            Future.delayed(Duration(seconds: 3), () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                                (route) => false, // 이전 페이지가 없도록 설정
+                              );
+                            });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black, // 원하는 배경색을 설정
+                            backgroundColor:
+                                Color.fromRGBO(16, 24, 39, 1), // 원하는 배경색을 설정
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
@@ -470,7 +461,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                                 '가입 완료',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -478,7 +469,7 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ],
@@ -488,6 +479,15 @@ class _JoinCompleteScreenState extends State<JoinCompleteScreen> {
         ),
       ),
     );
+  }
+}
+
+// 말 줄이기 함수
+String truncateText(String text, int length) {
+  if (text.length <= length) {
+    return text;
+  } else {
+    return '${text.substring(0, length)}...';
   }
 }
 
@@ -563,4 +563,30 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+// 통합 알림창
+void CustomAlertDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 50.0,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

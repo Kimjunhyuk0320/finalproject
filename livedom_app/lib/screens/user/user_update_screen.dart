@@ -55,11 +55,11 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
 
       // 초기에 페이지에 들어갈 때 권한을 설정하는 코드
       if (currentUser.auth == "ROLE_USER") {
-        selectedPermission = "ROLE_USER";
+        selectedPermission = "0";
       } else if (currentUser.auth == "ROLE_BAND") {
-        selectedPermission = "ROLE_BAND";
+        selectedPermission = "2";
       } else {
-        selectedPermission = "ROLE_CLUB";
+        selectedPermission = "1";
       }
     }
   }
@@ -76,6 +76,15 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
     String email = emailController.text;
     String auth = selectedPermission;
 
+    print("username: $username");
+    print("password: $password");
+    print("passwordCheck: $passwordCheck");
+    print("nickname: $nickname");
+    print("username: $username");
+    print("phone: $phone");
+    print("email: $email");
+    print("auth: $auth");
+
     // 비밀번호 유효성 검사 함수
     bool isPasswordValid(String password) {
       // 비밀번호는 대문자, 소문자, 특수문자를 포함하고 8글자 이상이어야 함
@@ -84,22 +93,32 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
       return regex.hasMatch(password);
     }
 
-    // 비밀번호 확인 검사 함수
-    bool isPasswordCheck(String password, String passwordcheck) {
-      if (password == passwordcheck) {
-        return true;
-      } else {
-        return false;
-      }
+    // 비밀번호가 비어있는지 확인
+    if (password.isEmpty) {
+      // 비밀번호가 비어있을 때 처리할 로직
+      print("비밀번호를 입력해주세요.");
+      return;
     }
 
-    // 문자열로 들어오는 권한을 권한에 따라 각각 0, 1, 2로 바꾸어줌.
-    if (auth == 'ROLE_USER') {
-      auth = '0';
-    } else if (auth == 'ROLE_CLUB') {
-      auth = '1';
-    } else {
-      auth = '2';
+    // 비밀번호 확인이 비어있는지 확인
+    if (passwordCheck.isEmpty) {
+      // 비밀번호 확인이 비어있을 때 처리할 로직
+      print("비밀번호 확인을 입력해주세요.");
+      return;
+    }
+
+    // 비밀번호와 비밀번호 확인이 다른지 확인
+    if (password != passwordCheck) {
+      // 비밀번호와 비밀번호 확인이 다를 때 처리할 로직
+      print("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+
+    // 비밀번호 유효성 검사
+    if (!isPasswordValid(password)) {
+      // 비밀번호가 유효하지 않을 때 처리할 로직
+      print("비밀번호는 대문자, 소문자, 특수문자를 포함하여 8자 이상이어야 합니다.");
+      return;
     }
 
     var headersList = {
@@ -337,31 +356,30 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
                           // height: 0,
                         ),
                       ),
-SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      PermissionButton(
-        permission: '유저권한',
-        isSelected: selectedPermission == 'ROLE_USER',
-        onSelect: () => selectPermission('ROLE_USER'),
-      ),
-      PermissionButton(
-        permission: '밴드권한',
-        isSelected: selectedPermission == 'ROLE_BAND',
-        onSelect: () => selectPermission('ROLE_BAND'),
-      ),
-      PermissionButton(
-        permission: '클럽권한',
-        isSelected: selectedPermission == 'ROLE_CLUB',
-        onSelect: () => selectPermission('ROLE_CLUB'),
-      ),
-    ],
-  ),
-),
-
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            PermissionButton(
+                              permission: '유저권한',
+                              isSelected: selectedPermission == '0',
+                              onSelect: () => selectPermission('0'),
+                            ),
+                            PermissionButton(
+                              permission: '밴드권한',
+                              isSelected: selectedPermission == '1',
+                              onSelect: () => selectPermission('1'),
+                            ),
+                            PermissionButton(
+                              permission: '클럽권한',
+                              isSelected: selectedPermission == '2',
+                              onSelect: () => selectPermission('2'),
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -375,7 +393,13 @@ SingleChildScrollView(
                 // _showModalBottomSheet(context);
                 // 비밀번호와 비밀번호 확인을 모두 입력하였을 때,
                 userUpdate();
-                Navigator.pop(context);
+                CustomAlertDialog(context);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                authProvider.logout();
+                Future.delayed(Duration(seconds: 3), () {
+                  Navigator.pushReplacementNamed(context, "/");
+                });
               },
             ),
             const SizedBox(height: 20),
@@ -482,43 +506,28 @@ class PermissionButton extends StatelessWidget {
   }
 }
 
-// 비밀번호를 통한 정보 수정
-void _showModalBottomSheet(BuildContext context) {
-  showModalBottomSheet(
+// 통합 알림창
+void CustomAlertDialog(BuildContext context) {
+  showDialog(
     context: context,
     builder: (BuildContext context) {
-      return Container(
-        height: 200, // 원하는 높이 설정
-        child: Column(
-          children: [
-            ListTile(
-              title: Text('Option 1'),
-              onTap: () {
-                // 원하는 동작 수행
-                Navigator.pop(context);
-              },
+      return Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 50.0,
+                ),
+              ],
             ),
-            ListTile(
-              title: Text('Option 2'),
-              onTap: () {
-                // 원하는 동작 수행
-                Navigator.pop(context);
-              },
-            ),
-            // 추가적인 아이템들을 여기에 추가할 수 있습니다.
-          ],
+          ),
         ),
       );
     },
   );
 }
-
-// 비밀번호가 일치할 때 정보수정이 되도록 변경
-
-// 아이디, 닉네임 중복검사
-
-// 유저 프로필 사진
-
-// 카카오 로그인
-
-// 쉐어드 프리퍼런스

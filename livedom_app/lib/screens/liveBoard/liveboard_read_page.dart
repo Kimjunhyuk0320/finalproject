@@ -227,6 +227,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
   Widget build(BuildContext context) {
     final LiveBoard item =
         ModalRoute.of(context)!.settings.arguments as LiveBoard;
+
+    // 다음 버튼을 위해 > 화면 높이의 3/100 비율로 설정
+    final screenHeight = MediaQuery.of(context).size.height;
+    final buttonHeight = screenHeight * 0.01;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -282,12 +286,16 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Color.fromARGB(
-                                                  255, 221, 221, 221,),
-                                                  fontSize: 10),
+                                                255,
+                                                221,
+                                                221,
+                                                221,
+                                              ),
+                                              fontSize: 10),
                                         ),
                                       )
                                     : Container(
-                                        width: 60,
+                                        width: 50,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
@@ -298,7 +306,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         child: Text(
                                           '매진',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.red, fontSize: 10),
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 10,
+                                          ),
                                         ),
                                       ),
                                 Text(
@@ -314,12 +325,12 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   maxLines: 2,
                                 ),
                                 Text(
-                                  truncateText(item.crew ?? '', 10),
+                                  truncateText(item.crew ?? '', 9),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
-                                    fontSize: 13.0,
+                                    fontSize: 14.0,
                                   ),
                                 ),
                                 Text(
@@ -332,22 +343,25 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10.0,
+                                  height: 5.0,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '잔여 티켓 ${item.ticketLeft}장' ?? '',
-                                      style: TextStyle(color: Colors.white, fontSize: 13),
+                                      '잔여 티켓 : ${item.ticketLeft}장' ?? '',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 13),
                                     ),
                                     Text(
                                       item.liveDate ?? '',
-                                      style: TextStyle(color: Colors.white, fontSize: 13),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 13),
                                     ),
                                     Text(
                                       item.liveTime ?? '',
-                                      style: TextStyle(color: Colors.white, fontSize: 13),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 13),
                                     ),
                                   ],
                                 )
@@ -365,9 +379,9 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                     title: const Text(
                       '공연 정보',
                       style: TextStyle(
-                        color: Colors.white,                           
-                        fontSize: 14,
-                      ),
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     ),
                     leading: IconButton(
@@ -469,7 +483,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                       },
                       child: Container(
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
@@ -495,7 +509,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
             ),
             // 탭바뷰
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(5.0),
               child: Column(
                 children: [
                   Visibility(
@@ -588,7 +602,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
                     return Container(
-                      height: MediaQuery.of(context).size.height * 0.45,
+                      height: MediaQuery.of(context).size.height * 0.40,
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -603,7 +617,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                 color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 10.0),
+                            SizedBox(height: 12.0),
                             Container(
                               height: 120.0,
                               width: 330,
@@ -624,10 +638,10 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                         children: [
                                           Text(
                                             truncateText(
-                                                item.title ?? '제목 없음', 10),
+                                                item.title ?? '제목 없음', 9),
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 25.0,
+                                              fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
                                             ),
                                             textAlign: TextAlign.left,
@@ -636,7 +650,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             '티켓을 구매합니다',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 16.0,
+                                              fontSize: 15.0,
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
@@ -646,8 +660,8 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                   ),
                                   Image.asset(
                                     'images/ticket.png',
-                                    width: 100.0,
-                                    height: 100.0,
+                                    width: 80.0,
+                                    height: 80.0,
                                   ),
                                 ],
                               ),
@@ -655,126 +669,104 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                             SizedBox(
                               height: 15,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '잔여티켓',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    SizedBox(
-                                      height: 15.0,
-                                    ),
-                                    Text(
-                                      '선택한 티켓',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${item.ticketLeft}장',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    SizedBox(
-                                      height: 10.0,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${_count}장',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20.0,
-                                          ),
-                                          textAlign: TextAlign.left,
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '잔여티켓',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w700,
                                         ),
-                                        SizedBox(
-                                          width: 30.0,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(
+                                        height: 15.0,
+                                      ),
+                                      Text(
+                                        '선택한 티켓',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w700,
                                         ),
-                                        Container(
-                                          height: 35.0,
-                                          width: 35.0,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (_count < 9) {
-                                                  _count++;
-                                                }
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 190, 190, 190),
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0,
-                                                  vertical: 10.0),
-                                              textStyle:
-                                                  TextStyle(fontSize: 16.0),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '${item.ticketLeft}장',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15.0,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              DropdownButton<int>(
+                                                value: _count,
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    _count = newValue!;
+                                                  });
+                                                },
+                                                items: List.generate(
+                                                  9,
+                                                  (index) =>
+                                                      DropdownMenuItem<int>(
+                                                    value: index + 1,
+                                                    child: Text(
+                                                      '${index + 1}',
+                                                      style: TextStyle(
+                                                        fontSize: 16.0,
+                                                        color: Colors
+                                                            .black, // 텍스트 색상 변경
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors
+                                                      .black, // 드롭다운 버튼 텍스트 색상 변경
+                                                ),
+                                                icon: Icon(Icons
+                                                    .arrow_drop_down), // 드롭다운 아이콘 변경
+                                                iconSize:
+                                                    24.0, // 드롭다운 아이콘 크기 변경
+                                                underline:
+                                                    Container(), // 드롭다운 버튼 아래 선 제거
+                                                elevation:
+                                                    0, // 드롭다운 버튼 위젯의 고도 설정
+                                                isExpanded:
+                                                    false, // 드롭다운 버튼이 가능한 최대 크기로 확장됨
+                                                dropdownColor: Colors.grey[200],
                                               ),
-                                            ),
-                                            child: Text('+'),
+                                            ],
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 5.0,
-                                        ),
-                                        Container(
-                                          height: 35.0,
-                                          width: 35.0,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (_count > 1) {
-                                                  _count--;
-                                                }
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 190, 190, 190),
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0,
-                                                  vertical: 10.0),
-                                              textStyle:
-                                                  TextStyle(fontSize: 16.0),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                            ),
-                                            child: Text('-'),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(
                               height: 20,
@@ -807,34 +799,36 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 0.0,
-                                                          vertical: 60.0),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize
-                                                        .min, // 세로 크기 최소화
-                                                    children: [
-                                                      // 큰 아이콘
-                                                      Icon(
-                                                        Icons
-                                                            .check_circle_outline_rounded,
-                                                        color:
-                                                            Colors.blue, // 파란색
-                                                        size: 50.0, // 아이콘 크기 조절
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      // 텍스트
-                                                      Text(
-                                                        '티켓 구매 성공',
-                                                        style: TextStyle(
-                                                            fontSize:
-                                                                20.0), // 텍스트 크기 조절
-                                                      ),
-                                                    ],
-                                                  ));
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 0.0,
+                                                        vertical: 60.0),
+                                                content: Column(
+                                                  mainAxisSize: MainAxisSize
+                                                      .min, // 세로 크기 최소화
+                                                  children: [
+                                                    // 큰 아이콘
+                                                    Icon(
+                                                      Icons
+                                                          .check_circle_outline_rounded,
+                                                      color: Colors.blue, // 파란색
+                                                      size: 100.0, // 아이콘 크기 조절
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    // 텍스트
+                                                    Text(
+                                                      '티켓 구매 성공',
+                                                      style: TextStyle(
+                                                          fontSize: 14.0, 
+                                                          fontWeight: FontWeight.w700
+                                                      ), // 텍스트 크기 조절
+                                                              
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
                                             },
                                           );
                                         } else if (response ==
@@ -995,7 +989,7 @@ class _LiveBoardReadScreenState extends State<LiveBoardReadScreen> {
           tooltip: 'Floating Button',
           child: Text(
             '결제하기',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 15),
           ),
           backgroundColor: Colors.black,
           elevation: 0.0,

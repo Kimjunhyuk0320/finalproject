@@ -351,7 +351,7 @@ void showCustomAlertDialog(BuildContext context, String title, String content) {
                   title,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -359,7 +359,7 @@ void showCustomAlertDialog(BuildContext context, String title, String content) {
                 Text(
                   content,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 14.0,
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,

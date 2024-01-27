@@ -36,7 +36,7 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         keyboardType: keyboardType,
         style: pSemiBold18.copyWith(
-          fontSize: 14,
+          fontSize: 13,
         ),
         decoration: InputDecoration(
           filled: true,
@@ -155,7 +155,7 @@ class CustomTextWithoutTitle extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         style: pSemiBold18.copyWith(
-          fontSize: 14,
+          fontSize: 13,
         ),
         decoration: InputDecoration(
           filled: true,

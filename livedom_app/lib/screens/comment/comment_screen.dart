@@ -56,13 +56,11 @@ class _CommentScreenState extends State<CommentScreen> {
       setState(() {
         _loginState = tempLoginState;
       });
-      if (_loginState) {
-        Users tempUserInfo =
-            Provider.of<AuthProvider>(context, listen: false).currentUser!;
-        setState(() {
-          userInfo = tempUserInfo;
-        });
-      }
+      Users tempUserInfo =
+          Provider.of<AuthProvider>(context, listen: false).currentUser!;
+      setState(() {
+        userInfo = tempUserInfo;
+      });
       item = widget.item;
       parentTable = widget.parentTable;
       fetch();
@@ -206,305 +204,355 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              '관람후기',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Form(
+            key: _formKey,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 50, // 원하는 높이 설정
+                        child: TextFormField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                            labelText: '관람 후기 입력',
+                            labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '값관람 후기를 입력하세요.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        bottom: 8,
+                        right: 8,
+                        child: Padding(
+                          padding: EdgeInsets.all(0), // 패딩 추가
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                commentInsert();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.transparent, // 버튼 배경 투명으로 설정
+                              shadowColor: Colors.transparent, // 그림자 효과 제거
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: Icon(Icons.send,
+                                color: Colors.blue[700]), // 아이콘 색상 지정
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              width: 5,
-            ),
-            Text(
-              '${_pageObj['total'] ?? 0}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red,
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Form(
-          key: _formKey,
-          child: Row(
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
             children: [
-              Expanded(
-                child: TextFormField(
-                  controller: _commentController,
-                  decoration: InputDecoration(
-                    labelText: '관람 후기를 작성해보세요!',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(10.0)), // 모서리 둥글게
-                      borderSide:
-                          BorderSide(color: Colors.grey), // 연하게 설정한 테두리 색상
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide:
-                          BorderSide(color: Colors.grey), // 포커스가 있을 때의 테두리 색상
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide:
-                          BorderSide(color: Colors.grey), // 활성화되어 있을 때의 테두리 색상
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide:
-                          BorderSide(color: Colors.red), // 에러 상태일 때의 테두리 색상
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide: BorderSide(
-                          color: Colors.red), // 포커스가 있고 에러 상태일 때의 테두리 색상
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '값관람 후기를 입력하세요.';
-                    }
-                    return null;
-                  },
-                ),
+              Text(
+                '관람후기',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              SizedBox(width: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    commentInsert();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, // 테두리 색상
-                  foregroundColor: Colors.grey, // 글자 색상
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0), // 버튼 모서리 둥글게 설정
-                    side: BorderSide(color: Colors.grey), // 테두리 색상
-                  ),
-                ),
-                child: Text('등록'),
+              SizedBox(
+                width: 5,
               ),
+              Text(
+                '${_pageObj['total'] ?? 0}',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.red,
+                ),
+              )
             ],
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-          itemBuilder: (context, index) {
-            if (items.length == 0) {
-              return Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                child: Column(
-                  children: [SizedBox(height: 20), Text('조회된 관람 후기가 없습니다.')],
-                ),
-              );
-            }
-            if (index < items.length) {
-              final item = items[index];
-              return Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.content,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          item.writer,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                            DateFormat('yyyy/MM/dd HH:mm:ss')
-                                .format(DateTime.parse(item.updDate)),
-                            style: TextStyle(color: Colors.grey)),
-                        SizedBox(
-                          width: 40,
-                        ),
-                      ],
-                    ),
-                    (userInfo.nickname == item.writer &&
-                            editingComment != item.commentNo)
-                        ? Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  // 수정 버튼 클릭 시 Bottom Sheet 표시 및 수정 기능 구현
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true, // 스크롤 가능하도록 설정
-                                    builder: (context) {
-                                      String updatedContent = item.content;
-                                      return SingleChildScrollView(
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom,
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(25),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text('댓글 수정',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                SizedBox(height: 20),
-                                                TextFormField(
-                                                  initialValue: item.content,
-                                                  onChanged: (value) {
-                                                    updatedContent = value;
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    focusedBorder:
-                                                        UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.black),
+          SizedBox(
+            height: 10,
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+            itemBuilder: (context, index) {
+              if (items.length == 0) {
+                return Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                  child: Column(
+                    children: [SizedBox(height: 20), Text('조회된 관람 후기가 없습니다.')],
+                  ),
+                );
+              }
+              if (index < items.length) {
+                final item = items[index];
+                return Container(
+                  margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.content,
+                              style: TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis, // 넘치면 ...으로 표시
+                              maxLines: 2, // 최대 2줄로 제한
+                            ),
+                          ),
+                          // IconButton(
+                          //   icon: Icon(Icons.menu),
+                          //   onPressed: () {
+                          //     // 햄버거 아이콘이 눌렸을 때 실행할 동작
+                          //   },
+                          // ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.writer,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            timeAgo(DateTime.parse(item.updDate)),
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      (userInfo.nickname == item.writer &&
+                              editingComment != item.commentNo)
+                          ? Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // 수정 버튼 클릭 시 Bottom Sheet 표시 및 수정 기능 구현
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true, // 스크롤 가능하도록 설정
+                                      builder: (context) {
+                                        String updatedContent = item.content;
+                                        return SingleChildScrollView(
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(25),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('댓글 수정',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  SizedBox(height: 20),
+                                                  TextFormField(
+                                                    initialValue: item.content,
+                                                    onChanged: (value) {
+                                                      updatedContent = value;
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      focusedBorder:
+                                                          UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(height: 20),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                        fixedSize: Size(80, 40),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
+                                                  SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          fixedSize:
+                                                              Size(80, 40),
+                                                          backgroundColor:
+                                                              Colors.grey,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
                                                         ),
+                                                        child: Text('취소'),
                                                       ),
-                                                      child: Text('취소'),
-                                                    ),
-                                                    SizedBox(width: 8),
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        // 댓글 수정 처리
-                                                        updateComment(
-                                                            item.commentNo,
-                                                            updatedContent,
-                                                            item.writer);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        fixedSize: Size(80, 40),
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
+                                                      SizedBox(width: 8),
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          // 댓글 수정 처리
+                                                          updateComment(
+                                                              item.commentNo,
+                                                              updatedContent,
+                                                              item.writer);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          fixedSize:
+                                                              Size(80, 40),
+                                                          backgroundColor:
+                                                              Colors.grey,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
                                                         ),
+                                                        child: Text('수정'),
                                                       ),
-                                                      child: Text('수정'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    side: BorderSide(color: Colors.grey),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.grey,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: BorderSide(color: Colors.grey),
+                                    ),
                                   ),
+                                  child: Text('수정'),
                                 ),
-                                child: Text('수정'),
-                              ),
-                              SizedBox(width: 10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // 삭제 버튼 클릭 시 처리
-                                  deleteComment(item.commentNo);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white, // 테두리 색상
-                                  foregroundColor: Colors.grey, // 글자 색상
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        10.0), // 버튼 모서리 둥글게 설정
-                                    side: BorderSide(
-                                        color: Colors.grey), // 테두리 색상
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // 삭제 버튼 클릭 시 처리
+                                    deleteComment(item.commentNo);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white, // 테두리 색상
+                                    foregroundColor: Colors.grey, // 글자 색상
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // 버튼 모서리 둥글게 설정
+                                      side: BorderSide(
+                                          color: Colors.grey), // 테두리 색상
+                                    ),
                                   ),
+                                  child: Text('삭제'),
                                 ),
-                                child: Text('삭제'),
-                              ),
-                            ],
-                          )
-                        : Text(''),
-                    (!(_pageObj['total'] == (index + 1)))
-                        ? Divider(
-                            color: Colors.grey,
-                            thickness: 0.5,
-                            height: 40.0,
-                          )
-                        : Text('')
-                  ],
-                ),
-              );
-            } else if ((_page - 1) > 0 && (_page - 1) < _pageObj['last']!) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 40.0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-          itemCount: items.length + 1,
-        ),
-      ],
+                              ],
+                            )
+                          : Text(''),
+                      (!(_pageObj['total'] == (index + 1)))
+                          ? Divider(
+                              color: Colors.grey,
+                              thickness: 0.5,
+                              height: 40.0,
+                            )
+                          : Text('')
+                    ],
+                  ),
+                );
+              } else if ((_page - 1) > 0 && (_page - 1) < _pageObj['last']!) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+            itemCount: items.length + 1,
+          ),
+        ],
+      ),
     );
+  }
+}
+
+// 댓글에서 얼마나 지났는지 알려주는 함수
+String timeAgo(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inDays > 8) {
+    return DateFormat('yyyy/MM/dd HH:mm:ss').format(dateTime);
+  } else if (difference.inDays >= 1) {
+    return '${difference.inDays}일 전';
+  } else if (difference.inHours >= 1) {
+    return '${difference.inHours}시간 전';
+  } else if (difference.inMinutes >= 1) {
+    return '${difference.inMinutes}분 전';
+  } else {
+    return '방금 전';
   }
 }

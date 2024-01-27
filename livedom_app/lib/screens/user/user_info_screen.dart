@@ -43,7 +43,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('내정보'),
+        title: const Text(
+          '내정보',
+          style: TextStyle(
+            fontSize: 15
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -220,15 +225,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '아이디',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  currentUser?.username ?? '로그인 필요',
+                                  truncateText(currentUser?.username ?? '로그인 필요', 15),
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -250,7 +255,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '이름',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -258,7 +263,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 Text(
                                   currentUser?.name ?? '로그인 필요',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -280,15 +285,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '닉네임',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  currentUser?.nickname ?? '로그인 필요',
+                                  truncateText(currentUser?.nickname ?? '로그인 필요', 12),
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -310,7 +315,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '권한',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -318,7 +323,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 Text(
                                   currentUser?.auth ?? '로그인 필요',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -327,19 +332,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Personal Info",
-                          style: pSemiBold20.copyWith(
-                            color: ConstColors.greyColor,
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.left,
+                      Divider(
+                          color: Colors.grey, // 원하는 색상으로 변경
+                          thickness: 0.3,       // 원하는 두께로 변경
+                          height: 40.0,         // 위아래 여백 조절
                         ),
-                      ),
-                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 20.0, horizontal: 20.0),
@@ -353,7 +350,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '연락처',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -361,7 +358,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 Text(
                                   currentUser?.phone ?? '로그인 필요',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -383,15 +380,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   '이메일',
                                   style: TextStyle(
                                     color: ConstColors.greyColor,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
                                 SizedBox(width: 20), // 텍스트 간격 조절을 위한 SizedBox
                                 Text(
-                                  currentUser?.email ?? '로그인 필요',
+                                  truncateText(currentUser?.email ?? '로그인 필요', 15),
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -413,20 +410,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black, // 원하는 배경색을 설정
+                            backgroundColor: Color(0xff111827), // 원하는 배경색을 설정
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                           ),
                           child: Container(
                             width: 320.0,
-                            height: 50.0,
+                            height: 55.0,
                             child: const Center(
                               child: Text(
                                 '정보 수정',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -570,5 +567,14 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// 말 줄이기 함수
+String truncateText(String text, int length) {
+  if (text.length <= length) {
+    return text;
+  } else {
+    return '${text.substring(0, length)}...';
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:livedom_app/model/liveboard.dart';
+import 'package:livedom_app/model/rental.dart';
 
 class TotalSearchProvider with ChangeNotifier {
   List<dynamic> _liveBoardList = [];
@@ -52,7 +53,7 @@ class TotalSearchProvider with ChangeNotifier {
 
         final List<dynamic> frListData = result['frList'];
         _frList = frListData.map((item) {
-          return (
+          return Rental (
             boardNo: item['frNo'],
             title: item['title'],
             writer: item['writer'],
